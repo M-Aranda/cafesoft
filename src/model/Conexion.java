@@ -1,32 +1,50 @@
-
 package model;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.DriverManager;        
 import java.sql.SQLException;
-
+import java.sql.Statement;      
+ 
 public class Conexion {
-    private static String url = "jdbc:mysql://localhost:3306/prueba_java2";    
-    private static String driverName = "com.mysql.jdbc.Driver";   
-    private static String username = "root";   
-    private static String password = "";
-    private static Connection con;
-
-
-    public static Connection getConnection() {
-        try {
-            Class.forName(driverName);
-            try {
-                con = DriverManager.getConnection(url, username, password);
-            } catch (SQLException ex) {
-             
-                System.out.println("Fallo en la conexion."); 
-            }
-        } catch (ClassNotFoundException ex) {
-            
-            System.out.println("No se encuentra driver."); 
-        }
-        System.out.println("Conexion exitosa");
-        return con;
+    private Statement sen;
+    private ResultSet rs;
+    private Connection con;
+   
+    public Conexion(String server, String bd, String user, String pass) throws ClassNotFoundException, SQLException{
+        String protocolo = "jdbc:mysql://";
+        String lineaUser = "user="+user;
+        String lineaPass = "password="+pass;
+       
+        String url = protocolo +
+                server + "/" +
+                bd + "?" +
+                lineaUser + "&" +
+                lineaPass;
+       
+        System.out.println(url);
+       
+        Class.forName("com.mysql.jdbc.Driver"); // JAR?
+        con = DriverManager.getConnection(url);
+    }
+   
+    public void ejecutar(String query) throws SQLException{
+        System.out.println(query);
+       
+        sen = con.createStatement();
+        sen.executeUpdate(query);
+        close();
+    }
+   
+    public ResultSet ejecutarSelect(String query) throws SQLException{
+        System.out.println(query);
+       
+        sen = con.createStatement();
+        rs = sen.executeQuery(query);
+        return rs;
+    }
+   
+    public void close() throws SQLException{
+        sen.close();
     }
 }
