@@ -1,36 +1,40 @@
 package org.adasme_aranda_barrera_gatica_vergara.prueba1_java_grupo5.gui;
 
+import clasesAusar.Vivienda;
 import com.jtattoo.plaf.luna.LunaLookAndFeel;
+import java.awt.Color;
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import model.TModel;
 
 /**
  *
  * Autores: Lalo Adasme Marcelo Aranda Franco Barrera Marcelo Gatica Javier
  * Vergara
  */
-
-
-
 public class App extends javax.swing.JFrame {
 
-    
-      //clase hilo creada dentro de app, para modificar componetes
+    //clase hilo creada dentro de app, para modificar componetes
     private class HiloDePrueba extends Thread {
 
         @Override
         public void run() {
-            
+
         }
 
     }
 
+    
+    private TModel model;
+    private List<Vivienda> viviendasDisponibles;
     
     //query para los inserts
     static final String WRITE_OBJECT_SQL = "INSERT INTO ejem(nombre, valor_objeto) VALUES (?, ?)";// modificar segun sea necesario
@@ -46,12 +50,75 @@ public class App extends javax.swing.JFrame {
         this.setTitle("Inicio de sesión");
         this.setLocationRelativeTo(null);
         this.setResizable(false);
+        viviendasDisponibles=new ArrayList<>();
+        
+
+        JfVendedor.setVisible(true);
+        JfVendedor.setBounds(WIDTH, WIDTH, 1000, 400);
+        llenarCbosFrameVendedor();
+        cargarTablaJFrameVendedor();
+        
+        ocultarOpcionesParaFiltrar();
+
+    }
+    
+    private void cargarTablaJFrameVendedor(){
+       
+        model = new TModel(viviendasDisponibles);
+        tblDatosFrameVend.setModel(model);
+        tblDatosFrameVend.setGridColor(Color.DARK_GRAY);
         
     }
-
-  
-
     
+    private void llenarCbosFrameVendedor(){
+        cboFiltrarPorCasas.removeAllItems();
+        cboFiltrarPorDepartamentos.removeAllItems();
+        
+        ArrayList <String> estadosCasas= new ArrayList();
+        ArrayList <String> estadosDepartamentos= new ArrayList();
+        
+        estadosCasas.add("Nuevas");
+        estadosCasas.add("Usadas");
+        estadosCasas.add("Ambas");
+        
+        estadosDepartamentos.add("Nuevos");
+        estadosDepartamentos.add("Usados");
+        estadosDepartamentos.add("Ambos");
+        
+        
+        for (String e : estadosCasas) {
+            cboFiltrarPorCasas.addItem(e);
+        }
+        
+        for (String e : estadosDepartamentos) {
+            cboFiltrarPorDepartamentos.addItem(e);
+        }
+    }
+
+    private void ocultarOpcionesParaFiltrar() {
+        cboFiltrarPorCasas.setEnabled(false);
+        cboFiltrarPorDepartamentos.setEnabled(false);
+        
+        rbtFiltrarAsc.setVisible(false);
+        rbtFiltrarDesc.setVisible(false);
+        cboFiltrarPorCasas.setVisible(false);
+        cboFiltrarPorDepartamentos.setVisible(false);
+        chkFiltrarPorCasas.setVisible(false);
+        chkFiltrarPorDepartamentos.setVisible(false);
+        lblPrecio.setVisible(false);
+
+    }
+    
+    private void mostrarOpcionesParaFiltrar(){
+        rbtFiltrarAsc.setVisible(true);
+        rbtFiltrarDesc.setVisible(true);
+        cboFiltrarPorCasas.setVisible(true);
+        cboFiltrarPorDepartamentos.setVisible(true);
+        chkFiltrarPorCasas.setVisible(true);
+        chkFiltrarPorDepartamentos.setVisible(true);
+        lblPrecio.setVisible(true);
+    }
+
     //para escribir el objeto
     public static long writeJavaObject(Connection conn, Object object) throws Exception {
         String className = object.getClass().getName();
@@ -97,12 +164,11 @@ public class App extends javax.swing.JFrame {
 
         return deSerializedObject;
     }
-    
-    
-        public void msgErrorRutNoEncontrado(){
-        String titulo="Error";
-        String msg="El rut ingresado no se encuentra registrado";
-        int tipoMsg=JOptionPane.ERROR_MESSAGE;
+
+    public void msgErrorRutNoEncontrado() {
+        String titulo = "Error";
+        String msg = "El rut ingresado no se encuentra registrado";
+        int tipoMsg = JOptionPane.ERROR_MESSAGE;
         JOptionPane.showMessageDialog(null, msg, titulo, tipoMsg);
     }
 
@@ -112,56 +178,98 @@ public class App extends javax.swing.JFrame {
 
         JfVendedor = new javax.swing.JFrame();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblDatosFrameVend = new javax.swing.JTable();
+        rbtFiltrarAsc = new javax.swing.JRadioButton();
+        rbtFiltrarDesc = new javax.swing.JRadioButton();
+        cboFiltrarPorCasas = new javax.swing.JComboBox<>();
+        cboFiltrarPorDepartamentos = new javax.swing.JComboBox<>();
+        chkFiltrarPorCasas = new javax.swing.JCheckBox();
+        chkFiltrarPorDepartamentos = new javax.swing.JCheckBox();
+        lblPrecio = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
-        jMenuItem4 = new javax.swing.JMenuItem();
+        jMArchivo = new javax.swing.JMenu();
+        jMCrearCli = new javax.swing.JMenuItem();
+        jMVCamAp = new javax.swing.JMenuItem();
+        jMVenderViv = new javax.swing.JMenuItem();
+        jMArrendarVivienda = new javax.swing.JMenuItem();
+        btnGFiltrarPrecio = new javax.swing.ButtonGroup();
         txtRun = new javax.swing.JTextField();
         lblRUN = new javax.swing.JLabel();
         btnIniciarSesion = new javax.swing.JButton();
         lblicono = new javax.swing.JLabel();
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblDatosFrameVend.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {},
+                {},
+                {},
+                {}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblDatosFrameVend);
 
-        jMenu1.setText("Archivo");
+        rbtFiltrarAsc.setText("Filtrar ascendente");
 
-        jMenuItem1.setText("Crear cliente");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        rbtFiltrarDesc.setText("Filtrar descendente");
+
+        cboFiltrarPorCasas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        cboFiltrarPorDepartamentos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        chkFiltrarPorCasas.setText("Filtrar por casas");
+        chkFiltrarPorCasas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                chkFiltrarPorCasasActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem1);
 
-        jMenuItem2.setText("Cambiar apariencia");
-        jMenu1.add(jMenuItem2);
-
-        jMenuItem3.setText("Vender vivienda");
-        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+        chkFiltrarPorDepartamentos.setText("Filtrar por departamentos");
+        chkFiltrarPorDepartamentos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem3ActionPerformed(evt);
+                chkFiltrarPorDepartamentosActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem3);
 
-        jMenuItem4.setText("Arrendar vivienda");
-        jMenu1.add(jMenuItem4);
+        lblPrecio.setText("Precio:");
 
-        jMenuBar1.add(jMenu1);
+        jMArchivo.setText("Archivo");
+
+        jMCrearCli.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
+        jMCrearCli.setText("Crear cliente");
+        jMCrearCli.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMCrearCliActionPerformed(evt);
+            }
+        });
+        jMArchivo.add(jMCrearCli);
+
+        jMVCamAp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
+        jMVCamAp.setText("Cambiar apariencia");
+        jMArchivo.add(jMVCamAp);
+
+        jMVenderViv.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
+        jMVenderViv.setText("Vender vivienda");
+        jMVenderViv.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMVenderVivActionPerformed(evt);
+            }
+        });
+        jMArchivo.add(jMVenderViv);
+
+        jMArrendarVivienda.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
+        jMArrendarVivienda.setText("Arrendar vivienda");
+        jMArrendarVivienda.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMArrendarViviendaActionPerformed(evt);
+            }
+        });
+        jMArchivo.add(jMArrendarVivienda);
+
+        jMenuBar1.add(jMArchivo);
 
         JfVendedor.setJMenuBar(jMenuBar1);
 
@@ -169,17 +277,51 @@ public class App extends javax.swing.JFrame {
         JfVendedor.getContentPane().setLayout(JfVendedorLayout);
         JfVendedorLayout.setHorizontalGroup(
             JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JfVendedorLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JfVendedorLayout.createSequentialGroup()
+                        .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(chkFiltrarPorDepartamentos)
+                            .addComponent(chkFiltrarPorCasas))
+                        .addGap(18, 18, 18)
+                        .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cboFiltrarPorCasas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cboFiltrarPorDepartamentos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(66, 66, 66))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JfVendedorLayout.createSequentialGroup()
+                        .addComponent(lblPrecio)
+                        .addGap(18, 18, 18)
+                        .addComponent(rbtFiltrarDesc)
+                        .addGap(18, 18, 18)
+                        .addComponent(rbtFiltrarAsc)
+                        .addGap(31, 31, 31))))
             .addGroup(JfVendedorLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(168, Short.MAX_VALUE))
+                .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSeparator1)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 732, Short.MAX_VALUE))
+                .addContainerGap())
         );
         JfVendedorLayout.setVerticalGroup(
             JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JfVendedorLayout.createSequentialGroup()
-                .addContainerGap(115, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(40, 40, 40))
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
+                .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(chkFiltrarPorCasas)
+                    .addComponent(cboFiltrarPorCasas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(chkFiltrarPorDepartamentos)
+                    .addComponent(cboFiltrarPorDepartamentos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(rbtFiltrarDesc)
+                    .addComponent(rbtFiltrarAsc)
+                    .addComponent(lblPrecio))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 93, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -222,13 +364,39 @@ public class App extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void jMCrearCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMCrearCliActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_jMCrearCliActionPerformed
 
-    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem3ActionPerformed
+    private void jMVenderVivActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMVenderVivActionPerformed
+        mostrarOpcionesParaFiltrar();
+    }//GEN-LAST:event_jMVenderVivActionPerformed
+
+    private void jMArrendarViviendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMArrendarViviendaActionPerformed
+        mostrarOpcionesParaFiltrar();
+    }//GEN-LAST:event_jMArrendarViviendaActionPerformed
+
+    private void chkFiltrarPorCasasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkFiltrarPorCasasActionPerformed
+        
+        if(chkFiltrarPorCasas.isSelected()){
+            cboFiltrarPorCasas.setEnabled(true);
+        } else if(!chkFiltrarPorCasas.isSelected()){
+            cboFiltrarPorCasas.setEnabled(false);
+        }
+        
+    }//GEN-LAST:event_chkFiltrarPorCasasActionPerformed
+
+    private void chkFiltrarPorDepartamentosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkFiltrarPorDepartamentosActionPerformed
+        
+          if(chkFiltrarPorDepartamentos.isSelected()){
+            cboFiltrarPorDepartamentos.setEnabled(true);
+        } else if(!chkFiltrarPorDepartamentos.isSelected()){
+            cboFiltrarPorDepartamentos.setEnabled(false);
+        }
+        
+        
+        
+    }//GEN-LAST:event_chkFiltrarPorDepartamentosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -274,17 +442,26 @@ public class App extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFrame JfVendedor;
+    private javax.swing.ButtonGroup btnGFiltrarPrecio;
     private javax.swing.JButton btnIniciarSesion;
-    private javax.swing.JMenu jMenu1;
+    private javax.swing.JComboBox<String> cboFiltrarPorCasas;
+    private javax.swing.JComboBox<String> cboFiltrarPorDepartamentos;
+    private javax.swing.JCheckBox chkFiltrarPorCasas;
+    private javax.swing.JCheckBox chkFiltrarPorDepartamentos;
+    private javax.swing.JMenu jMArchivo;
+    private javax.swing.JMenuItem jMArrendarVivienda;
+    private javax.swing.JMenuItem jMCrearCli;
+    private javax.swing.JMenuItem jMVCamAp;
+    private javax.swing.JMenuItem jMVenderViv;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel lblPrecio;
     private javax.swing.JLabel lblRUN;
     private javax.swing.JLabel lblicono;
+    private javax.swing.JRadioButton rbtFiltrarAsc;
+    private javax.swing.JRadioButton rbtFiltrarDesc;
+    private javax.swing.JTable tblDatosFrameVend;
     private javax.swing.JTextField txtRun;
     // End of variables declaration//GEN-END:variables
 }
