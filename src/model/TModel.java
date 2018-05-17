@@ -3,13 +3,13 @@ package model;
 import java.util.List;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
-import clasesAusar.Vivienda;
+import clasesAusar.VistaVivienda;
 
 public class TModel implements TableModel {
 
-    private List<Vivienda> listaViviendasDisponibles;
+    private List<VistaVivienda> listaViviendasDisponibles;
 
-    public TModel(List<Vivienda> listaViviendasDisponibles) {
+    public TModel(List<VistaVivienda> listaViviendasDisponibles) {
         this.listaViviendasDisponibles = listaViviendasDisponibles;
     }
 
@@ -82,7 +82,7 @@ public class TModel implements TableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Vivienda v = listaViviendasDisponibles.get(rowIndex);
+        VistaVivienda v = listaViviendasDisponibles.get(rowIndex);
 
         switch (columnIndex) {
             case 0:

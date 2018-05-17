@@ -2,7 +2,7 @@
 package clasesAusar;
 
 
-public class Vivienda {
+public class VistaVivienda {
     
     private int NDeRol;
     private String nombre;
@@ -14,7 +14,7 @@ public class Vivienda {
     private String direccion;
     private String condicion;
 
-    public Vivienda(int NDeRol, String nombre, String tipoDeVivienda, int precioDeArriendo, int precioDeVenta, int cantBanios, int cantPiezas, String direccion, String condicion) {
+    public VistaVivienda(int NDeRol, String nombre, String tipoDeVivienda, int precioDeArriendo, int precioDeVenta, int cantBanios, int cantPiezas, String direccion, String condicion) {
         this.NDeRol = NDeRol;
         this.nombre = nombre;
         this.tipoDeVivienda = tipoDeVivienda;

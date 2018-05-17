@@ -16,7 +16,7 @@ CREATE TABLE tipo_usuario(
 );
 
 CREATE TABLE cliente(
-    run VARCHAR(15),
+    run VARCHAR(15) UNIQUE,
     nombre VARCHAR(50),
     sueldo INT,
     PRIMARY KEY(run)

@@ -1,6 +1,6 @@
 package org.adasme_aranda_barrera_gatica_vergara.prueba1_java_grupo5.gui;
 
-import clasesAusar.Vivienda;
+import clasesAusar.VistaVivienda;
 import com.jtattoo.plaf.luna.LunaLookAndFeel;
 import java.awt.Color;
 import java.awt.event.WindowEvent;
@@ -36,7 +36,7 @@ public class App extends javax.swing.JFrame {
 
     
     private TModel model;
-    private List<Vivienda> viviendasDisponibles;
+    private List<VistaVivienda> viviendasDisponibles;
     
     //query para los inserts
     static final String WRITE_OBJECT_SQL = "INSERT INTO ejem(nombre, valor_objeto) VALUES (?, ?)";// modificar segun sea necesario
