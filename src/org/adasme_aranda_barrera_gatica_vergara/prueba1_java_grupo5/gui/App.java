@@ -9,13 +9,18 @@ import java.io.ObjectInputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
+import model.Data;
 import model.TModel;
+import model.Vivienda;
 
 /**
  *
@@ -34,10 +39,11 @@ public class App extends javax.swing.JFrame {
 
     }
 
-    
+    private Data d;
     private TModel model;
     private List<VistaVivienda> viviendasDisponibles;
     
+
     //query para los inserts
     static final String WRITE_OBJECT_SQL = "INSERT INTO ejem(nombre, valor_objeto) VALUES (?, ?)";// modificar segun sea necesario
 
@@ -48,53 +54,68 @@ public class App extends javax.swing.JFrame {
      * Creates new form App
      */
     public App() {
+
+        try {
+            d = new Data();
+        } catch (ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(this, "ERROR " + ex.getMessage());
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "ERROR: " + ex.getMessage());
+        }
+
         initComponents();
         this.setTitle("Inicio de sesión");
         this.setLocationRelativeTo(null);
         this.setResizable(false);
-        viviendasDisponibles=new ArrayList<>();
-        
+        //  Data d= new Data();
+        viviendasDisponibles = new ArrayList<>();
 
         JfVendedor.setVisible(true);
         JfVendedor.setBounds(WIDTH, WIDTH, 1000, 400);
         llenarCbosFrameVendedor();
         cargarTablaJFrameVendedor();
-        
+        llenarTblVendedor();
+
         ocultarOpcionesParaFiltrar();
 
         frmAdmin.setBounds(WIDTH, WIDTH, 389, 256);
         frmAdmin.setLocationRelativeTo(null);
         frmAdmin.setVisible(true);
+
     }
-    
-    private void cargarTablaJFrameVendedor(){
-       
+
+    private void cargarTablaJFrameVendedor() {
+
         model = new TModel(viviendasDisponibles);
         tblDatosFrameVend.setModel(model);
         tblDatosFrameVend.setGridColor(Color.DARK_GRAY);
-        
+
     }
-    
-    private void llenarCbosFrameVendedor(){
+
+    private void llenarTblVendedor() {
+       
+
+    }
+
+    private void llenarCbosFrameVendedor() {
         cboFiltrarPorCasas.removeAllItems();
         cboFiltrarPorDepartamentos.removeAllItems();
-        
-        ArrayList <String> estadosCasas= new ArrayList();
-        ArrayList <String> estadosDepartamentos= new ArrayList();
-        
+
+        ArrayList<String> estadosCasas = new ArrayList();
+        ArrayList<String> estadosDepartamentos = new ArrayList();
+
         estadosCasas.add("Nuevas");
         estadosCasas.add("Usadas");
         estadosCasas.add("Ambas");
-        
+
         estadosDepartamentos.add("Nuevos");
         estadosDepartamentos.add("Usados");
         estadosDepartamentos.add("Ambos");
-        
-        
+
         for (String e : estadosCasas) {
             cboFiltrarPorCasas.addItem(e);
         }
-        
+
         for (String e : estadosDepartamentos) {
             cboFiltrarPorDepartamentos.addItem(e);
         }
@@ -103,7 +124,7 @@ public class App extends javax.swing.JFrame {
     private void ocultarOpcionesParaFiltrar() {
         cboFiltrarPorCasas.setEnabled(false);
         cboFiltrarPorDepartamentos.setEnabled(false);
-        
+
         rbtFiltrarAsc.setVisible(false);
         rbtFiltrarDesc.setVisible(false);
         cboFiltrarPorCasas.setVisible(false);
@@ -113,8 +134,8 @@ public class App extends javax.swing.JFrame {
         lblPrecio.setVisible(false);
 
     }
-    
-    private void mostrarOpcionesParaFiltrar(){
+
+    private void mostrarOpcionesParaFiltrar() {
         rbtFiltrarAsc.setVisible(true);
         rbtFiltrarDesc.setVisible(true);
         cboFiltrarPorCasas.setVisible(true);
@@ -123,13 +144,13 @@ public class App extends javax.swing.JFrame {
         chkFiltrarPorDepartamentos.setVisible(true);
         lblPrecio.setVisible(true);
     }
-    
-    private void cargarTblLog(){
+
+    private void cargarTblLog() {
         String[] titulos = {"Fecha", "Acción"};
-        
+
         DefaultTableModel model = new DefaultTableModel();
         model.setColumnIdentifiers(titulos);
-        
+
         tblLog.setModel(model);
     }
 
@@ -281,8 +302,10 @@ public class App extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tblDatosFrameVend);
 
+        btnGFiltrarPrecio.add(rbtFiltrarAsc);
         rbtFiltrarAsc.setText("Filtrar ascendente");
 
+        btnGFiltrarPrecio.add(rbtFiltrarDesc);
         rbtFiltrarDesc.setText("Filtrar descendente");
 
         cboFiltrarPorCasas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -804,33 +827,43 @@ public class App extends javax.swing.JFrame {
     }//GEN-LAST:event_jMCrearCliActionPerformed
 
     private void jMVenderVivActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMVenderVivActionPerformed
-        mostrarOpcionesParaFiltrar();
+        if (chkFiltrarPorCasas.isVisible()) {
+            ocultarOpcionesParaFiltrar();
+        } else if (!chkFiltrarPorCasas.isVisible()) {
+            mostrarOpcionesParaFiltrar();
+        }
+
+
     }//GEN-LAST:event_jMVenderVivActionPerformed
 
     private void jMArrendarViviendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMArrendarViviendaActionPerformed
-        mostrarOpcionesParaFiltrar();
+        if (chkFiltrarPorCasas.isVisible()) {
+            ocultarOpcionesParaFiltrar();
+        } else if (!chkFiltrarPorCasas.isVisible()) {
+            mostrarOpcionesParaFiltrar();
+        }
+
     }//GEN-LAST:event_jMArrendarViviendaActionPerformed
 
     private void chkFiltrarPorCasasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkFiltrarPorCasasActionPerformed
-        
-        if(chkFiltrarPorCasas.isSelected()){
+
+        if (chkFiltrarPorCasas.isSelected()) {
             cboFiltrarPorCasas.setEnabled(true);
-        } else if(!chkFiltrarPorCasas.isSelected()){
+        } else if (!chkFiltrarPorCasas.isSelected()) {
             cboFiltrarPorCasas.setEnabled(false);
         }
-        
+
     }//GEN-LAST:event_chkFiltrarPorCasasActionPerformed
 
     private void chkFiltrarPorDepartamentosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkFiltrarPorDepartamentosActionPerformed
-        
-          if(chkFiltrarPorDepartamentos.isSelected()){
+
+        if (chkFiltrarPorDepartamentos.isSelected()) {
             cboFiltrarPorDepartamentos.setEnabled(true);
-        } else if(!chkFiltrarPorDepartamentos.isSelected()){
+        } else if (!chkFiltrarPorDepartamentos.isSelected()) {
             cboFiltrarPorDepartamentos.setEnabled(false);
         }
-        
-        
-        
+
+
     }//GEN-LAST:event_chkFiltrarPorDepartamentosActionPerformed
 
     private void itemAdminSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAdminSalirActionPerformed

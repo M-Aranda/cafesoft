@@ -93,11 +93,17 @@
         </Container>
         <Component class="javax.swing.JRadioButton" name="rbtFiltrarAsc">
           <Properties>
+            <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+              <ComponentRef name="btnGFiltrarPrecio"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Filtrar ascendente"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JRadioButton" name="rbtFiltrarDesc">
           <Properties>
+            <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+              <ComponentRef name="btnGFiltrarPrecio"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Filtrar descendente"/>
           </Properties>
         </Component>

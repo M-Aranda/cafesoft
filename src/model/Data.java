@@ -83,7 +83,7 @@ public class Data {
     // -------------------------------------------------------------------------CREAR-CREATE
     // -------------------------------------------------------------------------LEER-READ
     public List<Vivienda> leerViviendas() throws SQLException {
-        query = "SELECT * FROM vivienda";
+        query = "SELECT * FROM vivienda;";
 
         List<Vivienda> viviendas = new ArrayList<>();
 
