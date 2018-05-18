@@ -15,7 +15,7 @@ CREATE TABLE tipo_usuario(
     PRIMARY KEY(id)
 );
 
-CREATE TABLE cliente(
+CREATE TABLE cliente(-- DROP TABLE cliente
     run VARCHAR(15) UNIQUE,
     nombre VARCHAR(50),
     sueldo INT,
@@ -28,7 +28,7 @@ CREATE TABLE disponibilidad_vivienda(
     PRIMARY KEY(id)
 );
 
-CREATE TABLE vivienda(-- DROP TABLE vivienda
+CREATE TABLE vivienda(
     n_rol INT,
     tipo_fk INT,
     dis_vivienda INT,
@@ -42,15 +42,19 @@ CREATE TABLE vivienda(-- DROP TABLE vivienda
     FOREIGN KEY(tipo_fk) REFERENCES tipo_vivienda(id),
     FOREIGN KEY(dis_vivienda) REFERENCES disponibilidad_vivienda(id)
 );-- SELECT * FROM vivienda
+/* ****************TEST INSERTS**********************
 
+INSERT INTO vivienda VALUES (1111,1,1,280000,56000000,2,3,'Agustin Palominos #429',1);
 
-CREATE TABLE usuario(
+   ****************TEST INSERTS**********************/
+
+CREATE TABLE usuario(-- DROP TABLE usuario
     run VARCHAR(15),
     nombre VARCHAR(50),
     tipo_fk INT,
     PRIMARY KEY(run),
     FOREIGN KEY(tipo_fk) REFERENCES tipo_usuario(id)
-);
+);-- SELECT * FROM usuario
 
 CREATE TABLE log( -- DROP TABLE log
     id INT AUTO_INCREMENT,
@@ -61,7 +65,7 @@ CREATE TABLE log( -- DROP TABLE log
     FOREIGN KEY(usuario_fk) REFERENCES usuario(run)
 );-- SELECT * FROM log
 
-CREATE TABLE contrato(-- DROP TABLE contrato
+CREATE TABLE contrato(
     id INT AUTO_INCREMENT,
     cliente_fk VARCHAR(15),
     usuario_fk VARCHAR(15),
@@ -72,7 +76,12 @@ CREATE TABLE contrato(-- DROP TABLE contrato
     FOREIGN KEY(usuario_fk) REFERENCES usuario(run),
     FOREIGN KEY(vivienda_fk) REFERENCES vivienda(n_rol)
 );
--- POR DEFECTO ESTOS INSERT DEBEN IR--
+
+
+
+INSERT INTO tipo_usuario VALUES (NULL,'Admin');
+INSERT INTO tipo_usuario VALUES (NULL,'Vendedor');
+
 INSERT INTO tipo_vivienda VALUES (NULL,'Casa');
 INSERT INTO tipo_vivienda VALUES (NULL,'Departamento');
 
@@ -80,16 +89,4 @@ INSERT INTO disponibilidad_vivienda VALUES (NULL, 'Arrendada');
 INSERT INTO disponibilidad_vivienda VALUES (NULL, 'Vendida');
 INSERT INTO disponibilidad_vivienda VALUES (NULL, 'Disponible');
 
-INSERT INTO tipo_usuario VALUES(NULL,'Administrador');
-INSERT INTO tipo_usuario VALUES(NULL,'Vendedor');
-
-INSERT INTO usuario VALUES('11-1','admin',1);
-INSERT INTO usuario VALUES('22-2','vendedor',2);
--- POR DEFECTO ESTOS INSERT DEBEN IR--
-
-
-select * from usuario;
-
-DROP DATABASE cafesoft;
-
-select count(*) from usuario where run = '11-1';
+INSERT INTO usuario VALUES ('11-1','admin',1);

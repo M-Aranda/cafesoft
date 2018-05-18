@@ -5,8 +5,8 @@ package clasesAusar;
 public class VistaVivienda {
     
     private int nDeRol;
-    private String tipo;
-    private String disponibilidad;
+    private String nombre;
+    private String tipoDeVivienda;
     private int precioDeArriendo;
     private int precioDeVenta;
     private int cantBanios;
@@ -14,13 +14,10 @@ public class VistaVivienda {
     private String direccion;
     private String condicion;
 
-    public VistaVivienda() {
-    }
-
-    public VistaVivienda(int nDeRol, String tipo, String disponibilidad, int precioDeArriendo, int precioDeVenta, int cantBanios, int cantPiezas, String direccion, String condicion) {
-        this.nDeRol = nDeRol;
-        this.tipo = tipo;
-        this.disponibilidad = disponibilidad;
+    public VistaVivienda(int NDeRol, String nombre, String tipoDeVivienda, int precioDeArriendo, int precioDeVenta, int cantBanios, int cantPiezas, String direccion, String condicion) {
+        this.nDeRol = NDeRol;
+        this.nombre = nombre;
+        this.tipoDeVivienda = tipoDeVivienda;
         this.precioDeArriendo = precioDeArriendo;
         this.precioDeVenta = precioDeVenta;
         this.cantBanios = cantBanios;
@@ -38,19 +35,19 @@ public class VistaVivienda {
     }
 
     public String getTipo() {
-        return tipo;
+        return nombre;
     }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+    public void setTipo(String nombre) {
+        this.nombre = nombre;
     }
 
     public String getDisponibilidad() {
-        return disponibilidad;
+        return tipoDeVivienda;
     }
 
-    public void setDisponibilidad(String disponibilidad) {
-        this.disponibilidad = disponibilidad;
+    public void setDisponibilidad(String tipoDeVivienda) {
+        this.tipoDeVivienda = tipoDeVivienda;
     }
 
     public int getPrecioDeArriendo() {
@@ -103,6 +100,10 @@ public class VistaVivienda {
 
     @Override
     public String toString() {
-        return "VistaVivienda{" + "nDeRol=" + nDeRol + ", tipo=" + tipo + ", disponibilidad=" + disponibilidad + ", precioDeArriendo=" + precioDeArriendo + ", precioDeVenta=" + precioDeVenta + ", cantBanios=" + cantBanios + ", cantPiezas=" + cantPiezas + ", direccion=" + direccion + ", condicion=" + condicion + '}';
+        return "Vivienda{" + "NDeRol=" + nDeRol + ", nombre=" + nombre + ", tipoDeVivienda=" + tipoDeVivienda + ", precioDeArriendo=" + precioDeArriendo + ", precioDeVenta=" + precioDeVenta + ", cantBanios=" + cantBanios + ", cantPiezas=" + cantPiezas + ", direccion=" + direccion + ", condicion=" + condicion + '}';
     }
+    
+    
+    
+    
 }

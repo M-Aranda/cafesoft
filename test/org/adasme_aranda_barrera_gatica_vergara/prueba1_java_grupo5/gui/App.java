@@ -16,14 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import model.Data;
-import model.TModelLog;
 import model.TModelVivienda;
-import model.Usuario;
+import model.TModelLog;
 import model.Vivienda;
 
 /**
@@ -44,10 +42,11 @@ public class App extends javax.swing.JFrame {
     }
 
     private Data d;
-    private TModelVivienda modelVivienda;
+    private TModelVivienda model;
     private TModelLog modelLog;
     private List<VistaVivienda> viviendasDisponibles;
     private List<VistaLog> logs;
+    
 
     //query para los inserts
     static final String WRITE_OBJECT_SQL = "INSERT INTO ejem(nombre, valor_objeto) VALUES (?, ?)";// modificar segun sea necesario
@@ -72,27 +71,34 @@ public class App extends javax.swing.JFrame {
         this.setTitle("Inicio de sesión");
         this.setLocationRelativeTo(null);
         this.setResizable(false);
-        viviendasDisponibles = new ArrayList();
-        try {
-            //  Data d= new Data();
-            logs = new ArrayList<>();
-            viviendasDisponibles = d.leerViviendasDisponibles();
-        } catch (SQLException ex) {
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        //  Data d= new Data();
+        logs = new ArrayList<>();
+        viviendasDisponibles = new ArrayList<>();
 
+        JfVendedor.setVisible(true);
+        JfVendedor.setBounds(WIDTH, WIDTH, 1000, 400);
         llenarCbosFrameVendedor();
         cargarTablaJFrameVendedor();
+        llenarTblVendedor();
 
         ocultarOpcionesParaFiltrar();
+
+        frmAdmin.setBounds(WIDTH, WIDTH, 389, 256);
+        frmAdmin.setLocationRelativeTo(null);
+        frmAdmin.setVisible(true);
 
     }
 
     private void cargarTablaJFrameVendedor() {
 
-        modelVivienda = new TModelVivienda(viviendasDisponibles);
-        tblDatosFrameVend.setModel(modelVivienda);
+        model = new TModelVivienda(viviendasDisponibles);
+        tblDatosFrameVend.setModel(model);
         tblDatosFrameVend.setGridColor(Color.DARK_GRAY);
+
+    }
+
+    private void llenarTblVendedor() {
+       
 
     }
 
@@ -145,7 +151,7 @@ public class App extends javax.swing.JFrame {
     }
 
     private void cargarTblLog() {
-        modelLog = new TModelLog(logs);
+        modelLog = new TModelLog(logs);        
         tblLog.setModel(modelLog);
     }
 
@@ -782,11 +788,6 @@ public class App extends javax.swing.JFrame {
         lblRUN.setText("R.U.N");
 
         btnIniciarSesion.setText("Iniciar sesión");
-        btnIniciarSesion.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnIniciarSesionActionPerformed(evt);
-            }
-        });
 
         lblicono.setIcon(new javax.swing.ImageIcon(getClass().getResource("/lookAndFeels/logoCafé.png"))); // NOI18N
 
@@ -900,78 +901,6 @@ public class App extends javax.swing.JFrame {
     private void itemLogExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemLogExitActionPerformed
         frmLog.dispatchEvent(new WindowEvent(frmLog, WindowEvent.WINDOW_CLOSING));
     }//GEN-LAST:event_itemLogExitActionPerformed
-
-    private void btnIniciarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarSesionActionPerformed
-        String run = txtRun.getText();
-
-        try {
-            Usuario u = d.buscarUsuario(run);
-            if (u != null) {
-                if (u.getTipo() == 1) {
-                    this.dispose();
-                    frmAdmin.setBounds(WIDTH, WIDTH, 389, 256);
-                    frmAdmin.setLocationRelativeTo(null);
-                    frmAdmin.setVisible(true);
-                    JOptionPane.showMessageDialog(null, "          Bienvenido \n Administrador: " + u.getNombre());
-
-                }
-                if (u.getTipo() == 2) {
-                    this.dispose();
-                    JfVendedor.setBounds(WIDTH, WIDTH, 1000, 400);
-                    JfVendedor.setLocationRelativeTo(null);
-                    JfVendedor.setVisible(true);
-                    JOptionPane.showMessageDialog(null, "          Bienvenido \n Vendedor: " + u.getNombre());
-                }
-            } else {
-                JOptionPane.showMessageDialog(null, "Usuario no encontrado");
-                txtRun.setText("");
-                txtRun.requestFocus();
-            }
-
-        } catch (SQLException ex) {
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-//        usuarios = new ArrayList<>();
-//        try {
-//            usuarios = d.leerUsuario();
-//        } catch (SQLException ex) {
-//            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        try {
-//            if (d.existeUsuario(run) == 1) {
-//                for (Usuario u : usuarios) {
-//
-//                    if (run.equals(u.getRun())) {
-//                        if (u.getTipo() == 1) {
-//                            this.dispose();
-//                            frmAdmin.setBounds(WIDTH, WIDTH, 389, 256);
-//                            frmAdmin.setLocationRelativeTo(null);
-//                            frmAdmin.setVisible(true);
-//                            JOptionPane.showMessageDialog(null, "          Bienvenido \n Administrador: " + u.getNombre());
-//
-//                        }
-//                        if (u.getTipo() == 2) {
-//                            this.dispose();
-//                            JfVendedor.setBounds(WIDTH, WIDTH, 1000, 400);
-//                            JfVendedor.setLocationRelativeTo(null);
-//                            JfVendedor.setVisible(true);
-//                            JOptionPane.showMessageDialog(null, "          Bienvenido \n Vendedor: " + u.getNombre());
-//                        }
-//                    }
-//
-//                }
-//            }else{
-//                JOptionPane.showMessageDialog(null, "Usuario no encontrado");
-//                txtRun.setText("");
-//                txtRun.requestFocus();
-//            }
-//            
-//        } catch (SQLException ex) {
-//            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-
-    }//GEN-LAST:event_btnIniciarSesionActionPerformed
 
     /**
      * @param args the command line arguments

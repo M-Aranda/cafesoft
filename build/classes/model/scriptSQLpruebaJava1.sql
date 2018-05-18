@@ -1,4 +1,4 @@
-CREATE DATABASE cafesoft;
+CREATE DATABASE cafesoft; -- DROP DATABASE cafesoft
 
 USE cafesoft;
 
@@ -28,21 +28,20 @@ CREATE TABLE disponibilidad_vivienda(
     PRIMARY KEY(id)
 );
 
-CREATE TABLE vivienda(
-    n_rol INT AUTO_INCREMENT,
+CREATE TABLE vivienda(-- DROP TABLE vivienda
+    n_rol INT,
     tipo_fk INT,
     dis_vivienda INT,
     precio_arriendo INT,
     precio_venta INT,
-    cant_baños INT,
+    cant_banios INT,
     cant_piezas INT,
     direccion VARCHAR(50),
     condicion BOOLEAN,
     PRIMARY KEY(n_rol),
     FOREIGN KEY(tipo_fk) REFERENCES tipo_vivienda(id),
     FOREIGN KEY(dis_vivienda) REFERENCES disponibilidad_vivienda(id)
-);
-
+);-- SELECT * FROM vivienda
 
 
 CREATE TABLE usuario(
@@ -53,16 +52,16 @@ CREATE TABLE usuario(
     FOREIGN KEY(tipo_fk) REFERENCES tipo_usuario(id)
 );
 
-CREATE TABLE log(
+CREATE TABLE log( -- DROP TABLE log
     id INT AUTO_INCREMENT,
     descripcion VARCHAR(50),
-    fecha DATE,
+    fecha DATETIME,
     usuario_fk VARCHAR(15),
     PRIMARY KEY (id),
     FOREIGN KEY(usuario_fk) REFERENCES usuario(run)
-);
+);-- SELECT * FROM log
 
-CREATE TABLE contrato(
+CREATE TABLE contrato(-- DROP TABLE contrato
     id INT AUTO_INCREMENT,
     cliente_fk VARCHAR(15),
     usuario_fk VARCHAR(15),
@@ -73,7 +72,7 @@ CREATE TABLE contrato(
     FOREIGN KEY(usuario_fk) REFERENCES usuario(run),
     FOREIGN KEY(vivienda_fk) REFERENCES vivienda(n_rol)
 );
---POR DEFECTO ESTOS INSERT DEBEN IR--
+-- POR DEFECTO ESTOS INSERT DEBEN IR--
 INSERT INTO tipo_vivienda VALUES (NULL,'Casa');
 INSERT INTO tipo_vivienda VALUES (NULL,'Departamento');
 
@@ -86,7 +85,7 @@ INSERT INTO tipo_usuario VALUES(NULL,'Vendedor');
 
 INSERT INTO usuario VALUES('11-1','admin',1);
 INSERT INTO usuario VALUES('22-2','vendedor',2);
---POR DEFECTO ESTOS INSERT DEBEN IR--
+-- POR DEFECTO ESTOS INSERT DEBEN IR--
 
 
 select * from usuario;

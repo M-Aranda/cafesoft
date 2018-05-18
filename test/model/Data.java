@@ -16,31 +16,7 @@ public class Data {
     public Data() throws ClassNotFoundException, SQLException {
         con = new Conexion("localhost", "cafesoft", "root", "");
     }
-    //--------------------------------------------------------------------------BUSCAR-SEARCH
-    public int existeUsuario(String run) throws SQLException{
-        query = "select count(*) from usuario where run = '"+run+"';";
-        rs = con.ejecutarSelect(query);
-        int res = 0;
-        while (rs.next()) {
-            res = rs.getInt(1);
-        }
-        return res;
-    }
-    public Usuario buscarUsuario(String run) throws SQLException{
-        query = "select * from usuario where run = '"+run+"';";
-        rs = con.ejecutarSelect(query);
-        Usuario u = null;
-        while (rs.next()) {
-            u = new Usuario();
-            u.setRun(rs.getString(1));
-            u.setNombre(rs.getString(2));
-            u.setTipo(rs.getInt(3));
-        }
-        return u;
-    }
-    
-    
-    //--------------------------------------------------------------------------BUSCAR-SEARCH
+
     // -------------------------------------------------------------------------CREAR-CREATE
     public void crearTipoUsuario(TipoUsuario t) throws SQLException {
         query = "INSERT INTO tipo_usuario VALUES (NULL,'"
@@ -125,34 +101,6 @@ public class Data {
             v.setCantPiezas(rs.getInt(7));
             v.setDireccion(rs.getString(8));
             v.setUsada(rs.getBoolean(9));
-
-            viviendas.add(v);
-        }
-
-        con.close();
-
-        return viviendas;
-    }
-    
-    public List<VistaVivienda> leerViviendasDisponibles() throws SQLException {
-        query = "SELECT * FROM vista_viviendas_disponibles";
-
-        List<VistaVivienda> viviendas = new ArrayList<>();
-
-        rs = con.ejecutarSelect(query);
-
-        while (rs.next()) {
-            VistaVivienda v = new VistaVivienda();
-
-            v.setnDeRol(rs.getInt(1));
-            v.setTipo(rs.getString(2));
-            v.setDisponibilidad(rs.getString(3));
-            v.setPrecioDeArriendo(rs.getInt(4));
-            v.setPrecioDeVenta(rs.getInt(5));
-            v.setCantBanios(rs.getInt(6));
-            v.setCantPiezas(rs.getInt(7));
-            v.setDireccion(rs.getString(8));
-            v.setCondicion(rs.getString(8));
 
             viviendas.add(v);
         }
@@ -295,7 +243,6 @@ public class Data {
         return tipos;
     }
 
-    
     // -------------------------------------------------------------------------LEER-READ
     // -------------------------------------------------------------------------ACTUALIZAR-UPDATE
     public void actualizarTipoUsuario(TipoUsuario t) throws SQLException {
