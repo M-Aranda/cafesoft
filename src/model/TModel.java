@@ -7,9 +7,9 @@ import clasesAusar.VistaVivienda;
 
 public class TModel implements TableModel {
 
-    private List<VistaVivienda> listaViviendasDisponibles;
+    private List<Vivienda> listaViviendasDisponibles;
 
-    public TModel(List<VistaVivienda> listaViviendasDisponibles) {
+    public TModel(List<Vivienda> listaViviendasDisponibles) {
         this.listaViviendasDisponibles = listaViviendasDisponibles;
     }
 
@@ -82,27 +82,27 @@ public class TModel implements TableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        VistaVivienda v = listaViviendasDisponibles.get(rowIndex);
+        Vivienda v = listaViviendasDisponibles.get(rowIndex);
 
         switch (columnIndex) {
             case 0:
-                return v.getNDeRol();
+                return v.getnRol();
             case 1:
                 return v.getNombre();
             case 2:
-                return v.getTipoDeVivienda();
+                return v.getTipo();
             case 3:
-                return v.getPrecioDeArriendo();
+                return v.getPrecioArriendo();
             case 4:
-                return v.getPrecioDeVenta();
+                return v.getPrecioVenta();
             case 5:
-                return v.getCantBanios();
+                return v.getCantBaños();
             case 6:
                 return v.getCantPiezas();
             case 7:
                 return v.getDireccion();
             case 8:
-                return v.getCondicion();
+                return v.getPrecioVenta();
             default:
                 return null;
         }

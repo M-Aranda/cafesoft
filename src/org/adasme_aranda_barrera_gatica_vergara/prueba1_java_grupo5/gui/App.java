@@ -41,7 +41,7 @@ public class App extends javax.swing.JFrame {
 
     private Data d;
     private TModel model;
-    private List<VistaVivienda> viviendasDisponibles;
+    private List<Vivienda> viviendasDisponibles;
     
 
     //query para los inserts
@@ -67,14 +67,19 @@ public class App extends javax.swing.JFrame {
         this.setTitle("Inicio de sesión");
         this.setLocationRelativeTo(null);
         this.setResizable(false);
-        //  Data d= new Data();
-        viviendasDisponibles = new ArrayList<>();
+        viviendasDisponibles=new ArrayList();
+        try {
+            //  Data d= new Data();
+            viviendasDisponibles = d.leerViviendas();
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         JfVendedor.setVisible(true);
         JfVendedor.setBounds(WIDTH, WIDTH, 1000, 400);
         llenarCbosFrameVendedor();
         cargarTablaJFrameVendedor();
-        llenarTblVendedor();
+        
 
         ocultarOpcionesParaFiltrar();
 
@@ -92,10 +97,7 @@ public class App extends javax.swing.JFrame {
 
     }
 
-    private void llenarTblVendedor() {
-       
 
-    }
 
     private void llenarCbosFrameVendedor() {
         cboFiltrarPorCasas.removeAllItems();

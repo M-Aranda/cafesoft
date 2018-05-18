@@ -43,6 +43,8 @@ CREATE TABLE vivienda(
     FOREIGN KEY(dis_vivienda) REFERENCES disponibilidad_vivienda(id)
 );
 
+
+
 CREATE TABLE usuario(
     run VARCHAR(15),
     nombre VARCHAR(50),
@@ -78,3 +80,7 @@ INSERT INTO tipo_vivienda VALUES (NULL,'Departamento');
 INSERT INTO disponibilidad_vivienda VALUES (NULL, 'Arrendada');
 INSERT INTO disponibilidad_vivienda VALUES (NULL, 'Vendida');
 INSERT INTO disponibilidad_vivienda VALUES (NULL, 'Disponible');
+
+
+
+DROP DATABASE cafesoft;
