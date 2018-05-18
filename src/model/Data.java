@@ -152,7 +152,7 @@ public class Data {
             v.setCantBanios(rs.getInt(6));
             v.setCantPiezas(rs.getInt(7));
             v.setDireccion(rs.getString(8));
-            v.setCondicion(rs.getString(8));
+            v.setCondicion(rs.getString(9));
 
             viviendas.add(v);
         }

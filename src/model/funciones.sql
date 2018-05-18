@@ -5,9 +5,9 @@ CREATE FUNCTION is_usado (var BOOLEAN) RETURNS VARCHAR(50)
 BEGIN
 	
     IF var THEN
-         RETURN 'Usado';    
+         RETURN 'Usada';    
     END IF;    
-    RETURN 'Nuevo';
+    RETURN 'Nueva';
 END $$
 DELIMITER ;
 -- DROP FUNCTION crear_vendedor
@@ -77,6 +77,9 @@ DELIMITER ;
 
 -- DROP FUNCTION crear_vivienda
 -- INSERT INTO vivienda VALUES (1111,1,1,280000,56000000,2,3,'Agustin Palominos #429',1);
+-- INSERT INTO vivienda VALUES (1211,1,3,280000,56000000,2,3,'Agustin Palominos #429',1);
+-- INSERT INTO vivienda VALUES (1311,1,2,280000,56000000,2,3,'Agustin Palominos #429',1);
+-- INSERT INTO vivienda VALUES (1133,1,3,280000,56000000,2,3,'Agustin Palominos #429',1);
 DELIMITER $$
 CREATE FUNCTION crear_vivienda (nuevo_rol INT,set_tipo INT,disponibilidad INT,precio_a INT,precio_v INT,banios INT,piezas INT, new_direccion VARCHAR (50),new_condicion BOOLEAN, run_user VARCHAR (15)) RETURNS INT
 BEGIN

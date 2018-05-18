@@ -5,11 +5,11 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 import clasesAusar.VistaVivienda;
 
-public class TModelVivienda implements TableModel {
+public class TModelViviendasDisponibles implements TableModel {
 
     private List<VistaVivienda> listaViviendasDisponibles;
 
-    public TModelVivienda(List<VistaVivienda> listaViviendasDisponibles) {
+    public TModelViviendasDisponibles(List<VistaVivienda> listaViviendasDisponibles) {
         this.listaViviendasDisponibles = listaViviendasDisponibles;
     }
 
@@ -20,7 +20,7 @@ public class TModelVivienda implements TableModel {
 
     @Override
     public int getColumnCount() {
-        return 9;
+        return 8;
     }
 
     @Override
@@ -31,18 +31,16 @@ public class TModelVivienda implements TableModel {
             case 1:
                 return "Tipo de vivienda";
             case 2:
-                return "Tipo de vivienda";
-            case 3:
                 return "Precio de arriendo";
-            case 4:
+            case 3:
                 return "Precio de venta";
-            case 5:
+            case 4:
                 return "Cantidad de banios";
-            case 6:
+            case 5:
                 return "Cantidad de piezas";
-            case 7:
+            case 6:
                 return "Direccion";
-            case 8:
+            case 7:
                 return "Condicion";
             default:
                 return null;
@@ -57,7 +55,7 @@ public class TModelVivienda implements TableModel {
             case 1:
                 return String.class;
             case 2:
-                return String.class;
+                return Integer.class;
             case 3:
                 return Integer.class;
             case 4:
@@ -65,10 +63,8 @@ public class TModelVivienda implements TableModel {
             case 5:
                 return Integer.class;
             case 6:
-                return Integer.class;
-            case 7:
                 return String.class;
-            case 8:
+            case 7:
                 return String.class;
             default:
                 return null;
@@ -90,18 +86,16 @@ public class TModelVivienda implements TableModel {
             case 1:
                 return v.getTipo();
             case 2:
-                return v.getDisponibilidad();
-            case 3:
                 return v.getPrecioDeArriendo();
-            case 4:
+            case 3:
                 return v.getPrecioDeVenta();
-            case 5:
+            case 4:
                 return v.getCantBanios();
-            case 6:
+            case 5:
                 return v.getCantPiezas();
-            case 7:
+            case 6:
                 return v.getDireccion();
-            case 8:
+            case 7:
                 return v.getCondicion();
             default:
                 return null;

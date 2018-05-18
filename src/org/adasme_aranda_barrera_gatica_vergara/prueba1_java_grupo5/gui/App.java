@@ -23,6 +23,7 @@ import javax.swing.table.DefaultTableModel;
 import model.Data;
 import model.TModelLog;
 import model.TModelVivienda;
+import model.TModelViviendasDisponibles;
 import model.Usuario;
 import model.Vivienda;
 
@@ -45,6 +46,7 @@ public class App extends javax.swing.JFrame {
 
     private Data d;
     private TModelVivienda modelVivienda;
+    private TModelViviendasDisponibles modelViviendasDisponibles;
     private TModelLog modelLog;
     private List<VistaVivienda> viviendasDisponibles;
     private List<VistaLog> logs;
@@ -90,8 +92,8 @@ public class App extends javax.swing.JFrame {
 
     private void cargarTablaJFrameVendedor() {
 
-        modelVivienda = new TModelVivienda(viviendasDisponibles);
-        tblDatosFrameVend.setModel(modelVivienda);
+        modelViviendasDisponibles = new TModelViviendasDisponibles(viviendasDisponibles);
+        tblDatosFrameVend.setModel(modelViviendasDisponibles);
         tblDatosFrameVend.setGridColor(Color.DARK_GRAY);
 
     }
