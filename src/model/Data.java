@@ -243,6 +243,15 @@ public class Data {
         return tipos;
     }
 
+    public int existeUsuario(String run) throws SQLException{
+        query = "select count(*) from usuario where run = '"+run+"';";
+        rs = con.ejecutarSelect(query);
+        int res = 0;
+        while (rs.next()) {
+            res = rs.getInt(1);
+        }
+        return res;
+    }
     // -------------------------------------------------------------------------LEER-READ
     // -------------------------------------------------------------------------ACTUALIZAR-UPDATE
     public void actualizarTipoUsuario(TipoUsuario t) throws SQLException {

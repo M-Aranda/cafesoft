@@ -73,7 +73,7 @@ CREATE TABLE contrato(
     FOREIGN KEY(usuario_fk) REFERENCES usuario(run),
     FOREIGN KEY(vivienda_fk) REFERENCES vivienda(n_rol)
 );
-
+--POR DEFECTO ESTOS INSERT DEBEN IR--
 INSERT INTO tipo_vivienda VALUES (NULL,'Casa');
 INSERT INTO tipo_vivienda VALUES (NULL,'Departamento');
 
@@ -81,6 +81,16 @@ INSERT INTO disponibilidad_vivienda VALUES (NULL, 'Arrendada');
 INSERT INTO disponibilidad_vivienda VALUES (NULL, 'Vendida');
 INSERT INTO disponibilidad_vivienda VALUES (NULL, 'Disponible');
 
+INSERT INTO tipo_usuario VALUES(NULL,'Administrador');
+INSERT INTO tipo_usuario VALUES(NULL,'Vendedor');
 
+INSERT INTO usuario VALUES('11-1','admin',1);
+INSERT INTO usuario VALUES('22-2','vendedor',2);
+--POR DEFECTO ESTOS INSERT DEBEN IR--
+
+
+select * from usuario;
 
 DROP DATABASE cafesoft;
+
+select count(*) from usuario where run = '11-1';
