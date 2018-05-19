@@ -32,6 +32,7 @@ CREATE VIEW vista_viviendas_disponibles AS -- DROP view vista_viviendas_disponib
     
  --   SELECT * FROM vista_viviendas_disponibles
 
+
 DELIMITER $$
 CREATE FUNCTION crear_vendedor (nuevo_run VARCHAR(15),nuevo_nombre VARCHAR(50), run_user VARCHAR (50)) RETURNS INT
 BEGIN
@@ -79,7 +80,8 @@ DELIMITER ;
 -- INSERT INTO vivienda VALUES (1111,1,1,280000,56000000,2,3,'Agustin Palominos #429',1);
 -- INSERT INTO vivienda VALUES (1211,1,3,280000,56000000,2,3,'Agustin Palominos #429',1);
 -- INSERT INTO vivienda VALUES (1311,1,2,280000,56000000,2,3,'Agustin Palominos #429',1);
--- INSERT INTO vivienda VALUES (1133,1,3,280000,56000000,2,3,'Agustin Palominos #429',1);
+-- INSERT INTO vivienda VALUES (3000,2,3,280000,56000000,2,3,'Agustin Palominos #429',1);
+
 DELIMITER $$
 CREATE FUNCTION crear_vivienda (nuevo_rol INT,set_tipo INT,disponibilidad INT,precio_a INT,precio_v INT,banios INT,piezas INT, new_direccion VARCHAR (50),new_condicion BOOLEAN, run_user VARCHAR (15)) RETURNS INT
 BEGIN
@@ -101,3 +103,6 @@ END $$
 DELIMITER ;
 
 -- SELECT crear_vivienda (333212,1,3,250000,98000000,3,12,'Aasdddddddddddasasrga #0149',1,'11-1');
+-- SELECT crear_vivienda (123,1,3,250000,98000000,3,12,'Aasdddddddddddasasrga #0149',1,'11-1');
+-- SELECT crear_vivienda (124,1,3,250344,98000000,3,12,'Aasdddddddddddasasrga #0149',1,'11-1');
+-- SELECT crear_vivienda (125,1,3,260002,98000000,3,12,'Aasdddddddddddasasrga #0149',1,'11-1');

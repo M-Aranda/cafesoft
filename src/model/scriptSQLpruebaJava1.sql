@@ -44,6 +44,7 @@ CREATE TABLE vivienda(-- DROP TABLE vivienda
 );-- SELECT * FROM vivienda
 
 
+
 CREATE TABLE usuario(
     run VARCHAR(15),
     nombre VARCHAR(50),
@@ -93,6 +94,10 @@ select * from usuario;
 
 DROP DATABASE cafesoft;
 
+SELECT * FROM vista_viviendas_disponibles ORDER BY precio_venta ASC;
+
+
+SELECT * FROM vivienda;
 SELECT * FROM cliente;
 SELECT * FROM log;
 

@@ -75,12 +75,14 @@ public class App extends javax.swing.JFrame {
         this.setTitle("Inicio de sesión");
         this.setLocationRelativeTo(null);
         this.setResizable(false);
+
         JfVendedor.setTitle("Vendedor");
+        rbtFiltrarAsc.isSelected();
         viviendasDisponibles = new ArrayList();
         try {
             //  Data d= new Data();
             logs = new ArrayList<>();
-            viviendasDisponibles = d.leerViviendasDisponibles();
+            viviendasDisponibles = d.leerTodasLasViviendasDisponibles();
         } catch (SQLException ex) {
             Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -327,6 +329,11 @@ public class App extends javax.swing.JFrame {
         lblViviendasDisponibles.setText("            Viviendas disponibles");
 
         btnFiltrarViviendasJfVendedor.setText("Filtrar");
+        btnFiltrarViviendasJfVendedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFiltrarViviendasJfVendedorActionPerformed(evt);
+            }
+        });
 
         jMArchivo.setText("Archivo");
 
@@ -964,6 +971,56 @@ public class App extends javax.swing.JFrame {
 
 
     }//GEN-LAST:event_btnCrearClienteActionPerformed
+
+    private void btnFiltrarViviendasJfVendedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiltrarViviendasJfVendedorActionPerformed
+
+        if ((!chkFiltrarPorDepartamentos.isSelected()) && (chkFiltrarPorCasas.isSelected()) && (cboFiltrarPorCasas.getSelectedIndex() == 2) && (rbtFiltrarAsc.isSelected())) {
+            try {
+                viviendasDisponibles = d.leerTodasLasCasasDisponiblesAmbasASC();
+                cargarTablaJFrameVendedor();
+            } catch (SQLException ex) {
+                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else if ((!chkFiltrarPorCasas.isSelected()) && (chkFiltrarPorDepartamentos.isSelected()) && (cboFiltrarPorDepartamentos.getSelectedIndex() == 2 && (rbtFiltrarAsc.isSelected()))) {
+            try {
+                viviendasDisponibles = d.leerTodosLosDepartamentosDisponiblesAmbosASC();
+                cargarTablaJFrameVendedor();
+            } catch (SQLException ex) {
+                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            cargarTablaJFrameVendedor();
+        } else if ((!chkFiltrarPorDepartamentos.isSelected()) && (chkFiltrarPorCasas.isSelected()) && (cboFiltrarPorCasas.getSelectedIndex() == 2) && (rbtFiltrarDesc.isSelected())) {
+            try {
+                viviendasDisponibles = d.leerTodasLasCasasDisponiblesAmbasDESC();
+            } catch (SQLException ex) {
+                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            cargarTablaJFrameVendedor();
+        } else if ((!chkFiltrarPorCasas.isSelected()) && (chkFiltrarPorDepartamentos.isSelected()) && (cboFiltrarPorDepartamentos.getSelectedIndex() == 2) && (rbtFiltrarDesc.isSelected())) {
+            try {
+                viviendasDisponibles = d.leerTodosLosDepartamentosDisponiblesAmbosDESC();
+            } catch (SQLException ex) {
+                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            cargarTablaJFrameVendedor();
+        } else if ((chkFiltrarPorDepartamentos.isSelected()) && ((chkFiltrarPorCasas.isSelected())) && (cboFiltrarPorCasas.getSelectedIndex() == 2) && (cboFiltrarPorDepartamentos.getSelectedIndex() == 2) && (rbtFiltrarAsc.isSelected())) {
+            try {
+                viviendasDisponibles = d.leerTodasLasViviendasDisponiblesASC();
+            } catch (SQLException ex) {
+                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            cargarTablaJFrameVendedor();
+        } else if ((chkFiltrarPorDepartamentos.isSelected()) && ((chkFiltrarPorCasas.isSelected())) && (cboFiltrarPorCasas.getSelectedIndex() == 2) && (cboFiltrarPorDepartamentos.getSelectedIndex() == 2) && (rbtFiltrarDesc.isSelected())) {
+            try {
+                viviendasDisponibles = d.leerTodasLasViviendasDisponiblesDESC();
+            } catch (SQLException ex) {
+                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            cargarTablaJFrameVendedor();
+        }
+
+
+    }//GEN-LAST:event_btnFiltrarViviendasJfVendedorActionPerformed
 
     private void msgClienteCreado() {
         String titulo = "Aviso";
