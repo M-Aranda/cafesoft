@@ -88,8 +88,12 @@ INSERT INTO usuario VALUES('22-2','vendedor',2);
 -- POR DEFECTO ESTOS INSERT DEBEN IR--
 
 
+-- Selects y drops de prueba
 select * from usuario;
 
 DROP DATABASE cafesoft;
+
+SELECT * FROM cliente;
+SELECT * FROM log;
 
 select count(*) from usuario where run = '11-1';

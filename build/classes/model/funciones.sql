@@ -66,10 +66,10 @@ BEGIN
     INSERT INTO cliente VALUES (nuevo_run,nuevo_nombre,nuevo_sueldo);
     INSERT INTO log VALUES (NULL,CONCAT('Se registra al cliente de run ',nuevo_run),now(),run_user);
         
-    RETURN 1;
+    RETURN existe_run;
     
     END IF;    
-    RETURN 0;
+    RETURN existe_run;
 END $$
 DELIMITER ;
 

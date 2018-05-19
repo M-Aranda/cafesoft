@@ -20,6 +20,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
+import model.Cliente;
 import model.Data;
 import model.TModelLog;
 import model.TModelVivienda;
@@ -74,6 +75,7 @@ public class App extends javax.swing.JFrame {
         this.setTitle("Inicio de sesión");
         this.setLocationRelativeTo(null);
         this.setResizable(false);
+        JfVendedor.setTitle("Vendedor");
         viviendasDisponibles = new ArrayList();
         try {
             //  Data d= new Data();
@@ -87,6 +89,8 @@ public class App extends javax.swing.JFrame {
         cargarTablaJFrameVendedor();
 
         ocultarOpcionesParaFiltrar();
+
+        JFrameCrearCliente.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
     }
 
@@ -133,6 +137,7 @@ public class App extends javax.swing.JFrame {
         chkFiltrarPorCasas.setVisible(false);
         chkFiltrarPorDepartamentos.setVisible(false);
         lblPrecio.setVisible(false);
+        btnFiltrarViviendasJfVendedor.setVisible(false);
 
     }
 
@@ -144,6 +149,7 @@ public class App extends javax.swing.JFrame {
         chkFiltrarPorCasas.setVisible(true);
         chkFiltrarPorDepartamentos.setVisible(true);
         lblPrecio.setVisible(true);
+        btnFiltrarViviendasJfVendedor.setVisible(true);
     }
 
     private void cargarTblLog() {
@@ -219,12 +225,15 @@ public class App extends javax.swing.JFrame {
         chkFiltrarPorDepartamentos = new javax.swing.JCheckBox();
         lblPrecio = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
+        lblViviendasDisponibles = new javax.swing.JLabel();
+        btnFiltrarViviendasJfVendedor = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMArchivo = new javax.swing.JMenu();
         jMCrearCli = new javax.swing.JMenuItem();
         jMVCamAp = new javax.swing.JMenuItem();
         jMVenderViv = new javax.swing.JMenuItem();
         jMArrendarVivienda = new javax.swing.JMenuItem();
+        jMCerrarSesion = new javax.swing.JMenuItem();
         btnGFiltrarPrecio = new javax.swing.ButtonGroup();
         frmAdmin = new javax.swing.JFrame();
         jTabbedPane1 = new javax.swing.JTabbedPane();
@@ -262,6 +271,15 @@ public class App extends javax.swing.JFrame {
         jMenuBar2 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         itemAdminSalir = new javax.swing.JMenuItem();
+        JFrameCrearCliente = new javax.swing.JFrame();
+        btnCrearCliente = new javax.swing.JButton();
+        lblNombreCliente = new javax.swing.JLabel();
+        lblRunCliente = new javax.swing.JLabel();
+        lblSueldoCliente = new javax.swing.JLabel();
+        txtRunCliente = new javax.swing.JTextField();
+        txtNombreCliente = new javax.swing.JTextField();
+        txtSueldoCliente = new javax.swing.JTextField();
+        btnCancelarCreacionDeCliente = new javax.swing.JButton();
         txtRun = new javax.swing.JTextField();
         lblRUN = new javax.swing.JLabel();
         btnIniciarSesion = new javax.swing.JButton();
@@ -306,6 +324,10 @@ public class App extends javax.swing.JFrame {
 
         lblPrecio.setText("Precio:");
 
+        lblViviendasDisponibles.setText("            Viviendas disponibles");
+
+        btnFiltrarViviendasJfVendedor.setText("Filtrar");
+
         jMArchivo.setText("Archivo");
 
         jMCrearCli.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
@@ -339,6 +361,15 @@ public class App extends javax.swing.JFrame {
         });
         jMArchivo.add(jMArrendarVivienda);
 
+        jMCerrarSesion.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+        jMCerrarSesion.setText("Cerrar sesion");
+        jMCerrarSesion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMCerrarSesionActionPerformed(evt);
+            }
+        });
+        jMArchivo.add(jMCerrarSesion);
+
         jMenuBar1.add(jMArchivo);
 
         JfVendedor.setJMenuBar(jMenuBar1);
@@ -371,6 +402,14 @@ public class App extends javax.swing.JFrame {
                     .addComponent(jSeparator1)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 732, Short.MAX_VALUE))
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JfVendedorLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(btnFiltrarViviendasJfVendedor)
+                .addGap(147, 147, 147))
+            .addGroup(JfVendedorLayout.createSequentialGroup()
+                .addGap(270, 270, 270)
+                .addComponent(lblViviendasDisponibles, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         JfVendedorLayout.setVerticalGroup(
             JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -389,7 +428,11 @@ public class App extends javax.swing.JFrame {
                     .addComponent(rbtFiltrarDesc)
                     .addComponent(rbtFiltrarAsc)
                     .addComponent(lblPrecio))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 93, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnFiltrarViviendasJfVendedor)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addComponent(lblViviendasDisponibles, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -632,6 +675,72 @@ public class App extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        btnCrearCliente.setText("Crear");
+        btnCrearCliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCrearClienteActionPerformed(evt);
+            }
+        });
+
+        lblNombreCliente.setText("Nombre:");
+
+        lblRunCliente.setText("Run:");
+
+        lblSueldoCliente.setText("Sueldo:");
+
+        btnCancelarCreacionDeCliente.setText("Cancelar");
+        btnCancelarCreacionDeCliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarCreacionDeClienteActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout JFrameCrearClienteLayout = new javax.swing.GroupLayout(JFrameCrearCliente.getContentPane());
+        JFrameCrearCliente.getContentPane().setLayout(JFrameCrearClienteLayout);
+        JFrameCrearClienteLayout.setHorizontalGroup(
+            JFrameCrearClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(JFrameCrearClienteLayout.createSequentialGroup()
+                .addGap(29, 29, 29)
+                .addComponent(btnCancelarCreacionDeCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnCrearCliente)
+                .addGap(18, 18, 18))
+            .addGroup(JFrameCrearClienteLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(JFrameCrearClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblNombreCliente)
+                    .addComponent(lblSueldoCliente)
+                    .addComponent(lblRunCliente))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(JFrameCrearClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JFrameCrearClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(txtNombreCliente, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
+                        .addComponent(txtSueldoCliente, javax.swing.GroupLayout.Alignment.LEADING))
+                    .addComponent(txtRunCliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+        JFrameCrearClienteLayout.setVerticalGroup(
+            JFrameCrearClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JFrameCrearClienteLayout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addGroup(JFrameCrearClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtRunCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblRunCliente))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(JFrameCrearClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtNombreCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblNombreCliente))
+                .addGap(18, 18, 18)
+                .addGroup(JFrameCrearClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblSueldoCliente)
+                    .addComponent(txtSueldoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20)
+                .addGroup(JFrameCrearClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnCrearCliente)
+                    .addComponent(btnCancelarCreacionDeCliente))
+                .addContainerGap(16, Short.MAX_VALUE))
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         lblRUN.setText("R.U.N");
@@ -678,7 +787,9 @@ public class App extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMCrearCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMCrearCliActionPerformed
-        // TODO add your handling code here:
+        JFrameCrearCliente.setBounds(WIDTH, WIDTH, 260, 225);
+        JFrameCrearCliente.setLocationRelativeTo(null);
+        JFrameCrearCliente.setVisible(true);
     }//GEN-LAST:event_jMCrearCliActionPerformed
 
     private void jMVenderVivActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMVenderVivActionPerformed
@@ -797,6 +908,86 @@ public class App extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnIniciarSesionActionPerformed
 
+    private void jMCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMCerrarSesionActionPerformed
+        JfVendedor.dispatchEvent(new WindowEvent(JfVendedor, WindowEvent.WINDOW_CLOSING));
+
+
+    }//GEN-LAST:event_jMCerrarSesionActionPerformed
+
+    private void btnCancelarCreacionDeClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarCreacionDeClienteActionPerformed
+        JFrameCrearCliente.dispatchEvent(new WindowEvent(JFrameCrearCliente, WindowEvent.WINDOW_CLOSING));
+
+    }//GEN-LAST:event_btnCancelarCreacionDeClienteActionPerformed
+
+    private void btnCrearClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearClienteActionPerformed
+
+        try {
+            try {
+                d.usarConexionAlternativa();
+            } catch (SQLException ex) {
+                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            String runClienteARegistrar = txtRunCliente.getText();
+            String nombreClienteARegistrar = txtNombreCliente.getText();
+            String sueldoClienteARegistrar = txtSueldoCliente.getText();
+            Cliente c = new Cliente(runClienteARegistrar, nombreClienteARegistrar, Integer.parseInt(sueldoClienteARegistrar));
+
+            int rutClienteExiste;
+            try {
+                rutClienteExiste = d.usarProcedimientoCrear_cliente(c, txtRun.getText());
+                if (rutClienteExiste == 1) {
+                    msgErrorRunDeClienteYaExiste();
+                    txtRunCliente.setText("");
+                } else if (rutClienteExiste == 0) {
+                    msgClienteCreado();
+
+                    txtNombreCliente.setText("");
+                    txtRunCliente.setText("");
+                    txtSueldoCliente.setText("");
+                }
+
+            } catch (SQLException ex) {
+                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            try {
+                d.cerrarConexionAlternativa();
+            } catch (SQLException ex) {
+                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        } catch (NumberFormatException e) {
+            msgErrorIngresoSueldo();
+            txtSueldoCliente.setText("");
+        }
+
+
+    }//GEN-LAST:event_btnCrearClienteActionPerformed
+
+    private void msgClienteCreado() {
+        String titulo = "Aviso";
+        String msg = "Cliente registrado con exito";
+        int tipoMsg = JOptionPane.INFORMATION_MESSAGE;
+        JOptionPane.showMessageDialog(null, msg, titulo, tipoMsg);
+
+    }
+
+    private void msgErrorIngresoSueldo() {
+        String titulo = "Error";
+        String msg = "Debe ingresar un numero entero en el campo de sueldo";
+        int tipoMsg = JOptionPane.ERROR_MESSAGE;
+        JOptionPane.showMessageDialog(null, msg, titulo, tipoMsg);
+    }
+
+    private void msgErrorRunDeClienteYaExiste() {
+        String titulo = "Error";
+        String msg = "El rut ingresado ya existe";
+        int tipoMsg = JOptionPane.ERROR_MESSAGE;
+        JOptionPane.showMessageDialog(null, msg, titulo, tipoMsg);
+
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -840,9 +1031,13 @@ public class App extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JFrame JFrameCrearCliente;
     private javax.swing.JFrame JfVendedor;
+    private javax.swing.JButton btnCancelarCreacionDeCliente;
+    private javax.swing.JButton btnCrearCliente;
     private javax.swing.JButton btnCrearVendedor;
     private javax.swing.JButton btnCrearVivienda;
+    private javax.swing.JButton btnFiltrarViviendasJfVendedor;
     private javax.swing.ButtonGroup btnGFiltrarPrecio;
     private javax.swing.JButton btnIniciarSesion;
     private javax.swing.JComboBox<String> cboCondicion;
@@ -867,6 +1062,7 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JMenu jMArchivo;
     private javax.swing.JMenuItem jMArrendarVivienda;
+    private javax.swing.JMenuItem jMCerrarSesion;
     private javax.swing.JMenuItem jMCrearCli;
     private javax.swing.JMenuItem jMVCamAp;
     private javax.swing.JMenuItem jMVenderViv;
@@ -882,8 +1078,12 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JLabel lblNombreCliente;
     private javax.swing.JLabel lblPrecio;
     private javax.swing.JLabel lblRUN;
+    private javax.swing.JLabel lblRunCliente;
+    private javax.swing.JLabel lblSueldoCliente;
+    private javax.swing.JLabel lblViviendasDisponibles;
     private javax.swing.JLabel lblicono;
     private javax.swing.JRadioButton rbtFiltrarAsc;
     private javax.swing.JRadioButton rbtFiltrarDesc;
@@ -895,8 +1095,11 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JTable tblLog;
     private javax.swing.JTextField txtDireccion;
     private javax.swing.JTextField txtNRol;
+    private javax.swing.JTextField txtNombreCliente;
     private javax.swing.JTextField txtNombreVendedor;
     private javax.swing.JTextField txtRun;
+    private javax.swing.JTextField txtRunCliente;
     private javax.swing.JTextField txtRunVendedor;
+    private javax.swing.JTextField txtSueldoCliente;
     // End of variables declaration//GEN-END:variables
 }

@@ -5,6 +5,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import clasesAusar.VistaVivienda;
+import com.mysql.jdbc.CallableStatement;
+import com.mysql.jdbc.Connection;
+import java.sql.DriverManager;
 
 public class Data {
 
@@ -12,10 +15,21 @@ public class Data {
     private String query;
     private ResultSet rs;
     private List<VistaVivienda> listaViviendas;
+    private Connection cone=null;
 
     public Data() throws ClassNotFoundException, SQLException {
         con = new Conexion("localhost", "cafesoft", "root", "");
     }
+    
+    public void usarConexionAlternativa() throws SQLException{
+           cone=(Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/cafesoft","root","");
+    }
+    
+    public void cerrarConexionAlternativa()throws SQLException{
+        cone.close();
+    }
+    
+   
     //--------------------------------------------------------------------------BUSCAR-SEARCH
     public int existeUsuario(String run) throws SQLException{
         query = "select count(*) from usuario where run = '"+run+"';";
@@ -56,6 +70,40 @@ public class Data {
 
         con.ejecutar(query);
     }
+    
+    public int usarProcedimientoCrear_cliente(Cliente c, String usuarioActual)throws SQLException{
+        
+
+        
+        CallableStatement llamarFuncionCrearCliente=(CallableStatement) cone.prepareCall("SELECT crear_cliente(?,?,?,?)");
+        llamarFuncionCrearCliente.setString(1,""+c.getRun()+"");
+        llamarFuncionCrearCliente.setString(2,""+c.getNombre()+"");
+        llamarFuncionCrearCliente.setInt(3,c.getSueldo());
+        llamarFuncionCrearCliente.setString(4,usuarioActual);
+        
+        llamarFuncionCrearCliente.execute();
+        int coincidenciasDeRut=2;
+        
+        ResultSet res=llamarFuncionCrearCliente.getResultSet();
+        
+        while (res.next()) {
+               coincidenciasDeRut=res.getInt(1);
+          }
+          res.close();
+        
+        
+        
+//        
+//        query="CALL crear_cliente("+c.getRun()+","+c.getNombre()+","+c.getSueldo()+","+usuarioActual+")";
+//        rs = con.ejecutarSelect(query);
+//        int res = 0;
+//        while (rs.next()) {
+//            res = rs.getInt(1);
+//        }
+        return coincidenciasDeRut;
+
+    }
+    
 
     public void crearLog(Log l) throws SQLException { // VER SI SE PUEDE HACER CON TRIGGERS
         query = "INSERT INTO log VALUES (NULL,'"
