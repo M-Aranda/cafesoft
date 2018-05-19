@@ -614,5 +614,38 @@ public class Data {
 
         return viviendas;
     }
+    
+    
+        //estaba pesando en hacer un puro metodo que tomara valores de lo seleccionado en el filtrado
+        //pero tambien capaz de seleccionar el tipo de query en cierto casos, como cuando necesita
+       //ver ambos tipos de vivienda/condicion. Tome de referencia los metodos que ya estaban, y se me ocurre
+        //algo con la direccion del siguiente metodo
+        public List<VistaVivienda> leerTodasLasViviendasSegunSeleccion(String tipo) throws SQLException {
+        query = "SELECT * FROM vista_viviendas_disponibles WHERE nombre="+tipo+" ORDER BY precio_venta DESC";
+
+        List<VistaVivienda> viviendas = new ArrayList<>();
+
+        rs = con.ejecutarSelect(query);
+
+        while (rs.next()) {
+            VistaVivienda v = new VistaVivienda();
+
+            v.setnDeRol(rs.getInt(1));
+            v.setTipo(rs.getString(2));
+            v.setDisponibilidad(rs.getString(3));
+            v.setPrecioDeArriendo(rs.getInt(4));
+            v.setPrecioDeVenta(rs.getInt(5));
+            v.setCantBanios(rs.getInt(6));
+            v.setCantPiezas(rs.getInt(7));
+            v.setDireccion(rs.getString(8));
+            v.setCondicion(rs.getString(9));
+
+            viviendas.add(v);
+        }
+
+        con.close();
+
+        return viviendas;
+    }
 
 }
