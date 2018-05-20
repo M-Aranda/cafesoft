@@ -135,6 +135,22 @@ public class App extends javax.swing.JFrame {
         }
     }
 
+    private void cargarCboViviendaAdmin() {
+        cboTipo.removeAllItems();
+        cboDisp.removeAllItems();
+        cboCondicion.removeAllItems();
+
+        cboTipo.addItem("Casa");
+        cboTipo.addItem("Departamento");
+
+        cboDisp.addItem("Arrendada");
+        cboDisp.addItem("Vendida");
+        cboDisp.addItem("Disponible");
+
+        cboCondicion.addItem("Nueva");
+        cboCondicion.addItem("Usada");
+    }
+
     private void ocultarOpcionesParaFiltrar() {
         cboFiltrarPorCasas.setEnabled(false);
         cboFiltrarPorDepartamentos.setEnabled(false);
@@ -274,6 +290,8 @@ public class App extends javax.swing.JFrame {
         spnArriendo = new javax.swing.JSpinner();
         spnVenta = new javax.swing.JSpinner();
         btnCrearVivienda = new javax.swing.JButton();
+        btnBuscarVivienda = new javax.swing.JButton();
+        btnBorrarVivienda = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -298,7 +316,7 @@ public class App extends javax.swing.JFrame {
         btnIniciarSesion = new javax.swing.JButton();
         lblicono = new javax.swing.JLabel();
 
-        JfVendedor.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        JfVendedor.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         tblDatosFrameVend.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -457,7 +475,7 @@ public class App extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        frmAdmin.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        frmAdmin.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jTabbedPane1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -558,13 +576,47 @@ public class App extends javax.swing.JFrame {
 
         jLabel11.setText("Precio venta:");
 
+        txtDireccion.setEnabled(false);
+
         cboTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboTipo.setEnabled(false);
 
         cboDisp.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboDisp.setEnabled(false);
 
         cboCondicion.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboCondicion.setEnabled(false);
+
+        spnBanios.setEnabled(false);
+
+        spnPiezas.setEnabled(false);
+
+        spnArriendo.setEnabled(false);
+
+        spnVenta.setEnabled(false);
 
         btnCrearVivienda.setText("Crear");
+        btnCrearVivienda.setEnabled(false);
+        btnCrearVivienda.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCrearViviendaActionPerformed(evt);
+            }
+        });
+
+        btnBuscarVivienda.setText("...");
+        btnBuscarVivienda.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarViviendaActionPerformed(evt);
+            }
+        });
+
+        btnBorrarVivienda.setText("Borrar");
+        btnBorrarVivienda.setEnabled(false);
+        btnBorrarVivienda.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBorrarViviendaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -586,7 +638,6 @@ public class App extends javax.swing.JFrame {
                             .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtNRol)
                             .addComponent(txtDireccion)
                             .addComponent(cboTipo, 0, 431, Short.MAX_VALUE)
                             .addComponent(cboDisp, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -594,9 +645,15 @@ public class App extends javax.swing.JFrame {
                             .addComponent(spnBanios)
                             .addComponent(spnPiezas)
                             .addComponent(spnVenta)
-                            .addComponent(spnArriendo)))
+                            .addComponent(spnArriendo)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(txtNRol)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnBuscarVivienda))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnBorrarVivienda)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCrearVivienda)))
                 .addContainerGap())
         );
@@ -606,7 +663,9 @@ public class App extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3)
-                    .addComponent(txtNRol, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtNRol, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnBuscarVivienda)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4)
@@ -640,11 +699,13 @@ public class App extends javax.swing.JFrame {
                     .addComponent(jLabel11)
                     .addComponent(spnVenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnCrearVivienda)
-                .addContainerGap(67, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnCrearVivienda)
+                    .addComponent(btnBorrarVivienda))
+                .addContainerGap(68, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Crear Vivienda", jPanel2);
+        jTabbedPane1.addTab("Vivienda", jPanel2);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -922,12 +983,14 @@ public class App extends javax.swing.JFrame {
 
     private void btnIniciarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarSesionActionPerformed
         String run = txtRun.getText();
+        txtRun.setText(null);
 
         try {
             Usuario u = d.buscarUsuario(run);
             if (u != null) {
                 if (u.getTipo() == 1) {
                     this.dispose();
+                    cargarCboViviendaAdmin();
                     frmAdmin.setBounds(WIDTH, WIDTH, 400, 400);
                     frmAdmin.setLocationRelativeTo(null);
                     frmAdmin.setVisible(true);
@@ -1086,7 +1149,7 @@ public class App extends javax.swing.JFrame {
             txtNombreVendedor.setEnabled(false);
 
             txtRunVendedor.requestFocus();
-            
+
             JOptionPane.showMessageDialog(this, "Vendedor creado.", "Creado", JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception e) {
             System.err.println(e);
@@ -1132,6 +1195,130 @@ public class App extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_btnBorrarVendedorActionPerformed
+
+    private void btnBuscarViviendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarViviendaActionPerformed
+        try {
+            Vivienda v = d.buscarVivienda(Integer.parseInt(txtNRol.getText()));
+
+            if (v != null) {
+                txtDireccion.setText(v.getDireccion());
+                cboTipo.setSelectedIndex(v.getTipo() - 1);
+                cboDisp.setSelectedIndex(v.getDispVivienda() - 1);
+
+                if (v.isUsada()) {
+                    cboDisp.setSelectedItem("Usada");
+                } else {
+                    cboDisp.setSelectedItem("Nueva");
+                }
+
+                spnBanios.setValue(v.getCantBaños());
+                spnPiezas.setValue(v.getCantPiezas());
+                spnArriendo.setValue(v.getPrecioArriendo());
+                spnVenta.setValue(v.getPrecioVenta());
+
+                btnBorrarVivienda.setEnabled(true);
+            } else {
+                txtDireccion.setEnabled(true);
+                cboTipo.setEnabled(true);
+                cboDisp.setEnabled(true);
+                cboCondicion.setEnabled(true);
+                spnBanios.setEnabled(true);
+                spnPiezas.setEnabled(true);
+                spnArriendo.setEnabled(true);
+                spnVenta.setEnabled(true);
+                btnCrearVivienda.setEnabled(true);
+
+                v.setnRol(Integer.parseInt(txtNRol.getText()));
+                v.setTipo((cboTipo.getSelectedIndex() + 1));
+                v.setDispVivienda((cboDisp.getSelectedIndex() + 1));
+                v.setPrecioArriendo((Integer) spnArriendo.getValue());
+                v.setPrecioVenta((Integer) spnVenta.getValue());
+                v.setCantBaños((Integer) spnBanios.getValue());
+                v.setCantPiezas((Integer) spnPiezas.getValue());
+                v.setDireccion(txtDireccion.getText());
+
+                if (cboCondicion.getSelectedItem().equals("Usada")) {
+                    v.setUsada(true);
+                } else {
+                    v.setUsada(false);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+    }//GEN-LAST:event_btnBuscarViviendaActionPerformed
+
+    private void btnCrearViviendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearViviendaActionPerformed
+        try {
+            int nrol = Integer.parseInt(txtNRol.getText());
+            int tipo = cboTipo.getSelectedIndex() + 1;
+            int disp = cboDisp.getSelectedIndex() + 1;
+            int arriendo = (Integer) spnArriendo.getValue();
+            int venta = (Integer) spnVenta.getValue();
+            int banios = (Integer) spnBanios.getValue();
+            int piezas = (Integer) spnPiezas.getValue();
+            String direccion = txtDireccion.getText();
+            boolean cond = false;
+
+            if (cboCondicion.getSelectedItem().equals("Nueva")) {
+                cond = true;
+            }
+
+            Vivienda v = new Vivienda(nrol, tipo, disp, arriendo, venta, banios, piezas, direccion, cond);
+
+            d.crearVivienda(v);
+
+            txtNRol.setText(null);
+            txtDireccion.setText(null);
+            cboTipo.setSelectedIndex(0);
+            cboDisp.setSelectedIndex(0);
+            cboCondicion.setSelectedIndex(0);
+            spnBanios.setValue(0);
+            spnPiezas.setValue(0);
+            spnArriendo.setValue(0);
+            spnVenta.setValue(0);
+
+            JOptionPane.showMessageDialog(this, "Vivienda creada.", "Creado", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+    }//GEN-LAST:event_btnCrearViviendaActionPerformed
+
+    private void btnBorrarViviendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarViviendaActionPerformed
+        try {
+            int nrol = Integer.parseInt(txtNRol.getText());
+            int tipo = cboTipo.getSelectedIndex() + 1;
+            int disp = cboDisp.getSelectedIndex() + 1;
+            int arriendo = (Integer) spnArriendo.getValue();
+            int venta = (Integer) spnVenta.getValue();
+            int banios = (Integer) spnBanios.getValue();
+            int piezas = (Integer) spnPiezas.getValue();
+            String direccion = txtDireccion.getText();
+            boolean cond = false;
+
+            if (cboCondicion.getSelectedItem().equals("Nueva")) {
+                cond = true;
+            }
+
+            Vivienda v = new Vivienda(nrol, tipo, disp, arriendo, venta, banios, piezas, direccion, cond);
+
+            d.borrarVivienda(v);
+            
+            txtNRol.setText(null);
+            txtDireccion.setText(null);
+            cboTipo.setSelectedIndex(0);
+            cboDisp.setSelectedIndex(0);
+            cboCondicion.setSelectedIndex(0);
+            spnBanios.setValue(0);
+            spnPiezas.setValue(0);
+            spnArriendo.setValue(0);
+            spnVenta.setValue(0);
+
+            JOptionPane.showMessageDialog(this, "Vivienda borrada.", "Borrado", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+    }//GEN-LAST:event_btnBorrarViviendaActionPerformed
 
     private void msgClienteCreado() {
         String titulo = "Aviso";
@@ -1264,7 +1451,9 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JFrame JFrameCrearCliente;
     private javax.swing.JFrame JfVendedor;
     private javax.swing.JButton btnBorrarVendedor;
+    private javax.swing.JButton btnBorrarVivienda;
     private javax.swing.JButton btnBuscarVendedor;
+    private javax.swing.JButton btnBuscarVivienda;
     private javax.swing.JButton btnCancelarCreacionDeCliente;
     private javax.swing.JButton btnCrearCliente;
     private javax.swing.JButton btnCrearVendedor;
