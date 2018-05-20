@@ -6,13 +6,19 @@ import com.jtattoo.plaf.luna.LunaLookAndFeel;
 import java.awt.Color;
 import java.awt.event.WindowEvent;
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -1043,6 +1049,69 @@ public class App extends javax.swing.JFrame {
         int tipoMsg = JOptionPane.ERROR_MESSAGE;
         JOptionPane.showMessageDialog(null, msg, titulo, tipoMsg);
 
+    }
+    
+    private void realizarBackup(){
+        try {
+            //RECUPERA FECHA Y HORA DEL SISTEMA
+            Calendar c = Calendar.getInstance();
+            String fecha = c.get(c.DATE) + "" + c.get(c.MONTH) + "" + c.get(c.YEAR);
+            String hora = c.get(c.HOUR_OF_DAY) + "" + c.get(c.MINUTE) + "" + c.get(c.SECOND);
+
+            //para poder hacer un backup (en el caso de windows) se debe agregar el directorio de mysql a path de las variables de entorno.
+            //pc->propiedades-> conf. Avanzada del sistema-> variables de entorno
+            //en la parte de abajo, en variables de sistema buscar "path"->
+            //editar->";C:\Program Files\MySQL\MySQL Server 5.7\bin"(copiar todo entre los parentesis incluido el punto y coma)
+            //despues de eso se podrá acceder a mysql desde el CMD del sistema ( asi me funciono a mi )
+            //ahí deberían poder ejecutar este comando.
+            
+            Process proceso = Runtime.getRuntime().exec("mysqldump -u root -p123456 cafesoft");//123456 contraseña por defecto, cambiar si hay otra
+            InputStream inputStream = proceso.getInputStream();
+            FileOutputStream fOutStream = new FileOutputStream("backup " + fecha + " " + hora + ".sql");//el archivo s guarda en la raíz del proyecto
+            
+            byte[] buff = new byte[1000];
+            int readed = inputStream.read(buff);
+            while (readed > 0) {
+
+                fOutStream.write(buff, 0, readed);
+                readed = inputStream.read(buff);
+            }
+
+            fOutStream.close();
+        } catch (IOException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void restaurarBackup(){
+         try {
+            
+            /* en este metodo se puede recuperar X base de datos guardada anteriormente. Sería bueno tener un registro de los nombres de las bases de datos respaldadas
+            para poder recuperar solo su nombre. en ese caso, solo deberia cambiarse el nombre en 
+            **FileInputStream fInStream = new FileInputStream("backup 1942018 17384.sql");**
+            
+            DETALLE IMPORTANTE
+            El backup borra y reinserta los valores que quedaron guardados en la base de datos de respaldo,
+            todo lo que esté despues de lo borrado no podrá ser recuperado.
+            */
+            Process proceso = Runtime.getRuntime().exec("mysql -u root -p123456 cafesoft"); //123456 contraseña por defecto, cambiar si hay otra
+            OutputStream outputStream = proceso.getOutputStream();
+            FileInputStream fInStream = new FileInputStream("backup FECHA HORA.sql"); //la fecha y hora son las que da el sistema EJ: backup 1942018 17384
+            byte[] buff = new byte[1000];
+
+            int readed = fInStream.read(buff);
+
+            while (readed > 0) {
+
+                outputStream.write(buff, 0, readed);
+                readed = fInStream.read(buff);
+            }
+            outputStream.flush();
+            outputStream.close();
+            fInStream.close();
+        } catch (IOException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
