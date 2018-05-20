@@ -15,14 +15,14 @@ DELIMITER ;
 CREATE VIEW vista_viviendas_disponibles AS -- DROP view vista_viviendas_disponibles
 	SELECT 
     v.n_rol,
-    t.nombre,
+    t.nombre AS 'tipo',
     d.nombre AS 'es_disponible',
     v.precio_arriendo,
     v.precio_venta,
     v.cant_banios,
     v.cant_piezas,
     v.direccion,
-    (SELECT is_usado(v.condicion))
+    (SELECT is_usado(v.condicion)) AS 'condicion'
     FROM
     vivienda v
     INNER JOIN tipo_vivienda t ON t.id = v.tipo_fk

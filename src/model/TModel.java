@@ -7,15 +7,15 @@ import clasesAusar.VistaVivienda;
 
 public class TModel implements TableModel {
 
-    private List<Vivienda> listaViviendasDisponibles;
+    private List<Vivienda> listaViviendas;
 
     public TModel(List<Vivienda> listaViviendasDisponibles) {
-        this.listaViviendasDisponibles = listaViviendasDisponibles;
+        this.listaViviendas = listaViviendasDisponibles;
     }
 
     @Override
     public int getRowCount() {
-        return listaViviendasDisponibles.size();
+        return listaViviendas.size();
     }
 
     @Override
@@ -82,7 +82,7 @@ public class TModel implements TableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Vivienda v = listaViviendasDisponibles.get(rowIndex);
+        Vivienda v = listaViviendas.get(rowIndex);
 
         switch (columnIndex) {
             case 0:
