@@ -57,6 +57,7 @@ public class App extends javax.swing.JFrame {
     private TModelLog modelLog;
     private List<VistaVivienda> viviendasDisponibles;
     private List<VistaLog> logs;
+    private List<Usuario> usuarios;
 
     //query para los inserts
     static final String WRITE_OBJECT_SQL = "INSERT INTO ejem(nombre, valor_objeto) VALUES (?, ?)";// modificar segun sea necesario
@@ -251,6 +252,8 @@ public class App extends javax.swing.JFrame {
         txtRunVendedor = new javax.swing.JTextField();
         txtNombreVendedor = new javax.swing.JTextField();
         btnCrearVendedor = new javax.swing.JButton();
+        btnBuscarVendedor = new javax.swing.JButton();
+        btnBorrarVendedor = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -466,7 +469,30 @@ public class App extends javax.swing.JFrame {
 
         jLabel2.setText("Nombre:");
 
+        txtNombreVendedor.setEnabled(false);
+
         btnCrearVendedor.setText("Crear");
+        btnCrearVendedor.setEnabled(false);
+        btnCrearVendedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCrearVendedorActionPerformed(evt);
+            }
+        });
+
+        btnBuscarVendedor.setText("...");
+        btnBuscarVendedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarVendedorActionPerformed(evt);
+            }
+        });
+
+        btnBorrarVendedor.setText("Borrar");
+        btnBorrarVendedor.setEnabled(false);
+        btnBorrarVendedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBorrarVendedorActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -476,7 +502,9 @@ public class App extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 455, Short.MAX_VALUE)
+                        .addGap(0, 387, Short.MAX_VALUE)
+                        .addComponent(btnBorrarVendedor)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCrearVendedor))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -484,27 +512,33 @@ public class App extends javax.swing.JFrame {
                             .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtRunVendedor)
-                            .addComponent(txtNombreVendedor))))
+                            .addComponent(txtNombreVendedor)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(txtRunVendedor)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnBuscarVendedor)))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(110, 110, 110)
+                .addGap(109, 109, 109)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(txtRunVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtRunVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnBuscarVendedor))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(txtNombreVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnCrearVendedor)
-                .addContainerGap(173, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnCrearVendedor)
+                    .addComponent(btnBorrarVendedor))
+                .addContainerGap(175, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Crear Vendedor", jPanel1);
+        jTabbedPane1.addTab("Vendedor", jPanel1);
 
         jLabel3.setText("N° Rol:");
 
@@ -554,7 +588,7 @@ public class App extends javax.swing.JFrame {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtNRol)
                             .addComponent(txtDireccion)
-                            .addComponent(cboTipo, 0, 423, Short.MAX_VALUE)
+                            .addComponent(cboTipo, 0, 431, Short.MAX_VALUE)
                             .addComponent(cboDisp, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cboCondicion, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(spnBanios)
@@ -616,7 +650,7 @@ public class App extends javax.swing.JFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 544, Short.MAX_VALUE)
+            .addGap(0, 552, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -644,7 +678,7 @@ public class App extends javax.swing.JFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 524, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 528, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -883,6 +917,7 @@ public class App extends javax.swing.JFrame {
 
     private void itemAdminSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAdminSalirActionPerformed
         frmAdmin.dispatchEvent(new WindowEvent(frmAdmin, WindowEvent.WINDOW_CLOSING));
+        this.setVisible(true);
     }//GEN-LAST:event_itemAdminSalirActionPerformed
 
     private void btnIniciarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarSesionActionPerformed
@@ -919,8 +954,7 @@ public class App extends javax.swing.JFrame {
 
     private void jMCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMCerrarSesionActionPerformed
         JfVendedor.dispatchEvent(new WindowEvent(JfVendedor, WindowEvent.WINDOW_CLOSING));
-
-
+        this.setVisible(true);
     }//GEN-LAST:event_jMCerrarSesionActionPerformed
 
     private void btnCancelarCreacionDeClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarCreacionDeClienteActionPerformed
@@ -977,7 +1011,7 @@ public class App extends javax.swing.JFrame {
     private void btnFiltrarViviendasJfVendedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiltrarViviendasJfVendedorActionPerformed
 
         if ((!chkFiltrarPorDepartamentos.isSelected()) && (chkFiltrarPorCasas.isSelected()) && (cboFiltrarPorCasas.getSelectedIndex() == 2) && (rbtFiltrarAsc.isSelected())) {
-            
+
 //            try {
 //                viviendasDisponibles = d.leerTodasLasCasasDisponiblesAmbasASC();
 //                cargarTablaJFrameVendedor();
@@ -1037,6 +1071,68 @@ public class App extends javax.swing.JFrame {
         restaurarBackup();
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void btnCrearVendedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearVendedorActionPerformed
+        try {
+            Usuario u = new Usuario(txtRunVendedor.getText(),
+                    txtNombreVendedor.getText(),
+                    2);
+            d.crearUsuario(u);
+
+            txtRunVendedor.setText(null);
+            txtNombreVendedor.setText(null);
+
+            btnBorrarVendedor.setEnabled(false);
+            btnCrearVendedor.setEnabled(false);
+            txtNombreVendedor.setEnabled(false);
+
+            txtRunVendedor.requestFocus();
+            
+            JOptionPane.showMessageDialog(this, "Vendedor creado.", "Creado", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+    }//GEN-LAST:event_btnCrearVendedorActionPerformed
+
+    private void btnBuscarVendedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarVendedorActionPerformed
+        try {
+            Usuario u = d.buscarUsuario(txtRunVendedor.getText());
+
+            if (u != null && u.getTipo() == 2) {
+                txtNombreVendedor.setText(u.getNombre());
+                btnBorrarVendedor.setEnabled(true);
+
+                txtRunVendedor.requestFocus();
+            } else if (u == null) {
+                btnCrearVendedor.setEnabled(true);
+                txtNombreVendedor.setEnabled(true);
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+    }//GEN-LAST:event_btnBuscarVendedorActionPerformed
+
+    private void btnBorrarVendedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarVendedorActionPerformed
+        try {
+            Usuario u = new Usuario(txtRunVendedor.getText(),
+                    txtNombreVendedor.getText(),
+                    2);
+            d.borrarUsuario(u);
+
+            txtRunVendedor.setText(null);
+            txtNombreVendedor.setText(null);
+
+            btnCrearVendedor.setEnabled(false);
+            btnBorrarVendedor.setEnabled(false);
+
+            txtRunVendedor.requestFocus();
+
+            JOptionPane.showMessageDialog(this, "Vendedor borrado.", "Borrado", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+
+    }//GEN-LAST:event_btnBorrarVendedorActionPerformed
+
     private void msgClienteCreado() {
         String titulo = "Aviso";
         String msg = "Cliente registrado con exito";
@@ -1059,8 +1155,8 @@ public class App extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null, msg, titulo, tipoMsg);
 
     }
-    
-    private void realizarBackup(){
+
+    private void realizarBackup() {
         try {
             //RECUPERA FECHA Y HORA DEL SISTEMA
             Calendar c = Calendar.getInstance();
@@ -1073,11 +1169,10 @@ public class App extends javax.swing.JFrame {
             //editar->";C:\Program Files\MySQL\MySQL Server 5.7\bin"(copiar todo entre los parentesis incluido el punto y coma)
             //despues de eso se podrá acceder a mysql desde el CMD del sistema ( asi me funciono a mi )
             //ahí deberían poder ejecutar este comando.
-            
             Process proceso = Runtime.getRuntime().exec("mysqldump -u root -p cafesoft");//123456 contraseña por defecto, cambiar si hay otra
             InputStream inputStream = proceso.getInputStream();
             FileOutputStream fOutStream = new FileOutputStream("backup " + fecha + " " + hora + ".sql");//el archivo s guarda en la raíz del proyecto
-            
+
             byte[] buff = new byte[1000];
             int readed = inputStream.read(buff);
             while (readed > 0) {
@@ -1091,10 +1186,10 @@ public class App extends javax.swing.JFrame {
             Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    private void restaurarBackup(){
-         try {
-            
+
+    private void restaurarBackup() {
+        try {
+
             /* en este metodo se puede recuperar X base de datos guardada anteriormente. Sería bueno tener un registro de los nombres de las bases de datos respaldadas
             para poder recuperar solo su nombre. en ese caso, solo deberia cambiarse el nombre en 
             **FileInputStream fInStream = new FileInputStream("backup 1942018 17384.sql");**
@@ -1102,7 +1197,7 @@ public class App extends javax.swing.JFrame {
             DETALLE IMPORTANTE
             El backup borra y reinserta los valores que quedaron guardados en la base de datos de respaldo,
             todo lo que esté despues de lo borrado no podrá ser recuperado.
-            */
+             */
             Process proceso = Runtime.getRuntime().exec("mysql -u root -p cafesoft"); //123456 contraseña por defecto, cambiar si hay otra
             OutputStream outputStream = proceso.getOutputStream();
             FileInputStream fInStream = new FileInputStream("backup FECHA HORA.sql"); //la fecha y hora son las que da el sistema EJ: backup 1942018 17384
@@ -1168,6 +1263,8 @@ public class App extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFrame JFrameCrearCliente;
     private javax.swing.JFrame JfVendedor;
+    private javax.swing.JButton btnBorrarVendedor;
+    private javax.swing.JButton btnBuscarVendedor;
     private javax.swing.JButton btnCancelarCreacionDeCliente;
     private javax.swing.JButton btnCrearCliente;
     private javax.swing.JButton btnCrearVendedor;

@@ -293,8 +293,8 @@
             <Container class="javax.swing.JPanel" name="jPanel1">
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-                  <JTabbedPaneConstraints tabName="Crear Vendedor">
-                    <Property name="tabTitle" type="java.lang.String" value="Crear Vendedor"/>
+                  <JTabbedPaneConstraints tabName="Vendedor">
+                    <Property name="tabTitle" type="java.lang.String" value="Vendedor"/>
                   </JTabbedPaneConstraints>
                 </Constraint>
               </Constraints>
@@ -306,7 +306,9 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" attributes="0">
-                                  <EmptySpace min="0" pref="455" max="32767" attributes="0"/>
+                                  <EmptySpace min="0" pref="387" max="32767" attributes="0"/>
+                                  <Component id="btnBorrarVendedor" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                                   <Component id="btnCrearVendedor" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Group type="102" attributes="0">
@@ -316,8 +318,12 @@
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="txtRunVendedor" max="32767" attributes="0"/>
                                       <Component id="txtNombreVendedor" max="32767" attributes="0"/>
+                                      <Group type="102" attributes="0">
+                                          <Component id="txtRunVendedor" max="32767" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="btnBuscarVendedor" min="-2" max="-2" attributes="0"/>
+                                      </Group>
                                   </Group>
                               </Group>
                           </Group>
@@ -328,10 +334,11 @@
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="110" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="109" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="txtRunVendedor" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnBuscarVendedor" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
@@ -339,8 +346,11 @@
                               <Component id="txtNombreVendedor" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="btnCrearVendedor" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="173" max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="btnCrearVendedor" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnBorrarVendedor" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace pref="175" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -359,11 +369,35 @@
                 <Component class="javax.swing.JTextField" name="txtRunVendedor">
                 </Component>
                 <Component class="javax.swing.JTextField" name="txtNombreVendedor">
+                  <Properties>
+                    <Property name="enabled" type="boolean" value="false"/>
+                  </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="btnCrearVendedor">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Crear"/>
+                    <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCrearVendedorActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JButton" name="btnBuscarVendedor">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="..."/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBuscarVendedorActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JButton" name="btnBorrarVendedor">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Borrar"/>
+                    <Property name="enabled" type="boolean" value="false"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBorrarVendedorActionPerformed"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>
@@ -398,7 +432,7 @@
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="txtNRol" max="32767" attributes="0"/>
                                       <Component id="txtDireccion" max="32767" attributes="0"/>
-                                      <Component id="cboTipo" pref="423" max="32767" attributes="0"/>
+                                      <Component id="cboTipo" pref="431" max="32767" attributes="0"/>
                                       <Component id="cboDisp" max="32767" attributes="0"/>
                                       <Component id="cboCondicion" max="32767" attributes="0"/>
                                       <Component id="spnBanios" max="32767" attributes="0"/>
@@ -593,7 +627,7 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="544" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="552" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
@@ -617,7 +651,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jScrollPane2" pref="524" max="32767" attributes="0"/>
+                          <Component id="jScrollPane2" pref="528" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
