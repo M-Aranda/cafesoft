@@ -115,12 +115,11 @@ public class Data {
         con.ejecutar(query);
     }
 
-    public void crearUsuario(Usuario u) throws SQLException {
-        query = "INSERT INTO usuario VALUES ('" + u.getRun()
-                + "','" + u.getNombre()
-                + "','" + u.getTipo() + "')";
-
-        con.ejecutar(query);
+    public void crearUsuario(Usuario u, String user) throws SQLException {
+        query = "SELECT crear_vendedor('" + u.getRun() + "','" + u.getNombre() + "','" + user + "');";
+        
+        con.ejecutarSelect(query);
+        con.close();
     }
 
     public void crearVenta(Venta v) throws SQLException {
@@ -133,17 +132,19 @@ public class Data {
         con.ejecutar(query);
     }
 
-    public void crearVivienda(Vivienda v) throws SQLException {
-        query = "INSERT INTO tipo_usuario VALUES ('" + v.getnRol() + ",'"
-                + v.getNombre() + "','"
-                + v.getTipo() + "','"
-                + v.getPrecioArriendo() + "','"
-                + v.getPrecioVenta() + "','"
-                + v.getCantBaños() + "','"
-                + v.getCantPiezas() + "','"
-                + v.getDireccion() + "','"
-                + v.isUsada() + "')";
-        con.ejecutar(query);
+    public void crearVivienda(Vivienda v, String user) throws SQLException {
+        query = "SELECT crear_vivienda (" + v.getnRol() + ","
+                + v.getTipo() + ","
+                + v.getDispVivienda() + ","
+                + v.getPrecioArriendo() + ","
+                + v.getPrecioVenta() + ","
+                + v.getCantBaños() + ","
+                + v.getCantPiezas() + ",'"
+                + v.getDireccion() + "',"
+                + v.isUsada() + ",'"
+                + user + "');";
+        con.ejecutarSelect(query);
+        con.close();
     }
 
     // -------------------------------------------------------------------------CREAR-CREATE
@@ -159,8 +160,8 @@ public class Data {
             Vivienda v = new Vivienda();
 
             v.setnRol(rs.getInt(1));
-            v.setNombre(rs.getString(2));
-            v.setTipo(rs.getInt(3));
+            v.setTipo(rs.getInt(2));
+            v.setDispVivienda(rs.getInt(3));
             v.setPrecioArriendo(rs.getInt(4));
             v.setPrecioVenta(rs.getInt(5));
             v.setCantBaños(rs.getInt(6));
@@ -174,6 +175,27 @@ public class Data {
         con.close();
 
         return viviendas;
+    }
+
+    public Vivienda buscarVivienda(int nRol) throws SQLException {
+        query = "SELECT * FROM vivienda WHERE n_rol = " + String.valueOf(nRol) + ";";
+        rs = con.ejecutarSelect(query);
+        Vivienda v = null;
+
+        while (rs.next()) {
+            v = new Vivienda();
+            v.setnRol(rs.getInt(1));
+            v.setTipo(rs.getInt(2));
+            v.setDispVivienda(rs.getInt(3));
+            v.setPrecioArriendo(rs.getInt(4));
+            v.setPrecioVenta(rs.getInt(5));
+            v.setCantBaños(rs.getInt(6));
+            v.setCantPiezas(rs.getInt(7));
+            v.setDireccion(rs.getString(8));
+            v.setUsada(rs.getBoolean(9));
+        }
+
+        return v;
     }
 
     public List<VistaVivienda> leerTodasLasViviendasDisponibles() throws SQLException {
@@ -389,8 +411,9 @@ public class Data {
     }
 
     public void actualizarVivienda(Vivienda v) throws SQLException {
-        query = "UPDATE cliente SET nombre ='" + v.getNombre()
+        query = "UPDATE vivienda SET n_rol ='" + v.getnRol()
                 + "',tipo ='" + v.getTipo()
+                + "',dis_vivienda ='" + v.getDispVivienda()
                 + "',precio_arriendo ='" + v.getPrecioArriendo()
                 + "',precio_venta ='" + v.getPrecioVenta()
                 + "',cant_banios ='" + v.getCantBaños()
@@ -440,7 +463,7 @@ public class Data {
     }
 
     public void borrarVivienda(Vivienda v) throws SQLException {
-        query = "DELETE cliente WHERE n_rol ='" + v.getnRol() + "'";
+        query = "DELETE FROM vivienda WHERE n_rol ='" + v.getnRol() + "'";
 
         con.ejecutar(query);
     }
@@ -614,14 +637,13 @@ public class Data {
 
         return viviendas;
     }
-    
-    
-        //estaba pesando en hacer un puro metodo que tomara valores de lo seleccionado en el filtrado
-        //pero tambien capaz de seleccionar el tipo de query en cierto casos, como cuando necesita
-       //ver ambos tipos de vivienda/condicion. Tome de referencia los metodos que ya estaban, y se me ocurre
-        //algo con la direccion del siguiente metodo
-        public List<VistaVivienda> leerTodasLasViviendasSegunSeleccion(String tipo) throws SQLException {
-        query = "SELECT * FROM vista_viviendas_disponibles WHERE nombre="+tipo+" ORDER BY precio_venta DESC";
+
+    //estaba pesando en hacer un puro metodo que tomara valores de lo seleccionado en el filtrado
+    //pero tambien capaz de seleccionar el tipo de query en cierto casos, como cuando necesita
+    //ver ambos tipos de vivienda/condicion. Tome de referencia los metodos que ya estaban, y se me ocurre
+    //algo con la direccion del siguiente metodo
+    public List<VistaVivienda> leerTodasLasViviendasSegunSeleccion(String tipo) throws SQLException {
+        query = "SELECT * FROM vista_viviendas_disponibles WHERE nombre=" + tipo + " ORDER BY precio_venta DESC";
 
         List<VistaVivienda> viviendas = new ArrayList<>();
 
