@@ -466,9 +466,10 @@ public class Data {
     }
 
     public void borrarUsuario(Usuario u) throws SQLException {
-        query = "DELETE cliente WHERE run ='" + u.getRun() + "'";
+        query = "CALL borrarUsuario('"+u.getRun()+"');";
 
         con.ejecutar(query);
+        con.close();
     }
 
     public void borrarVenta(Venta v) throws SQLException {
