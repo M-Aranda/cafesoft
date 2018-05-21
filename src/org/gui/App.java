@@ -71,6 +71,7 @@ public class App extends javax.swing.JFrame {
     private Usuario sesion;
     private JFileChooser fcBackup;
     private FileNameExtensionFilter filtroBakcup;
+    private String runUtilizadoParaIngresar;//necesario para un metodo que necesita el run de quien inngreso
     private DateFormat fInicio, fFinal;// DESTINADO A CALCULAR DATOS POR RANGO DE FECHA
 
     //query para los inserts
@@ -102,6 +103,7 @@ public class App extends javax.swing.JFrame {
         fcBackup.setFileFilter(filtroBakcup);
 
         JfVendedor.setTitle("Vendedor");
+        inicializarSeleccionDeFiltroVendedor();
         viviendasDisponibles = new ArrayList();
 
         fInicio.getDateInstance();
@@ -110,7 +112,7 @@ public class App extends javax.swing.JFrame {
         try {
             //  Data d= new Data();
             logs = d.leerVistaLogs();
-            viviendasDisponibles = d.leerTodasLasViviendasDisponibles();
+            // se puede descomentar esto para incializar tabla de vendedor, con datos. viviendasDisponibles = d.leerTodasLasViviendasDisponibles();
         } catch (SQLException ex) {
             Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -186,52 +188,6 @@ public class App extends javax.swing.JFrame {
         tblLog.setModel(modelLog);
     }
 
-    //para escribir el objeto
-    public static long writeJavaObject(Connection conn, Object object) throws Exception {
-        String className = object.getClass().getName();
-        PreparedStatement pstmt = conn.prepareStatement(WRITE_OBJECT_SQL, Statement.RETURN_GENERATED_KEYS);
-
-        // fijar parametros de ingreso
-        pstmt.setString(1, className);
-        pstmt.setObject(2, object);
-        pstmt.executeUpdate();
-
-        // obtener la clave generada para el id
-        ResultSet rs = pstmt.getGeneratedKeys();
-        int id = -1;
-        if (rs.next()) {
-            id = rs.getInt(1);
-        }
-
-        rs.close();
-        pstmt.close();
-
-        return id;
-    }
-
-    //para leer el objeto
-    public static Object readJavaObject(Connection conn, long id) throws Exception {
-        PreparedStatement pstmt = conn.prepareStatement(READ_OBJECT_SQL);
-        pstmt.setLong(1, id);
-        ResultSet rs = pstmt.executeQuery();
-        rs.next();
-        Object object = rs.getObject(1);
-        String className = object.getClass().getName();
-
-        byte[] buf = rs.getBytes(1);
-        ObjectInputStream objectIn = null;
-        if (buf != null) {
-            objectIn = new ObjectInputStream(new ByteArrayInputStream(buf));
-        }
-
-        Object deSerializedObject = objectIn.readObject();
-
-        rs.close();
-        pstmt.close();
-
-        return deSerializedObject;
-    }
-
     public void msgErrorRutNoEncontrado() {
         String titulo = "Error";
         String msg = "El rut ingresado no se encuentra registrado";
@@ -259,7 +215,7 @@ public class App extends javax.swing.JFrame {
         lblTipoPrecio = new javax.swing.JLabel();
         rbtDeVenta = new javax.swing.JRadioButton();
         rbtDeRenta = new javax.swing.JRadioButton();
-        jMenuBar1 = new javax.swing.JMenuBar();
+        jMBarra = new javax.swing.JMenuBar();
         jMArchivo = new javax.swing.JMenu();
         jMCrearCli = new javax.swing.JMenuItem();
         jMVCamAp = new javax.swing.JMenuItem();
@@ -485,9 +441,9 @@ public class App extends javax.swing.JFrame {
         });
         jMArchivo.add(jMCerrarSesion);
 
-        jMenuBar1.add(jMArchivo);
+        jMBarra.add(jMArchivo);
 
-        JfVendedor.setJMenuBar(jMenuBar1);
+        JfVendedor.setJMenuBar(jMBarra);
 
         javax.swing.GroupLayout JfVendedorLayout = new javax.swing.GroupLayout(JfVendedor.getContentPane());
         JfVendedor.getContentPane().setLayout(JfVendedorLayout);
@@ -1356,6 +1312,12 @@ public class App extends javax.swing.JFrame {
             }
         });
 
+        txtRun.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtRunActionPerformed(evt);
+            }
+        });
+
         lblRUN.setText("R.U.N");
 
         btnIniciarSesion.setText("Iniciar sesión");
@@ -1406,12 +1368,29 @@ public class App extends javax.swing.JFrame {
     }//GEN-LAST:event_jMCrearCliActionPerformed
 
     private void jMVenderVivActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMVenderVivActionPerformed
+        int colSelec = 0;
+        int filaSelec = tblDatosFrameVend.getSelectedRow();
 
+        try {
+            String indiceDeViviendaAVender = tblDatosFrameVend.getModel().getValueAt(filaSelec, colSelec).toString();
+
+        } catch (Exception e) {
+            msgErrorNoSeSeleccionoVivienda();
+        }
 
 
     }//GEN-LAST:event_jMVenderVivActionPerformed
 
     private void jMArrendarViviendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMArrendarViviendaActionPerformed
+
+        int colSelec = 0;
+        int filaSelec = tblDatosFrameVend.getSelectedRow();
+        try {
+            String indiceDeViviendaAArrendar = tblDatosFrameVend.getModel().getValueAt(filaSelec, colSelec).toString();
+
+        } catch (Exception e) {
+            msgErrorNoSeSeleccionoVivienda();
+        }
 
 
     }//GEN-LAST:event_jMArrendarViviendaActionPerformed
@@ -1444,6 +1423,7 @@ public class App extends javax.swing.JFrame {
 
     private void btnIniciarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarSesionActionPerformed
         String run = txtRun.getText();
+        runUtilizadoParaIngresar=txtRun.getText();
         txtRun.setText(null);
 
         try {
@@ -1508,7 +1488,7 @@ public class App extends javax.swing.JFrame {
 
             int rutClienteExiste;
             try {
-                rutClienteExiste = d.usarProcedimientoCrear_cliente(c, txtRun.getText());
+                rutClienteExiste = d.usarFuncionCrear_cliente(c, runUtilizadoParaIngresar);
                 if (rutClienteExiste == 1) {
                     msgErrorRunDeClienteYaExiste();
                     txtRunCliente.setText("");
@@ -1878,6 +1858,10 @@ public class App extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnVerViviendasActionPerformed
 
+    private void txtRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtRunActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtRunActionPerformed
+
     private void msgClienteCreado() {
         String titulo = "Aviso";
         String msg = "Cliente registrado con exito";
@@ -1896,6 +1880,14 @@ public class App extends javax.swing.JFrame {
     private void msgErrorRunDeClienteYaExiste() {
         String titulo = "Error";
         String msg = "El rut ingresado ya existe";
+        int tipoMsg = JOptionPane.ERROR_MESSAGE;
+        JOptionPane.showMessageDialog(null, msg, titulo, tipoMsg);
+
+    }
+
+    private void msgErrorNoSeSeleccionoVivienda() {
+        String titulo = "Error";
+        String msg = "Debe seleccionar la fila de la vivienda que quiere vender o arrendar";
         int tipoMsg = JOptionPane.ERROR_MESSAGE;
         JOptionPane.showMessageDialog(null, msg, titulo, tipoMsg);
 
@@ -2065,6 +2057,54 @@ public class App extends javax.swing.JFrame {
         }
     }
 
+    //de momento estos 2 metodos son innecesarios
+    //para escribir el objeto
+//    public static long writeJavaObject(Connection conn, Object object) throws Exception {
+//        String className = object.getClass().getName();
+//        PreparedStatement pstmt = conn.prepareStatement(WRITE_OBJECT_SQL, Statement.RETURN_GENERATED_KEYS);
+//
+//        // fijar parametros de ingreso
+//        pstmt.setString(1, className);
+//        pstmt.setObject(2, object);
+//        pstmt.executeUpdate();
+//
+//        // obtener la clave generada para el id
+//        ResultSet rs = pstmt.getGeneratedKeys();
+//        int id = -1;
+//        if (rs.next()) {
+//            id = rs.getInt(1);
+//        }
+//
+//        rs.close();
+//        pstmt.close();
+//
+//        return id;
+//    }
+//
+//    
+//    
+//    //para leer el objeto
+//    public static Object readJavaObject(Connection conn, long id) throws Exception {
+//        PreparedStatement pstmt = conn.prepareStatement(READ_OBJECT_SQL);
+//        pstmt.setLong(1, id);
+//        ResultSet rs = pstmt.executeQuery();
+//        rs.next();
+//        Object object = rs.getObject(1);
+//        String className = object.getClass().getName();
+//
+//        byte[] buf = rs.getBytes(1);
+//        ObjectInputStream objectIn = null;
+//        if (buf != null) {
+//            objectIn = new ObjectInputStream(new ByteArrayInputStream(buf));
+//        }
+//
+//        Object deSerializedObject = objectIn.readObject();
+//
+//        rs.close();
+//        pstmt.close();
+//
+//        return deSerializedObject;
+//    }
     /**
      * @param args the command line arguments
      */
@@ -2182,12 +2222,12 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JMenu jMArchivo;
     private javax.swing.JMenuItem jMArrendarVivienda;
+    private javax.swing.JMenuBar jMBarra;
     private javax.swing.JMenuItem jMCerrarSesion;
     private javax.swing.JMenuItem jMCrearCli;
     private javax.swing.JMenuItem jMVCamAp;
     private javax.swing.JMenuItem jMVenderViv;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuBar jMenuBar2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

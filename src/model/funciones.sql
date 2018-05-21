@@ -32,7 +32,7 @@ CREATE VIEW vista_viviendas_disponibles AS -- DROP view vista_viviendas_disponib
     
     
  --   SELECT * FROM vista_viviendas_disponibles
- SELECT * FROM vista_viviendas_disponibles  WHERE (tipo='Casa' OR tipo='Departamento') AND (condicion='Nueva' OR condicion='Usada') ORDER BY precio_venta DESC;
+ -- SELECT * FROM vista_viviendas_disponibles  WHERE (tipo='Casa' OR tipo='Departamento') AND (condicion='Nueva' OR condicion='Usada') ORDER BY precio_venta DESC;
 
 
 CREATE VIEW vista_estadisticas_viviendas AS -- DROP view vista_viviendas_disponibles
@@ -69,7 +69,7 @@ CREATE VIEW vista_logs AS
         u.nombre
     FROM
         log l
-        INNER JOIN usuario u ON u.run = l.usuario_fk
+        INNER JOIN usuario u ON u.run = l.usuario_fk;
 
 -- SELECT * FROM vista_logs
 
@@ -153,5 +153,27 @@ BEGIN
     INSERT INTO log VALUES (NULL,detalle,now(),run_user);
 END $$
 DELIMITER ;
+
+
+
+DELIMITER $$
+CREATE PROCEDURE crear_o_vender_vivienda (nRol INT, tipoContrato VARCHAR (50), runCliente VARCHAR(50), runVendedor VARCHAR (50))
+BEGIN   
+	DECLARE detalle VARCHAR(200);
+    DECLARE nomCliente VARCHAR (200);
+    
+    SET nomCliente=(SELECT nombre FROM cliente WHERE run=runCliente);
+    SET detalle=CONCAT('Se celebra un contrato tipo ', tipoContrato,' de la vivienda de nº de rol: ',nRol,'para el cliente de run',runCliente,' conocido/a como ',nomCliente,' por el/la vendedor/a ',runVendedor);
+    
+    
+	INSERT INTO contrato VALUES(NULL, runCliente, runVendedor, nRol, NOW());
+    INSERT INTO log VALUES (NULL,detalle,NOW(),runVendedor);
+    
+    
+END $$
+DELIMITER ;
+
+
+-- CALL crear_o_vender_vivienda();
 
 CALL nuevo_log('holaaaah','11-1');

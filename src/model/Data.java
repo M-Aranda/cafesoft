@@ -72,14 +72,14 @@ public class Data {
         con.ejecutar(query);
     }
 
-    public int usarProcedimientoCrear_cliente(Cliente c, String usuarioActual) throws SQLException {
+    public int usarFuncionCrear_cliente(Cliente c, String usuarioActual) throws SQLException {
 
         CallableStatement llamarFuncionCrearCliente = (CallableStatement) cone.prepareCall("SELECT crear_cliente(?,?,?,?)");
         llamarFuncionCrearCliente.setString(1, "" + c.getRun() + "");
         llamarFuncionCrearCliente.setString(2, "" + c.getNombre() + "");
         llamarFuncionCrearCliente.setInt(3, c.getSueldo());
         llamarFuncionCrearCliente.setString(4, usuarioActual);
-
+        System.out.println(llamarFuncionCrearCliente);
         llamarFuncionCrearCliente.execute();
         int coincidenciasDeRut = 2;
 
@@ -90,13 +90,7 @@ public class Data {
         }
         res.close();
 
-//        
-//        query="CALL crear_cliente("+c.getRun()+","+c.getNombre()+","+c.getSueldo()+","+usuarioActual+")";
-//        rs = con.ejecutarSelect(query);
-//        int res = 0;
-//        while (rs.next()) {
-//            res = rs.getInt(1);
-//        }
+
         return coincidenciasDeRut;
 
     }
