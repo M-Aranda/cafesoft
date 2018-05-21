@@ -10,10 +10,13 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.OutputStream;
+import static java.lang.Thread.sleep;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,6 +26,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -53,6 +57,82 @@ public class App extends javax.swing.JFrame {
 
         @Override
         public void run() {
+
+            while (true) {
+                Properties p = new Properties();
+
+                File config = new File("config.properties");
+
+                try {
+                    if (config.exists()) {
+                        //si se encuentra, se leen los datos que contiene
+                        FileReader fr = new FileReader(config);
+
+                        p.load(fr);
+
+                        String clrBotones, clrTextBotones;
+                        clrBotones = p.getProperty("clrBotones");
+                        clrTextBotones = p.getProperty("clrTextBotones");
+
+                        String[] spltColorBoton = clrBotones.split(",");
+                        String[] spltColorTextBoton = clrTextBotones.split(",");
+                        fr.close();
+
+                        int rB = Integer.parseInt(spltColorBoton[0]);
+                        int gB = Integer.parseInt(spltColorBoton[1]);
+                        int bB = Integer.parseInt(spltColorBoton[2]);
+
+                        int rT = Integer.parseInt(spltColorTextBoton[0]);
+                        int gT = Integer.parseInt(spltColorTextBoton[1]);
+                        int bT = Integer.parseInt(spltColorTextBoton[2]);
+
+                        Color cb = new Color(rB, gB, bB);
+                        Color ctb = new Color(rT, gT, bT);
+
+                        try {
+                            //COLOR BOTONES
+                            btnGuardarCambiosBotones.setBackground(cb);
+                            btnCancelarColores.setBackground(cb);
+                            btnFiltrarViviendasJfVendedor.setBackground(cb);
+                            btnCrearCliente.setBackground(cb);
+                            btnCancelarCreacionDeCliente.setBackground(cb);
+                            
+                            
+                            //COLOR TEXTO BOTONES
+                            btnGuardarCambiosBotones.setForeground(ctb);
+                            btnCancelarColores.setForeground(ctb);
+                            btnFiltrarViviendasJfVendedor.setForeground(ctb);
+                            btnCrearCliente.setForeground(ctb);
+                            btnCancelarCreacionDeCliente.setForeground(ctb);
+
+                        } catch (Exception e) {
+                        }
+
+                    } else {
+                        //si no, se crea uno con datos por defecto
+                        Properties prop = new Properties();
+
+                        prop.put("clrBotones", "212,208,200");
+                        prop.put("clrTextBotones", "0,0,0");
+
+                        try {
+                            File archivo = new File("config.properties");
+                            FileWriter fw = new FileWriter(archivo);
+                            prop.store(fw, "configuracion Colores");
+                            fw.close();
+                        } catch (IOException ex) {
+                            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                    }
+                } catch (IOException e) {
+                }
+                try {
+                    sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
 
         }
 
@@ -94,6 +174,10 @@ public class App extends javax.swing.JFrame {
         }
 
         initComponents();
+
+        HiloDePrueba properties = new HiloDePrueba();
+        properties.start();
+
         this.setTitle("Inicio de sesión");
         this.setLocationRelativeTo(null);
         this.setResizable(false);
@@ -331,6 +415,13 @@ public class App extends javax.swing.JFrame {
         jLabel34 = new javax.swing.JLabel();
         jComboBox2 = new javax.swing.JComboBox<>();
         btnGVentaORenta = new javax.swing.ButtonGroup();
+        frmColores = new javax.swing.JFrame();
+        clrChoosser = new javax.swing.JColorChooser();
+        btnGuardarCambiosBotones = new javax.swing.JButton();
+        btnCancelarColores = new javax.swing.JButton();
+        rdCambiarColoresTextoBotones = new javax.swing.JRadioButton();
+        rdCambiarColoresBotones = new javax.swing.JRadioButton();
+        btnGCambioColores = new javax.swing.ButtonGroup();
         txtRun = new javax.swing.JTextField();
         lblRUN = new javax.swing.JLabel();
         btnIniciarSesion = new javax.swing.JButton();
@@ -412,6 +503,11 @@ public class App extends javax.swing.JFrame {
 
         jMVCamAp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
         jMVCamAp.setText("Cambiar apariencia");
+        jMVCamAp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMVCamApActionPerformed(evt);
+            }
+        });
         jMArchivo.add(jMVCamAp);
 
         jMVenderViv.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
@@ -938,7 +1034,7 @@ public class App extends javax.swing.JFrame {
         });
 
         jLabel12.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel12.setText("Crear punto de restaucación");
+        jLabel12.setText("Crear punto de restauración");
 
         jLabel13.setText("Crea un punto de restauración con toda la información de la aplicacion, ");
 
@@ -1302,6 +1398,65 @@ public class App extends javax.swing.JFrame {
                 .addGroup(frmStatVendedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        btnGuardarCambiosBotones.setText("Guardar Cambios");
+        btnGuardarCambiosBotones.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarCambiosBotonesActionPerformed(evt);
+            }
+        });
+
+        btnCancelarColores.setText("Cancelar");
+        btnCancelarColores.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarColoresActionPerformed(evt);
+            }
+        });
+
+        btnGCambioColores.add(rdCambiarColoresTextoBotones);
+        rdCambiarColoresTextoBotones.setText("Cambiar Color Texto Botones");
+
+        btnGCambioColores.add(rdCambiarColoresBotones);
+        rdCambiarColoresBotones.setSelected(true);
+        rdCambiarColoresBotones.setText("Cambiar Color Botones");
+
+        javax.swing.GroupLayout frmColoresLayout = new javax.swing.GroupLayout(frmColores.getContentPane());
+        frmColores.getContentPane().setLayout(frmColoresLayout);
+        frmColoresLayout.setHorizontalGroup(
+            frmColoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(frmColoresLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(frmColoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(frmColoresLayout.createSequentialGroup()
+                        .addComponent(btnGuardarCambiosBotones, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(frmColoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(rdCambiarColoresTextoBotones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(rdCambiarColoresBotones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 148, Short.MAX_VALUE)
+                        .addComponent(btnCancelarColores, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(clrChoosser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        frmColoresLayout.setVerticalGroup(
+            frmColoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(frmColoresLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(clrChoosser, javax.swing.GroupLayout.PREFERRED_SIZE, 461, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(frmColoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(frmColoresLayout.createSequentialGroup()
+                        .addGap(5, 5, 5)
+                        .addComponent(btnGuardarCambiosBotones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(frmColoresLayout.createSequentialGroup()
+                        .addGap(15, 15, 15)
+                        .addComponent(rdCambiarColoresBotones, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(rdCambiarColoresTextoBotones, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 12, Short.MAX_VALUE))
+                    .addComponent(btnCancelarColores, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -1868,6 +2023,52 @@ public class App extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtRunActionPerformed
 
+    private void btnGuardarCambiosBotonesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarCambiosBotonesActionPerformed
+        Color color = clrChoosser.getColor();
+
+        int r = color.getRed();
+        int g = color.getGreen();
+        int b = color.getBlue();
+
+        Properties p = new Properties();
+        File config = new File("config.properties");
+        try {
+            FileReader fr = new FileReader(config);
+            p.load(fr);
+        } catch (IOException iOException) {
+        }
+
+        String propBoton = p.getProperty("clrBotones");
+        String propTextBoton = p.getProperty("clrTextBotones");
+
+        if (rdCambiarColoresBotones.isSelected()) {
+            p.setProperty("clrBotones", r + "," + g + "," + b);
+            p.setProperty("clrTextBotones", propTextBoton);
+        } else {
+            p.put("clrBotones", propBoton);
+            p.put("clrTextBotones", r + "," + g + "," + b);
+        }
+
+        try {
+            File archivo = new File("config.properties");
+            FileWriter fw = new FileWriter(archivo);
+            p.store(fw, "configuracion Colores");
+            fw.close();
+        } catch (IOException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnGuardarCambiosBotonesActionPerformed
+
+    private void btnCancelarColoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarColoresActionPerformed
+        frmColores.setVisible(false);
+    }//GEN-LAST:event_btnCancelarColoresActionPerformed
+
+    private void jMVCamApActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMVCamApActionPerformed
+        frmColores.setBounds(WIDTH, WIDTH, 920, 620);
+        frmColores.setLocationRelativeTo(null);
+        frmColores.setVisible(true);
+    }//GEN-LAST:event_jMVCamApActionPerformed
+
     private void msgClienteCreado() {
         String titulo = "Aviso";
         String msg = "Cliente registrado con exito";
@@ -2160,13 +2361,16 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JButton btnBorrarVivienda;
     private javax.swing.JButton btnBuscarVendedor;
     private javax.swing.JButton btnBuscarVivienda;
+    private javax.swing.JButton btnCancelarColores;
     private javax.swing.JButton btnCancelarCreacionDeCliente;
     private javax.swing.JButton btnCrearCliente;
     private javax.swing.JButton btnCrearVendedor;
     private javax.swing.JButton btnCrearVivienda;
     private javax.swing.JButton btnFiltrarViviendasJfVendedor;
+    private javax.swing.ButtonGroup btnGCambioColores;
     private javax.swing.ButtonGroup btnGFiltrarPrecio;
     private javax.swing.ButtonGroup btnGVentaORenta;
+    private javax.swing.JButton btnGuardarCambiosBotones;
     private javax.swing.JButton btnIniciarSesion;
     private javax.swing.JButton btnLog;
     private javax.swing.JButton btnRespaldo;
@@ -2180,7 +2384,9 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cboTipo;
     private javax.swing.JCheckBox chkFiltrarPorCasas;
     private javax.swing.JCheckBox chkFiltrarPorDepartamentos;
+    private javax.swing.JColorChooser clrChoosser;
     private javax.swing.JFrame frmAdmin;
+    private javax.swing.JFrame frmColores;
     private javax.swing.JFrame frmStatVendedores;
     private javax.swing.JFrame frmStatViviendas;
     private javax.swing.JMenuItem itemAdminSalir;
@@ -2276,6 +2482,8 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JRadioButton rbtDeVenta;
     private javax.swing.JRadioButton rbtFiltrarAsc;
     private javax.swing.JRadioButton rbtFiltrarDesc;
+    private javax.swing.JRadioButton rdCambiarColoresBotones;
+    private javax.swing.JRadioButton rdCambiarColoresTextoBotones;
     private javax.swing.JSpinner spnArriendo;
     private javax.swing.JSpinner spnBanios;
     private javax.swing.JSpinner spnPiezas;
