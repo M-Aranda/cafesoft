@@ -684,7 +684,7 @@ public class App extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtDireccion)
-                            .addComponent(cboTipo, 0, 440, Short.MAX_VALUE)
+                            .addComponent(cboTipo, 0, 419, Short.MAX_VALUE)
                             .addComponent(cboDisp, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cboCondicion, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(spnBanios)
@@ -982,7 +982,7 @@ public class App extends javax.swing.JFrame {
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
                             .addComponent(btnRespaldo)))
                     .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 497, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1423,7 +1423,7 @@ public class App extends javax.swing.JFrame {
 
     private void btnIniciarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarSesionActionPerformed
         String run = txtRun.getText();
-        runUtilizadoParaIngresar=txtRun.getText();
+        runUtilizadoParaIngresar = txtRun.getText();
         txtRun.setText(null);
 
         try {
@@ -1740,7 +1740,9 @@ public class App extends javax.swing.JFrame {
     private void btnCrearViviendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearViviendaActionPerformed
         try {
             int nrol = Integer.parseInt(txtNRol.getText());
+
             int tipo = cboTipo.getSelectedIndex() + 1;
+
             int disp = cboDisp.getSelectedIndex() + 1;
             int arriendo = (Integer) spnArriendo.getValue();
             int venta = (Integer) spnVenta.getValue();
@@ -1753,7 +1755,7 @@ public class App extends javax.swing.JFrame {
                 cond = true;
             }
 
-            Vivienda v = new Vivienda(nrol, tipo, disp, arriendo, venta, banios, piezas, direccion, cond);
+            Vivienda v = new Vivienda(nrol, disp, tipo, arriendo, venta, banios, piezas, direccion, cond);
 
             d.crearVivienda(v, sesion.getRun());
 
@@ -1766,6 +1768,8 @@ public class App extends javax.swing.JFrame {
             spnPiezas.setValue(0);
             spnArriendo.setValue(0);
             spnVenta.setValue(0);
+
+            btnCrearVivienda.setEnabled(false);
 
             JOptionPane.showMessageDialog(this, "Vivienda creada.", "Creado", JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception e) {
@@ -1802,6 +1806,8 @@ public class App extends javax.swing.JFrame {
             spnPiezas.setValue(0);
             spnArriendo.setValue(0);
             spnVenta.setValue(0);
+
+            btnBorrarVivienda.setEnabled(false);
 
             JOptionPane.showMessageDialog(this, "Vivienda borrada.", "Borrado", JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception e) {

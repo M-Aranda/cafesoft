@@ -471,7 +471,7 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="txtDireccion" max="32767" attributes="0"/>
-                                      <Component id="cboTipo" pref="440" max="32767" attributes="0"/>
+                                      <Component id="cboTipo" pref="419" max="32767" attributes="0"/>
                                       <Component id="cboDisp" max="32767" attributes="0"/>
                                       <Component id="cboCondicion" max="32767" attributes="0"/>
                                       <Component id="spnBanios" max="32767" attributes="0"/>
@@ -1026,7 +1026,7 @@
                               </Group>
                               <Component id="jSeparator2" alignment="0" min="-2" pref="497" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="25" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
