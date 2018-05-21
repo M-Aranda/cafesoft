@@ -12,7 +12,7 @@ package model;
 public class Vivienda {
 
     private int nRol;
-    private String nombre;
+    private int dispVivienda;
     private int tipo;
     private int precioArriendo;
     private int precioVenta;
@@ -24,9 +24,9 @@ public class Vivienda {
     public Vivienda() {
     }
 
-    public Vivienda(int nRol, String nombre, int tipo, int precioArriendo, int precioVenta, int cantBaños, int cantPiezas, String direccion, boolean usada) {
+    public Vivienda(int nRol, int dispVivienda, int tipo, int precioArriendo, int precioVenta, int cantBaños, int cantPiezas, String direccion, boolean usada) {
         this.nRol = nRol;
-        this.nombre = nombre;
+        this.dispVivienda = dispVivienda;
         this.tipo = tipo;
         this.precioArriendo = precioArriendo;
         this.precioVenta = precioVenta;
@@ -44,12 +44,12 @@ public class Vivienda {
         this.nRol = nRol;
     }
 
-    public String getNombre() {
-        return nombre;
+    public int getDispVivienda() {
+        return dispVivienda;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setDispVivienda(int dispVivienda) {
+        this.dispVivienda = dispVivienda;
     }
 
     public int getTipo() {
@@ -110,7 +110,7 @@ public class Vivienda {
 
     @Override
     public String toString() {
-        return "Vivienda{" + "nRol=" + nRol + ", nombre=" + nombre + ", tipo=" + tipo + ", precioArriendo=" + precioArriendo + ", precioVenta=" + precioVenta + ", cantBa\u00f1os=" + cantBaños + ", cantPiezas=" + cantPiezas + ", direccion=" + direccion + ", usada=" + usada + '}';
+        return "Vivienda{" + "nRol=" + nRol + ", dispVivienda=" + dispVivienda + ", tipo=" + tipo + ", precioArriendo=" + precioArriendo + ", precioVenta=" + precioVenta + ", cantBa\u00f1os=" + cantBaños + ", cantPiezas=" + cantPiezas + ", direccion=" + direccion + ", usada=" + usada + '}';
     }
-
+    
 }

@@ -6,6 +6,7 @@ import com.jtattoo.plaf.luna.LunaLookAndFeel;
 import java.awt.Color;
 import java.awt.event.WindowEvent;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -22,12 +23,15 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import model.Cliente;
 import model.Data;
+import model.HiloLector;
+import model.Log;
 import model.TModelLog;
 import model.TModelVivienda;
 import model.TModelViviendasDisponibles;
@@ -55,9 +59,13 @@ public class App extends javax.swing.JFrame {
     private TModelVivienda modelVivienda;
     private TModelViviendasDisponibles modelViviendasDisponibles;
     private TModelLog modelLog;
+    private Log log;
     private List<VistaVivienda> viviendasDisponibles;
     private List<VistaLog> logs;
     private List<Usuario> usuarios;
+    private Usuario sesion;
+    private JFileChooser fcBackup;
+    private FileNameExtensionFilter filtroBakcup;
 
     //query para los inserts
     static final String WRITE_OBJECT_SQL = "INSERT INTO ejem(nombre, valor_objeto) VALUES (?, ?)";// modificar segun sea necesario
@@ -83,12 +91,17 @@ public class App extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         this.setResizable(false);
 
+        fcBackup = new JFileChooser();
+        filtroBakcup = new FileNameExtensionFilter("Seleccione un archivo SQL Válido", "sql");
+        fcBackup.setFileFilter(filtroBakcup);
+
         JfVendedor.setTitle("Vendedor");
         rbtFiltrarAsc.isSelected();
         viviendasDisponibles = new ArrayList();
+
         try {
             //  Data d= new Data();
-            logs = new ArrayList<>();
+            logs = d.leerVistaLogs();
             viviendasDisponibles = d.leerTodasLasViviendasDisponibles();
         } catch (SQLException ex) {
             Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
@@ -98,6 +111,7 @@ public class App extends javax.swing.JFrame {
         cargarTablaJFrameVendedor();
 
         ocultarOpcionesParaFiltrar();
+        cargarTblLog();
 
         JFrameCrearCliente.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -296,9 +310,19 @@ public class App extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblLog = new javax.swing.JTable();
+        btnLog = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnRespaldo = new javax.swing.JButton();
+        btnRestaurar = new javax.swing.JButton();
+        jLabel12 = new javax.swing.JLabel();
+        jSeparator2 = new javax.swing.JSeparator();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
         jMenuBar2 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         itemAdminSalir = new javax.swing.JMenuItem();
@@ -316,7 +340,12 @@ public class App extends javax.swing.JFrame {
         btnIniciarSesion = new javax.swing.JButton();
         lblicono = new javax.swing.JLabel();
 
-        JfVendedor.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        JfVendedor.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        JfVendedor.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                JfVendedorWindowClosing(evt);
+            }
+        });
 
         tblDatosFrameVend.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -475,11 +504,10 @@ public class App extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        frmAdmin.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-
-        jTabbedPane1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTabbedPane1MouseClicked(evt);
+        frmAdmin.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        frmAdmin.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                frmAdminWindowClosing(evt);
             }
         });
 
@@ -520,7 +548,7 @@ public class App extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 387, Short.MAX_VALUE)
+                        .addGap(0, 429, Short.MAX_VALUE)
                         .addComponent(btnBorrarVendedor)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCrearVendedor))
@@ -553,7 +581,7 @@ public class App extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCrearVendedor)
                     .addComponent(btnBorrarVendedor))
-                .addContainerGap(175, Short.MAX_VALUE))
+                .addContainerGap(184, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Vendedor", jPanel1);
@@ -639,7 +667,7 @@ public class App extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtDireccion)
-                            .addComponent(cboTipo, 0, 431, Short.MAX_VALUE)
+                            .addComponent(cboTipo, 0, 477, Short.MAX_VALUE)
                             .addComponent(cboDisp, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cboCondicion, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(spnBanios)
@@ -702,7 +730,7 @@ public class App extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCrearVivienda)
                     .addComponent(btnBorrarVivienda))
-                .addContainerGap(68, Short.MAX_VALUE))
+                .addContainerGap(100, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Vivienda", jPanel2);
@@ -711,11 +739,11 @@ public class App extends javax.swing.JFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 552, Short.MAX_VALUE)
+            .addGap(0, 577, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 366, Short.MAX_VALUE)
+            .addGap(0, 371, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Ver Estadísticas", jPanel3);
@@ -733,57 +761,124 @@ public class App extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(tblLog);
 
+        btnLog.setText("Actualizar Log");
+        btnLog.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 528, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(206, 206, 206)
+                .addComponent(btnLog)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnLog)
+                .addGap(0, 11, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Ver Log", jPanel4);
 
-        jButton1.setText("Respaldar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnRespaldo.setText("Respaldar");
+        btnRespaldo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnRespaldoActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Restaurar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnRestaurar.setText("Restaurar");
+        btnRestaurar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnRestaurarActionPerformed(evt);
             }
         });
+
+        jLabel12.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel12.setText("Crear punto de restaucación");
+
+        jLabel13.setText("Crea un punto de restauración con toda la información de la aplicacion, ");
+
+        jLabel14.setText("fecha y hora actual para un posible uso posterior.");
+
+        jLabel15.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel15.setText("Restaurar desde un punto guardado");
+
+        jLabel16.setText("Carga todos los datos de un archivo de restauración anteriormente");
+
+        jLabel17.setText("guardado, sobreescribiendo la infromación actual en la aplicación.");
+
+        jLabel18.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel18.setText("ADVERTENCIA: Para evitar perdida de datos, se recomienda crear un punto de  restauracion");
+
+        jLabel19.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel19.setText("antes de restaurar desde un punto guardado.");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(208, 208, 208)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton2)
-                    .addComponent(jButton1))
-                .addContainerGap(255, Short.MAX_VALUE))
+                .addGap(31, 31, 31)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel19)
+                    .addComponent(jLabel18)
+                    .addComponent(jLabel12)
+                    .addComponent(jLabel15)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
+                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel16)
+                                .addComponent(jLabel17))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnRestaurar))
+                        .addGroup(jPanel5Layout.createSequentialGroup()
+                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel13)
+                                .addComponent(jLabel14))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+                            .addComponent(btnRespaldo)))
+                    .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 497, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(32, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(80, 80, 80)
-                .addComponent(jButton1)
-                .addGap(56, 56, 56)
-                .addComponent(jButton2)
-                .addContainerGap(184, Short.MAX_VALUE))
+                .addGap(21, 21, 21)
+                .addComponent(jLabel12)
+                .addGap(27, 27, 27)
+                .addComponent(jLabel13)
+                .addGap(4, 4, 4)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel14)
+                    .addComponent(btnRespaldo))
+                .addGap(26, 26, 26)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel15)
+                .addGap(25, 25, 25)
+                .addComponent(jLabel16)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel17)
+                    .addComponent(btnRestaurar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 87, Short.MAX_VALUE)
+                .addComponent(jLabel18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel19)
+                .addGap(5, 5, 5))
         );
 
         jTabbedPane1.addTab("Restaurar", jPanel5);
@@ -885,7 +980,12 @@ public class App extends javax.swing.JFrame {
                 .addContainerGap(16, Short.MAX_VALUE))
         );
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         lblRUN.setText("R.U.N");
 
@@ -988,10 +1088,16 @@ public class App extends javax.swing.JFrame {
         try {
             Usuario u = d.buscarUsuario(run);
             if (u != null) {
+                sesion = u;
+                log = new Log();
+                log.setDescripcion(sesion.getNombre() + " Ha iniciado sesion");
+                log.setUsuario(sesion.getRun());
+                d.crearLog(log);
                 if (u.getTipo() == 1) {
+
                     this.dispose();
                     cargarCboViviendaAdmin();
-                    frmAdmin.setBounds(WIDTH, WIDTH, 400, 400);
+                    frmAdmin.setBounds(WIDTH, WIDTH, 600, 450);
                     frmAdmin.setLocationRelativeTo(null);
                     frmAdmin.setVisible(true);
                     JOptionPane.showMessageDialog(null, "          Bienvenido \n Administrador: " + u.getNombre());
@@ -1075,12 +1181,12 @@ public class App extends javax.swing.JFrame {
 
         if ((!chkFiltrarPorDepartamentos.isSelected()) && (chkFiltrarPorCasas.isSelected()) && (cboFiltrarPorCasas.getSelectedIndex() == 2) && (rbtFiltrarAsc.isSelected())) {
 
-//            try {
-//                viviendasDisponibles = d.leerTodasLasCasasDisponiblesAmbasASC();
-//                cargarTablaJFrameVendedor();
-//            } catch (SQLException ex) {
-//                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-//            }
+            try {
+                viviendasDisponibles = d.leerTodasLasCasasDisponiblesAmbasASC();
+                cargarTablaJFrameVendedor();
+            } catch (SQLException ex) {
+                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } else if ((!chkFiltrarPorCasas.isSelected()) && (chkFiltrarPorDepartamentos.isSelected()) && (cboFiltrarPorDepartamentos.getSelectedIndex() == 2 && (rbtFiltrarAsc.isSelected()))) {
             try {
                 viviendasDisponibles = d.leerTodosLosDepartamentosDisponiblesAmbosASC();
@@ -1122,24 +1228,12 @@ public class App extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnFiltrarViviendasJfVendedorActionPerformed
 
-    private void jTabbedPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseClicked
-        cargarTblLog();
-    }//GEN-LAST:event_jTabbedPane1MouseClicked
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        realizarBackup();
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        restaurarBackup();
-    }//GEN-LAST:event_jButton2ActionPerformed
-
     private void btnCrearVendedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearVendedorActionPerformed
         try {
             Usuario u = new Usuario(txtRunVendedor.getText(),
                     txtNombreVendedor.getText(),
                     2);
-            d.crearUsuario(u);
+            d.crearUsuario(u, sesion.getRun());
 
             txtRunVendedor.setText(null);
             txtNombreVendedor.setText(null);
@@ -1190,6 +1284,10 @@ public class App extends javax.swing.JFrame {
             txtRunVendedor.requestFocus();
 
             JOptionPane.showMessageDialog(this, "Vendedor borrado.", "Borrado", JOptionPane.INFORMATION_MESSAGE);
+            log = new Log();
+            log.setDescripcion(sesion.getNombre() + " ha borrado al usuario de run "+u.getRun());
+            log.setUsuario(sesion.getRun());
+            d.crearLog(log);
         } catch (Exception e) {
             System.err.println(e);
         }
@@ -1266,7 +1364,7 @@ public class App extends javax.swing.JFrame {
 
             Vivienda v = new Vivienda(nrol, tipo, disp, arriendo, venta, banios, piezas, direccion, cond);
 
-            d.crearVivienda(v);
+            d.crearVivienda(v, sesion.getRun());
 
             txtNRol.setText(null);
             txtDireccion.setText(null);
@@ -1303,7 +1401,7 @@ public class App extends javax.swing.JFrame {
             Vivienda v = new Vivienda(nrol, tipo, disp, arriendo, venta, banios, piezas, direccion, cond);
 
             d.borrarVivienda(v);
-            
+
             txtNRol.setText(null);
             txtDireccion.setText(null);
             cboTipo.setSelectedIndex(0);
@@ -1319,6 +1417,47 @@ public class App extends javax.swing.JFrame {
             System.err.println(e);
         }
     }//GEN-LAST:event_btnBorrarViviendaActionPerformed
+
+    private void btnRespaldoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRespaldoActionPerformed
+        try {
+            confirmarRespaldo();
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnRespaldoActionPerformed
+
+    private void btnRestaurarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRestaurarActionPerformed
+
+        try {
+            confirmarRestaurar();
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnRestaurarActionPerformed
+
+    private void frmAdminWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_frmAdminWindowClosing
+        try {
+            salir();
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_frmAdminWindowClosing
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        cerrar();
+    }//GEN-LAST:event_formWindowClosing
+
+    private void JfVendedorWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_JfVendedorWindowClosing
+        try {
+            salir();
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_JfVendedorWindowClosing
+
+    private void btnLogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogActionPerformed
+        cargarTblLog();
+    }//GEN-LAST:event_btnLogActionPerformed
 
     private void msgClienteCreado() {
         String titulo = "Aviso";
@@ -1343,7 +1482,9 @@ public class App extends javax.swing.JFrame {
 
     }
 
-    private void realizarBackup() {
+    private void realizarBackup() throws SQLException {
+        File dir = new File(new File(".").getAbsolutePath(), "\\backup");
+        dir.mkdirs();
         try {
             //RECUPERA FECHA Y HORA DEL SISTEMA
             Calendar c = Calendar.getInstance();
@@ -1357,8 +1498,11 @@ public class App extends javax.swing.JFrame {
             //despues de eso se podrá acceder a mysql desde el CMD del sistema ( asi me funciono a mi )
             //ahí deberían poder ejecutar este comando.
             Process proceso = Runtime.getRuntime().exec("mysqldump -u root -p cafesoft");//123456 contraseña por defecto, cambiar si hay otra
+            new HiloLector(proceso.getErrorStream()).start();
+
             InputStream inputStream = proceso.getInputStream();
-            FileOutputStream fOutStream = new FileOutputStream("backup " + fecha + " " + hora + ".sql");//el archivo s guarda en la raíz del proyecto
+            FileOutputStream fOutStream = new FileOutputStream("backup\\backup " + fecha + " " + hora + ".sql"); //el archivo se guarda en 
+            //la raíz del proyecto carpeta backup;
 
             byte[] buff = new byte[1000];
             int readed = inputStream.read(buff);
@@ -1369,14 +1513,23 @@ public class App extends javax.swing.JFrame {
             }
 
             fOutStream.close();
+            log = new Log();
+            log.setDescripcion(sesion.getNombre() + " creo el punto de restauracion " + dir.getName());
+            log.setUsuario(sesion.getRun());
+            d.crearLog(log);
         } catch (IOException ex) {
             Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private void restaurarBackup() {
-        try {
+    private void restaurarBackup() throws SQLException {
+        /* Abre jFileChoser en la ruta cafesoft/backup pidiendo archivos con extencion .sql */
+        File dir = new File(new File(".").getAbsolutePath(), "\\backup");
+        dir.mkdirs();
+        fcBackup.setCurrentDirectory(dir);
+        fcBackup.showOpenDialog(this);
 
+        try {
             /* en este metodo se puede recuperar X base de datos guardada anteriormente. Sería bueno tener un registro de los nombres de las bases de datos respaldadas
             para poder recuperar solo su nombre. en ese caso, solo deberia cambiarse el nombre en 
             **FileInputStream fInStream = new FileInputStream("backup 1942018 17384.sql");**
@@ -1385,23 +1538,110 @@ public class App extends javax.swing.JFrame {
             El backup borra y reinserta los valores que quedaron guardados en la base de datos de respaldo,
             todo lo que esté despues de lo borrado no podrá ser recuperado.
              */
-            Process proceso = Runtime.getRuntime().exec("mysql -u root -p cafesoft"); //123456 contraseña por defecto, cambiar si hay otra
-            OutputStream outputStream = proceso.getOutputStream();
-            FileInputStream fInStream = new FileInputStream("backup FECHA HORA.sql"); //la fecha y hora son las que da el sistema EJ: backup 1942018 17384
-            byte[] buff = new byte[1000];
+            dir = fcBackup.getSelectedFile();
+            if (dir != null && dir.getName().contains(".sql")) {
+                Process proceso = Runtime.getRuntime().exec("mysql -u root -p cafesoft"); //123456 contraseña por defecto, cambiar si hay otra
+                OutputStream outputStream = proceso.getOutputStream();
+                FileInputStream fInStream = new FileInputStream(dir);//("backup FECHA HORA.sql"); 
+                //la fecha y hora son las que da el sistema EJ: backup 1942018 17384
+                byte[] buff = new byte[1000];
 
-            int readed = fInStream.read(buff);
+                int readed = fInStream.read(buff);
 
-            while (readed > 0) {
+                while (readed > 0) {
 
-                outputStream.write(buff, 0, readed);
-                readed = fInStream.read(buff);
+                    outputStream.write(buff, 0, readed);
+                    readed = fInStream.read(buff);
+                }
+                outputStream.flush();
+                outputStream.close();
+                fInStream.close();
+                log = new Log();
+                log.setDescripcion(sesion.getNombre() + " ha restaurado desde " + dir.getName());
+                log.setUsuario(sesion.getRun());
+                d.crearLog(log);
+            } else {
+                JOptionPane.showMessageDialog(null, "No se selecciono un archivo de respaldo", "Error Al Restaurar", 0);
             }
-            outputStream.flush();
-            outputStream.close();
-            fInStream.close();
         } catch (IOException ex) {
             Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void salir() throws SQLException {
+        //if (0 == JOptionPane.showConfirmDialog(null, "Elija una opción", new Object[]{"opcion 1", "opcion 2", "opcion 3"}, 0)) {
+        int op = JOptionPane.showOptionDialog(
+                null,
+                "¿Realmente desea salir de CafeSoft?",
+                "Selecciona una opción",
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null, // null para icono por defecto.
+                new Object[]{"Aceptar","Cerrar Sesión","Cancelar"}, //
+                "opcion 1");
+        if (0 == op) {
+            log = new Log();
+            log.setDescripcion(sesion.getNombre() + " ha salido de CafeSoft");
+            log.setUsuario(sesion.getRun());
+            d.crearLog(log);
+            System.exit(0);
+        } else if (1 == op) {
+            log = new Log();
+            log.setDescripcion(sesion.getNombre() + " ha salido de CafeSoft");
+            log.setUsuario(sesion.getRun());
+            d.crearLog(log);
+            sesion = new Usuario();
+            frmAdmin.setVisible(false);
+            JFrameCrearCliente.setVisible(false);
+            JfVendedor.setVisible(false);
+            this.setVisible(true);
+        }
+    }
+    public void confirmarRespaldo() throws SQLException {
+        //if (0 == JOptionPane.showConfirmDialog(null, "Elija una opción", new Object[]{"opcion 1", "opcion 2", "opcion 3"}, 0)) {
+        int op = JOptionPane.showOptionDialog(
+                null,
+                "¿Realmente desea crear un respaldo de CafeSoft?",
+                "Crear respaldo de CafeSoft",
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null, // null para icono por defecto.
+                new Object[]{"Aceptar","Cancelar"}, //
+                "opcion 1");
+        if (0 == op) {
+            realizarBackup();
+        }
+    }
+
+    public void confirmarRestaurar() throws SQLException {
+        //if (0 == JOptionPane.showConfirmDialog(null, "Elija una opción", new Object[]{"opcion 1", "opcion 2", "opcion 3"}, 0)) {
+        int op = JOptionPane.showOptionDialog(
+                null,
+                "¿Realmente desea restaurar CafeSoft?",
+                "Restaurar CafeSoft",
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null, // null para icono por defecto.
+                new Object[]{"Aceptar","Cancelar"}, //
+                "opcion 1");
+        if (0 == op) {
+            restaurarBackup();
+        } 
+    }
+
+    public void cerrar() {
+        //if (0 == JOptionPane.showConfirmDialog(null, "Elija una opción", new Object[]{"opcion 1", "opcion 2", "opcion 3"}, 0)) {
+
+        if (0 == JOptionPane.showOptionDialog(
+                null,
+                "Seleccione opcion",
+                "Cerrar CafeSoft",
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null, // null para icono por defecto.
+                new Object[]{"Si", "Cancelar"}, //
+                "opcion 1")) {
+            System.exit(0);
         }
     }
 
@@ -1461,6 +1701,9 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JButton btnFiltrarViviendasJfVendedor;
     private javax.swing.ButtonGroup btnGFiltrarPrecio;
     private javax.swing.JButton btnIniciarSesion;
+    private javax.swing.JButton btnLog;
+    private javax.swing.JButton btnRespaldo;
+    private javax.swing.JButton btnRestaurar;
     private javax.swing.JComboBox<String> cboCondicion;
     private javax.swing.JComboBox<String> cboDisp;
     private javax.swing.JComboBox<String> cboFiltrarPorCasas;
@@ -1470,11 +1713,17 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JCheckBox chkFiltrarPorDepartamentos;
     private javax.swing.JFrame frmAdmin;
     private javax.swing.JMenuItem itemAdminSalir;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1500,6 +1749,7 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lblNombreCliente;
     private javax.swing.JLabel lblPrecio;

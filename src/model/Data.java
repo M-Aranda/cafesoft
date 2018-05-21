@@ -1,5 +1,6 @@
 package model;
 
+import clasesAusar.VistaLog;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -100,11 +101,7 @@ public class Data {
     }
 
     public void crearLog(Log l) throws SQLException { // VER SI SE PUEDE HACER CON TRIGGERS
-        query = "INSERT INTO log VALUES (NULL,'"
-                + l.getDescripcion() + "',"
-                + "'" + l.getFecha() + "',"
-                + "'" + l.getUsuario() + "')";
-
+        query = "CALL nuevo_log('"+ l.getDescripcion() + "','" + l.getUsuario() + "')";
         con.ejecutar(query);
     }
 
@@ -117,7 +114,7 @@ public class Data {
 
     public void crearUsuario(Usuario u, String user) throws SQLException {
         query = "SELECT crear_vendedor('" + u.getRun() + "','" + u.getNombre() + "','" + user + "');";
-        
+
         con.ejecutarSelect(query);
         con.close();
     }
@@ -224,6 +221,28 @@ public class Data {
         con.close();
 
         return viviendas;
+    }
+    public List<VistaLog> leerVistaLogs() throws SQLException {
+        query = "SELECT * FROM vista_logs";
+
+        List<VistaLog> logs = new ArrayList<>();
+
+        rs = con.ejecutarSelect(query);
+
+        while (rs.next()) {
+            VistaLog v = new VistaLog();
+
+            v.setFecha(rs.getString(1));
+            v.setDescripcion(rs.getString(2));
+            v.setRun(rs.getString(3));
+            v.setNombre(rs.getString(4));
+
+            logs.add(v);
+        }
+
+        con.close();
+
+        return logs;
     }
 
     public List<Venta> leerVentas() throws SQLException {

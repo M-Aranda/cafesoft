@@ -32,6 +32,17 @@ CREATE VIEW vista_viviendas_disponibles AS -- DROP view vista_viviendas_disponib
     
  --   SELECT * FROM vista_viviendas_disponibles
 
+CREATE VIEW vista_logs AS
+    SELECT
+        l.fecha,
+        l.descripcion,
+        l.usuario_fk,
+        u.nombre
+    FROM
+        log l
+        INNER JOIN usuario u ON u.run = l.usuario_fk
+
+--SELECT * FROM vista_logs
 
 DELIMITER $$
 CREATE FUNCTION crear_vendedor (nuevo_run VARCHAR(15),nuevo_nombre VARCHAR(50), run_user VARCHAR (50)) RETURNS INT
@@ -106,3 +117,12 @@ DELIMITER ;
 -- SELECT crear_vivienda (123,1,3,250000,98000000,3,12,'Aasdddddddddddasasrga #0149',1,'11-1');
 -- SELECT crear_vivienda (124,1,3,250344,98000000,3,12,'Aasdddddddddddasasrga #0149',1,'11-1');
 -- SELECT crear_vivienda (125,1,3,260002,98000000,3,12,'Aasdddddddddddasasrga #0149',1,'11-1');
+
+DELIMITER $$
+CREATE PROCEDURE nuevo_log (detalle VARCHAR(200),run_user VARCHAR(200))
+BEGIN   
+    INSERT INTO log VALUES (NULL,detalle,now(),run_user);
+END $$
+DELIMITER ;
+
+CALL nuevo_log('holaaaah','11-1');
