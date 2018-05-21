@@ -28,9 +28,35 @@ CREATE VIEW vista_viviendas_disponibles AS -- DROP view vista_viviendas_disponib
     INNER JOIN tipo_vivienda t ON t.id = v.tipo_fk
     INNER JOIN disponibilidad_vivienda d ON d.id = v.dis_vivienda
     WHERE
-    d.nombre = 'Disponible';
+    d.nombre = 'Disponible';    
     
  --   SELECT * FROM vista_viviendas_disponibles
+
+CREATE VIEW vista_estadisticas_viviendas AS -- DROP view vista_viviendas_disponibles
+	SELECT 
+    v.n_rol,
+    t.nombre AS 'tipo',
+    d.nombre AS 'es_disponible',
+    v.precio_arriendo,
+    v.precio_venta,
+    v.cant_banios,
+    v.cant_piezas,
+    v.direccion,
+    c.cliente_fk,
+    c.usuario_fk
+    FROM
+    vivienda v
+    INNER JOIN tipo_vivienda t ON t.id = v.tipo_fk
+    INNER JOIN disponibilidad_vivienda d ON d.id = v.dis_vivienda
+    INNER JOIN contrato c ON c.vivienda_fk = v.n_rol
+    WHERE
+    d.nombre = 'Arrendada' OR d.nombre ='Vendida';
+
+-- SELECT * FROM vista_estadisticas_viviendas;
+
+
+END $$
+DELIMITER ;
 
 CREATE VIEW vista_logs AS
     SELECT
@@ -42,7 +68,7 @@ CREATE VIEW vista_logs AS
         log l
         INNER JOIN usuario u ON u.run = l.usuario_fk
 
---SELECT * FROM vista_logs
+-- SELECT * FROM vista_logs
 
 DELIMITER $$
 CREATE FUNCTION crear_vendedor (nuevo_run VARCHAR(15),nuevo_nombre VARCHAR(50), run_user VARCHAR (50)) RETURNS INT

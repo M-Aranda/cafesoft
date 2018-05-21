@@ -20,7 +20,8 @@ CREATE TABLE cliente(
     nombre VARCHAR(50),
     sueldo INT,
     PRIMARY KEY(run)
-);
+);-- SELECT * FROM cliente
+-- INSERT INTO cliente VALUES('99-9','Franco','0');
 
 CREATE TABLE disponibilidad_vivienda(
     id INT AUTO_INCREMENT,
@@ -73,6 +74,10 @@ CREATE TABLE contrato(-- DROP TABLE contrato
     FOREIGN KEY(usuario_fk) REFERENCES usuario(run),
     FOREIGN KEY(vivienda_fk) REFERENCES vivienda(n_rol)
 );
+
+-- INSERT INTO CONTRATO VALUES(NULL,'99-9','22-2','1311',NOW());
+-- INSERT INTO CONTRATO VALUES(NULL,'99-9','22-2','1111',NOW());
+
 -- POR DEFECTO ESTOS INSERT DEBEN IR--
 INSERT INTO tipo_vivienda VALUES (NULL,'Casa');
 INSERT INTO tipo_vivienda VALUES (NULL,'Departamento');
