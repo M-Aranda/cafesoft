@@ -176,4 +176,15 @@ DELIMITER ;
 
 -- CALL crear_o_vender_vivienda();
 
+DELIMITER //
+CREATE PROCEDURE borrarUsuario (runDelete VARCHAR(15))
+BEGIN
+	SET SQL_SAFE_UPDATES = 0;
+	DELETE FROM log WHERE usuario_fk = runDelete;
+    DELETE FROM contrato WHERE usuario_fk = runDelete;
+    DELETE FROM usuario WHERE run = runDelete;
+	SET SQL_SAFE_UPDATES = 1;
+END //
+DELIMITER ; -- CALL borrarUsuario();
+
 CALL nuevo_log('holaaaah','11-1');
