@@ -29,7 +29,7 @@ public class TModel implements TableModel {
             case 0:
                 return "Numero de Rol";
             case 1:
-                return "Nombre";
+                return "Disponibilidad";
             case 2:
                 return "Tipo de vivienda";
             case 3:
@@ -88,7 +88,7 @@ public class TModel implements TableModel {
             case 0:
                 return v.getnRol();
             case 1:
-                return v.getNombre();
+                return v.getDispVivienda();
             case 2:
                 return v.getTipo();
             case 3:

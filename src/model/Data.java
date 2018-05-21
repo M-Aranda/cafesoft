@@ -14,6 +14,7 @@ public class Data {
 
     private final Conexion con;
     private String query;
+    private String querySegunda;
     private ResultSet rs;
     private List<VistaVivienda> listaViviendas;
     private Connection cone = null;
@@ -101,7 +102,7 @@ public class Data {
     }
 
     public void crearLog(Log l) throws SQLException { // VER SI SE PUEDE HACER CON TRIGGERS
-        query = "CALL nuevo_log('"+ l.getDescripcion() + "','" + l.getUsuario() + "')";
+        query = "CALL nuevo_log('" + l.getDescripcion() + "','" + l.getUsuario() + "')";
         con.ejecutar(query);
     }
 
@@ -222,6 +223,7 @@ public class Data {
 
         return viviendas;
     }
+
     public List<VistaLog> leerVistaLogs() throws SQLException {
         query = "SELECT * FROM vista_logs";
 
@@ -489,180 +491,18 @@ public class Data {
     // -------------------------------------------------------------------------BORRAR-DELETE
 
     //--------------------------------------------------------------------------Consultas filtradas
-    public List<VistaVivienda> leerTodasLasCasasDisponiblesAmbasASC() throws SQLException {
-        query = "SELECT * FROM vista_viviendas_disponibles WHERE nombre='Casa' ORDER BY precio_venta ASC";
-
-        List<VistaVivienda> viviendas = new ArrayList<>();
-
-        rs = con.ejecutarSelect(query);
-
-        while (rs.next()) {
-            VistaVivienda v = new VistaVivienda();
-
-            v.setnDeRol(rs.getInt(1));
-            v.setTipo(rs.getString(2));
-            v.setDisponibilidad(rs.getString(3));
-            v.setPrecioDeArriendo(rs.getInt(4));
-            v.setPrecioDeVenta(rs.getInt(5));
-            v.setCantBanios(rs.getInt(6));
-            v.setCantPiezas(rs.getInt(7));
-            v.setDireccion(rs.getString(8));
-            v.setCondicion(rs.getString(9));
-
-            viviendas.add(v);
-        }
-
-        con.close();
-
-        return viviendas;
-    }
-
-    public List<VistaVivienda> leerTodosLosDepartamentosDisponiblesAmbosASC() throws SQLException {
-        query = "SELECT * FROM vista_viviendas_disponibles WHERE nombre='Departamento' ORDER BY precio_venta ASC";
-
-        List<VistaVivienda> viviendas = new ArrayList<>();
-
-        rs = con.ejecutarSelect(query);
-
-        while (rs.next()) {
-            VistaVivienda v = new VistaVivienda();
-
-            v.setnDeRol(rs.getInt(1));
-            v.setTipo(rs.getString(2));
-            v.setDisponibilidad(rs.getString(3));
-            v.setPrecioDeArriendo(rs.getInt(4));
-            v.setPrecioDeVenta(rs.getInt(5));
-            v.setCantBanios(rs.getInt(6));
-            v.setCantPiezas(rs.getInt(7));
-            v.setDireccion(rs.getString(8));
-            v.setCondicion(rs.getString(9));
-
-            viviendas.add(v);
-        }
-
-        con.close();
-
-        return viviendas;
-    }
-
-    public List<VistaVivienda> leerTodasLasCasasDisponiblesAmbasDESC() throws SQLException {
-        query = "SELECT * FROM vista_viviendas_disponibles WHERE nombre='Casa' ORDER BY precio_venta DESC";
-
-        List<VistaVivienda> viviendas = new ArrayList<>();
-
-        rs = con.ejecutarSelect(query);
-
-        while (rs.next()) {
-            VistaVivienda v = new VistaVivienda();
-
-            v.setnDeRol(rs.getInt(1));
-            v.setTipo(rs.getString(2));
-            v.setDisponibilidad(rs.getString(3));
-            v.setPrecioDeArriendo(rs.getInt(4));
-            v.setPrecioDeVenta(rs.getInt(5));
-            v.setCantBanios(rs.getInt(6));
-            v.setCantPiezas(rs.getInt(7));
-            v.setDireccion(rs.getString(8));
-            v.setCondicion(rs.getString(9));
-
-            viviendas.add(v);
-        }
-
-        con.close();
-
-        return viviendas;
-    }
-
-    public List<VistaVivienda> leerTodosLosDepartamentosDisponiblesAmbosDESC() throws SQLException {
-        query = "SELECT * FROM vista_viviendas_disponibles WHERE nombre='Departamento' ORDER BY precio_venta DESC";
-
-        List<VistaVivienda> viviendas = new ArrayList<>();
-
-        rs = con.ejecutarSelect(query);
-
-        while (rs.next()) {
-            VistaVivienda v = new VistaVivienda();
-
-            v.setnDeRol(rs.getInt(1));
-            v.setTipo(rs.getString(2));
-            v.setDisponibilidad(rs.getString(3));
-            v.setPrecioDeArriendo(rs.getInt(4));
-            v.setPrecioDeVenta(rs.getInt(5));
-            v.setCantBanios(rs.getInt(6));
-            v.setCantPiezas(rs.getInt(7));
-            v.setDireccion(rs.getString(8));
-            v.setCondicion(rs.getString(9));
-
-            viviendas.add(v);
-        }
-
-        con.close();
-
-        return viviendas;
-    }
-
-    public List<VistaVivienda> leerTodasLasViviendasDisponiblesASC() throws SQLException {
-        query = "SELECT * FROM vista_viviendas_disponibles ORDER BY precio_venta ASC";
-
-        List<VistaVivienda> viviendas = new ArrayList<>();
-
-        rs = con.ejecutarSelect(query);
-
-        while (rs.next()) {
-            VistaVivienda v = new VistaVivienda();
-
-            v.setnDeRol(rs.getInt(1));
-            v.setTipo(rs.getString(2));
-            v.setDisponibilidad(rs.getString(3));
-            v.setPrecioDeArriendo(rs.getInt(4));
-            v.setPrecioDeVenta(rs.getInt(5));
-            v.setCantBanios(rs.getInt(6));
-            v.setCantPiezas(rs.getInt(7));
-            v.setDireccion(rs.getString(8));
-            v.setCondicion(rs.getString(9));
-
-            viviendas.add(v);
-        }
-
-        con.close();
-
-        return viviendas;
-    }
-
-    public List<VistaVivienda> leerTodasLasViviendasDisponiblesDESC() throws SQLException {
-        query = "SELECT * FROM vista_viviendas_disponibles ORDER BY precio_venta DESC";
-
-        List<VistaVivienda> viviendas = new ArrayList<>();
-
-        rs = con.ejecutarSelect(query);
-
-        while (rs.next()) {
-            VistaVivienda v = new VistaVivienda();
-
-            v.setnDeRol(rs.getInt(1));
-            v.setTipo(rs.getString(2));
-            v.setDisponibilidad(rs.getString(3));
-            v.setPrecioDeArriendo(rs.getInt(4));
-            v.setPrecioDeVenta(rs.getInt(5));
-            v.setCantBanios(rs.getInt(6));
-            v.setCantPiezas(rs.getInt(7));
-            v.setDireccion(rs.getString(8));
-            v.setCondicion(rs.getString(9));
-
-            viviendas.add(v);
-        }
-
-        con.close();
-
-        return viviendas;
-    }
-
     //estaba pesando en hacer un puro metodo que tomara valores de lo seleccionado en el filtrado
     //pero tambien capaz de seleccionar el tipo de query en cierto casos, como cuando necesita
     //ver ambos tipos de vivienda/condicion. Tome de referencia los metodos que ya estaban, y se me ocurre
     //algo con la direccion del siguiente metodo
-    public List<VistaVivienda> leerTodasLasViviendasSegunSeleccion(String tipo) throws SQLException {
-        query = "SELECT * FROM vista_viviendas_disponibles WHERE nombre=" + tipo + " ORDER BY precio_venta DESC";
+    public List<VistaVivienda> leerTodasLasViviendasSegunSeleccion(String tipo1, String tipo2, String condicion1, String condicion2, String tipoPrecio, String orden, boolean consultaCompleja) throws SQLException {
+        if (!consultaCompleja) {
+            query = " SELECT * FROM vista_viviendas_disponibles  WHERE (tipo='" + tipo1 + "' OR tipo='" + tipo2 + "') AND (condicion='" + condicion1 + "' OR condicion='" + condicion2 + "')ORDER BY " + tipoPrecio + " " + orden + "";
+        } else if (consultaCompleja) {
+            query = condicion1;
+            querySegunda = condicion2;
+            System.out.println(querySegunda);
+        }
 
         List<VistaVivienda> viviendas = new ArrayList<>();
 
@@ -683,8 +523,36 @@ public class Data {
 
             viviendas.add(v);
         }
+        
+
+        if (consultaCompleja) {
+            rs = con.ejecutarSelect(querySegunda);
+
+            while (rs.next()) {
+                VistaVivienda v = new VistaVivienda();
+
+                v.setnDeRol(rs.getInt(1));
+                v.setTipo(rs.getString(2));
+                v.setDisponibilidad(rs.getString(3));
+                v.setPrecioDeArriendo(rs.getInt(4));
+                v.setPrecioDeVenta(rs.getInt(5));
+                v.setCantBanios(rs.getInt(6));
+                v.setCantPiezas(rs.getInt(7));
+                v.setDireccion(rs.getString(8));
+                v.setCondicion(rs.getString(9));
+
+                viviendas.add(v);
+                
+            }
+            
+            
+            
+            con.close();
+
+        }
 
         con.close();
+  
 
         return viviendas;
     }

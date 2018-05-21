@@ -30,7 +30,10 @@ CREATE VIEW vista_viviendas_disponibles AS -- DROP view vista_viviendas_disponib
     WHERE
     d.nombre = 'Disponible';    
     
+    
  --   SELECT * FROM vista_viviendas_disponibles
+ SELECT * FROM vista_viviendas_disponibles  WHERE (tipo='Casa' OR tipo='Departamento') AND (condicion='Nueva' OR condicion='Usada') ORDER BY precio_venta DESC;
+
 
 CREATE VIEW vista_estadisticas_viviendas AS -- DROP view vista_viviendas_disponibles
 	SELECT 
@@ -142,7 +145,7 @@ DELIMITER ;
 -- SELECT crear_vivienda (333212,1,3,250000,98000000,3,12,'Aasdddddddddddasasrga #0149',1,'11-1');
 -- SELECT crear_vivienda (123,1,3,250000,98000000,3,12,'Aasdddddddddddasasrga #0149',1,'11-1');
 -- SELECT crear_vivienda (124,1,3,250344,98000000,3,12,'Aasdddddddddddasasrga #0149',1,'11-1');
--- SELECT crear_vivienda (125,1,3,260002,98000000,3,12,'Aasdddddddddddasasrga #0149',1,'11-1');
+-- SELECT crear_vivienda (138,2,3,260002,98000000,3,12,'Aasdddddddddddasasrga #0149',1,'11-1');
 
 DELIMITER $$
 CREATE PROCEDURE nuevo_log (detalle VARCHAR(200),run_user VARCHAR(200))

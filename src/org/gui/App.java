@@ -71,7 +71,7 @@ public class App extends javax.swing.JFrame {
     private Usuario sesion;
     private JFileChooser fcBackup;
     private FileNameExtensionFilter filtroBakcup;
-    private DateFormat fInicio,fFinal;// DESTINADO A CALCULAR DATOS POR RANGO DE FECHA
+    private DateFormat fInicio, fFinal;// DESTINADO A CALCULAR DATOS POR RANGO DE FECHA
 
     //query para los inserts
     static final String WRITE_OBJECT_SQL = "INSERT INTO ejem(nombre, valor_objeto) VALUES (?, ?)";// modificar segun sea necesario
@@ -102,9 +102,8 @@ public class App extends javax.swing.JFrame {
         fcBackup.setFileFilter(filtroBakcup);
 
         JfVendedor.setTitle("Vendedor");
-        rbtFiltrarAsc.isSelected();
         viviendasDisponibles = new ArrayList();
-        
+
         fInicio.getDateInstance();
         fFinal.getDateInstance();
 
@@ -119,7 +118,6 @@ public class App extends javax.swing.JFrame {
         llenarCbosFrameVendedor();
         cargarTablaJFrameVendedor();
 
-        ocultarOpcionesParaFiltrar();
         cargarTblLog();
 
         JFrameCrearCliente.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -174,30 +172,13 @@ public class App extends javax.swing.JFrame {
         cboCondicion.addItem("Usada");
     }
 
-    private void ocultarOpcionesParaFiltrar() {
+    private void inicializarSeleccionDeFiltroVendedor() {
         cboFiltrarPorCasas.setEnabled(false);
         cboFiltrarPorDepartamentos.setEnabled(false);
 
-        rbtFiltrarAsc.setVisible(false);
-        rbtFiltrarDesc.setVisible(false);
-        cboFiltrarPorCasas.setVisible(false);
-        cboFiltrarPorDepartamentos.setVisible(false);
-        chkFiltrarPorCasas.setVisible(false);
-        chkFiltrarPorDepartamentos.setVisible(false);
-        lblPrecio.setVisible(false);
-        btnFiltrarViviendasJfVendedor.setVisible(false);
+        rbtFiltrarDesc.setSelected(true);
+        rbtDeVenta.setSelected(true);
 
-    }
-
-    private void mostrarOpcionesParaFiltrar() {
-        rbtFiltrarAsc.setVisible(true);
-        rbtFiltrarDesc.setVisible(true);
-        cboFiltrarPorCasas.setVisible(true);
-        cboFiltrarPorDepartamentos.setVisible(true);
-        chkFiltrarPorCasas.setVisible(true);
-        chkFiltrarPorDepartamentos.setVisible(true);
-        lblPrecio.setVisible(true);
-        btnFiltrarViviendasJfVendedor.setVisible(true);
     }
 
     private void cargarTblLog() {
@@ -271,10 +252,13 @@ public class App extends javax.swing.JFrame {
         cboFiltrarPorDepartamentos = new javax.swing.JComboBox<>();
         chkFiltrarPorCasas = new javax.swing.JCheckBox();
         chkFiltrarPorDepartamentos = new javax.swing.JCheckBox();
-        lblPrecio = new javax.swing.JLabel();
+        lblOrden = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         lblViviendasDisponibles = new javax.swing.JLabel();
         btnFiltrarViviendasJfVendedor = new javax.swing.JButton();
+        lblTipoPrecio = new javax.swing.JLabel();
+        rbtDeVenta = new javax.swing.JRadioButton();
+        rbtDeRenta = new javax.swing.JRadioButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMArchivo = new javax.swing.JMenu();
         jMCrearCli = new javax.swing.JMenuItem();
@@ -390,6 +374,7 @@ public class App extends javax.swing.JFrame {
         jButton6 = new javax.swing.JButton();
         jLabel34 = new javax.swing.JLabel();
         jComboBox2 = new javax.swing.JComboBox<>();
+        btnGVentaORenta = new javax.swing.ButtonGroup();
         txtRun = new javax.swing.JTextField();
         lblRUN = new javax.swing.JLabel();
         btnIniciarSesion = new javax.swing.JButton();
@@ -439,7 +424,7 @@ public class App extends javax.swing.JFrame {
             }
         });
 
-        lblPrecio.setText("Precio:");
+        lblOrden.setText("Orden");
 
         lblViviendasDisponibles.setText("            Viviendas disponibles");
 
@@ -449,6 +434,14 @@ public class App extends javax.swing.JFrame {
                 btnFiltrarViviendasJfVendedorActionPerformed(evt);
             }
         });
+
+        lblTipoPrecio.setText("Tipo de precio");
+
+        btnGVentaORenta.add(rbtDeVenta);
+        rbtDeVenta.setText("De venta");
+
+        btnGVentaORenta.add(rbtDeRenta);
+        rbtDeRenta.setText("De renta (mensual)");
 
         jMArchivo.setText("Archivo");
 
@@ -500,38 +493,46 @@ public class App extends javax.swing.JFrame {
         JfVendedor.getContentPane().setLayout(JfVendedorLayout);
         JfVendedorLayout.setHorizontalGroup(
             JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JfVendedorLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JfVendedorLayout.createSequentialGroup()
-                        .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(chkFiltrarPorDepartamentos)
-                            .addComponent(chkFiltrarPorCasas))
-                        .addGap(18, 18, 18)
-                        .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cboFiltrarPorCasas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cboFiltrarPorDepartamentos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(66, 66, 66))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JfVendedorLayout.createSequentialGroup()
-                        .addComponent(lblPrecio)
-                        .addGap(18, 18, 18)
-                        .addComponent(rbtFiltrarDesc)
-                        .addGap(18, 18, 18)
-                        .addComponent(rbtFiltrarAsc)
-                        .addGap(31, 31, 31))))
             .addGroup(JfVendedorLayout.createSequentialGroup()
                 .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jSeparator1)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 732, Short.MAX_VALUE))
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JfVendedorLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(btnFiltrarViviendasJfVendedor)
-                .addGap(147, 147, 147))
             .addGroup(JfVendedorLayout.createSequentialGroup()
                 .addGap(270, 270, 270)
                 .addComponent(lblViviendasDisponibles, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JfVendedorLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(btnFiltrarViviendasJfVendedor)
+                .addGap(149, 149, 149))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JfVendedorLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(JfVendedorLayout.createSequentialGroup()
+                        .addComponent(lblTipoPrecio)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(rbtDeVenta)
+                        .addGap(18, 18, 18)
+                        .addComponent(rbtDeRenta)
+                        .addContainerGap())
+                    .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JfVendedorLayout.createSequentialGroup()
+                            .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(chkFiltrarPorDepartamentos)
+                                .addComponent(chkFiltrarPorCasas))
+                            .addGap(18, 18, 18)
+                            .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(cboFiltrarPorCasas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(cboFiltrarPorDepartamentos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGap(66, 66, 66))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JfVendedorLayout.createSequentialGroup()
+                            .addComponent(lblOrden)
+                            .addGap(18, 18, 18)
+                            .addComponent(rbtFiltrarDesc)
+                            .addGap(18, 18, 18)
+                            .addComponent(rbtFiltrarAsc)
+                            .addGap(31, 31, 31)))))
         );
         JfVendedorLayout.setVerticalGroup(
             JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -545,14 +546,19 @@ public class App extends javax.swing.JFrame {
                 .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(chkFiltrarPorDepartamentos)
                     .addComponent(cboFiltrarPorDepartamentos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addGap(2, 2, 2)
+                .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblTipoPrecio)
+                    .addComponent(rbtDeVenta)
+                    .addComponent(rbtDeRenta))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(rbtFiltrarDesc)
                     .addComponent(rbtFiltrarAsc)
-                    .addComponent(lblPrecio))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(lblOrden))
+                .addGap(18, 18, 18)
                 .addComponent(btnFiltrarViviendasJfVendedor)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
                 .addComponent(lblViviendasDisponibles, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1400,21 +1406,13 @@ public class App extends javax.swing.JFrame {
     }//GEN-LAST:event_jMCrearCliActionPerformed
 
     private void jMVenderVivActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMVenderVivActionPerformed
-        if (chkFiltrarPorCasas.isVisible()) {
-            ocultarOpcionesParaFiltrar();
-        } else if (!chkFiltrarPorCasas.isVisible()) {
-            mostrarOpcionesParaFiltrar();
-        }
+
 
 
     }//GEN-LAST:event_jMVenderVivActionPerformed
 
     private void jMArrendarViviendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMArrendarViviendaActionPerformed
-        if (chkFiltrarPorCasas.isVisible()) {
-            ocultarOpcionesParaFiltrar();
-        } else if (!chkFiltrarPorCasas.isVisible()) {
-            mostrarOpcionesParaFiltrar();
-        }
+
 
     }//GEN-LAST:event_jMArrendarViviendaActionPerformed
 
@@ -1541,53 +1539,103 @@ public class App extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCrearClienteActionPerformed
 
     private void btnFiltrarViviendasJfVendedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiltrarViviendasJfVendedorActionPerformed
+        String tipo1 = "";
+        String tipo2 = "";
+        String condicion1 = "";
+        String condicion2 = "";
+        String tipoPrecio = "";
+        String orden = "";
+        boolean consultaCompleja = false;
 
-        if ((!chkFiltrarPorDepartamentos.isSelected()) && (chkFiltrarPorCasas.isSelected()) && (cboFiltrarPorCasas.getSelectedIndex() == 2) && (rbtFiltrarAsc.isSelected())) {
-
-            try {
-                viviendasDisponibles = d.leerTodasLasCasasDisponiblesAmbasASC();
-                cargarTablaJFrameVendedor();
-            } catch (SQLException ex) {
-                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else if ((!chkFiltrarPorCasas.isSelected()) && (chkFiltrarPorDepartamentos.isSelected()) && (cboFiltrarPorDepartamentos.getSelectedIndex() == 2 && (rbtFiltrarAsc.isSelected()))) {
-            try {
-                viviendasDisponibles = d.leerTodosLosDepartamentosDisponiblesAmbosASC();
-                cargarTablaJFrameVendedor();
-            } catch (SQLException ex) {
-                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            cargarTablaJFrameVendedor();
-        } else if ((!chkFiltrarPorDepartamentos.isSelected()) && (chkFiltrarPorCasas.isSelected()) && (cboFiltrarPorCasas.getSelectedIndex() == 2) && (rbtFiltrarDesc.isSelected())) {
-            try {
-                viviendasDisponibles = d.leerTodasLasCasasDisponiblesAmbasDESC();
-            } catch (SQLException ex) {
-                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            cargarTablaJFrameVendedor();
-        } else if ((!chkFiltrarPorCasas.isSelected()) && (chkFiltrarPorDepartamentos.isSelected()) && (cboFiltrarPorDepartamentos.getSelectedIndex() == 2) && (rbtFiltrarDesc.isSelected())) {
-            try {
-                viviendasDisponibles = d.leerTodosLosDepartamentosDisponiblesAmbosDESC();
-            } catch (SQLException ex) {
-                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            cargarTablaJFrameVendedor();
-        } else if ((chkFiltrarPorDepartamentos.isSelected()) && ((chkFiltrarPorCasas.isSelected())) && (cboFiltrarPorCasas.getSelectedIndex() == 2) && (cboFiltrarPorDepartamentos.getSelectedIndex() == 2) && (rbtFiltrarAsc.isSelected())) {
-            try {
-                viviendasDisponibles = d.leerTodasLasViviendasDisponiblesASC();
-            } catch (SQLException ex) {
-                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            cargarTablaJFrameVendedor();
-        } else if ((chkFiltrarPorDepartamentos.isSelected()) && ((chkFiltrarPorCasas.isSelected())) && (cboFiltrarPorCasas.getSelectedIndex() == 2) && (cboFiltrarPorDepartamentos.getSelectedIndex() == 2) && (rbtFiltrarDesc.isSelected())) {
-            try {
-                viviendasDisponibles = d.leerTodasLasViviendasDisponiblesDESC();
-            } catch (SQLException ex) {
-                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            cargarTablaJFrameVendedor();
+        //evalua si se Filtra ascendentemente or descendentemente
+        if (rbtFiltrarAsc.isSelected()) {
+            orden = "ASC";
+        } else if (rbtFiltrarDesc.isSelected()) {
+            orden = "DESC";
         }
 
+        //evalua si se filtra por precio de venta o precio de arriendo
+        if (rbtDeVenta.isSelected()) {
+            tipoPrecio = "precio_venta";
+        } else if (rbtDeRenta.isSelected()) {
+            tipoPrecio = "precio_arriendo";
+        }
+
+        //evalua si se filtran casas o departamentos (3 if grandes, cada uno con sus respectivas posibilidades de filtrado)
+        if (chkFiltrarPorCasas.isSelected() && !chkFiltrarPorDepartamentos.isSelected()) {
+            tipo1 = "Casa";
+            tipo2 = "Casa";
+
+            if (cboFiltrarPorCasas.getSelectedIndex() == 0) {
+                condicion1 = "Nueva";
+                condicion2 = "Nueva";
+            } else if (cboFiltrarPorCasas.getSelectedIndex() == 1) {
+                condicion1 = "Usada";
+                condicion2 = "Usada";
+            } else if (cboFiltrarPorCasas.getSelectedIndex() == 2) {
+                condicion1 = "Usada";
+                condicion2 = "Nueva";
+            }
+
+        } else if (!chkFiltrarPorCasas.isSelected() && chkFiltrarPorDepartamentos.isSelected()) {
+            tipo1 = "Departamento";
+            tipo2 = "Departamento";
+
+            if (cboFiltrarPorDepartamentos.getSelectedIndex() == 0) {
+                condicion1 = "Nueva";
+                condicion2 = "Nueva";
+            } else if (cboFiltrarPorDepartamentos.getSelectedIndex() == 1) {
+                condicion1 = "Usada";
+                condicion2 = "Usada";
+            } else if (cboFiltrarPorDepartamentos.getSelectedIndex() == 2) {
+                condicion1 = "Usada";
+                condicion2 = "Nueva";
+            }
+        } else if (chkFiltrarPorCasas.isSelected() && chkFiltrarPorDepartamentos.isSelected()) {
+            tipo1 = "Casa";
+            tipo2 = "Departamento";
+
+            if (cboFiltrarPorCasas.getSelectedIndex() == 2 && cboFiltrarPorDepartamentos.getSelectedIndex() == 2) {
+                condicion1 = "Usada";
+                condicion2 = "Nueva";
+            } else if (cboFiltrarPorCasas.getSelectedIndex() == 0 && cboFiltrarPorDepartamentos.getSelectedIndex() == 1) {
+                condicion1 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo1 + "' AND condicion='Nueva' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+                condicion2 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo2 + "' AND condicion='Usada' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+                consultaCompleja = true;
+            } else if (cboFiltrarPorCasas.getSelectedIndex() == 1 && cboFiltrarPorDepartamentos.getSelectedIndex() == 0) {
+                condicion1 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo1 + "' AND condicion='Usada' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+                condicion2 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo2 + "' AND condicion='Nueva' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+                consultaCompleja = true;
+            } else if (cboFiltrarPorCasas.getSelectedIndex() == 2 && cboFiltrarPorDepartamentos.getSelectedIndex() == 1) {
+                condicion1 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo1 + "' AND (condicion='Nueva' OR condicion='Usada') ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+                condicion2 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo2 + "' AND condicion='Usada' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+                consultaCompleja = true;
+            } else if (cboFiltrarPorCasas.getSelectedIndex() == 2 && cboFiltrarPorDepartamentos.getSelectedIndex() == 0) {
+                condicion1 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo1 + "' AND (condicion='Nueva' OR condicion='Usada') ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+                condicion2 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo2 + "' AND condicion='Nueva' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+                consultaCompleja = true;
+            } else if (cboFiltrarPorCasas.getSelectedIndex() == 0 && cboFiltrarPorDepartamentos.getSelectedIndex() == 2) {
+                condicion1 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo1 + "' AND condicion='Nueva' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+                condicion2 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo2 + "' AND (condicion='Usada' or condicion='Nueva') ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+                consultaCompleja = true;
+            } else if (cboFiltrarPorCasas.getSelectedIndex() == 1 && cboFiltrarPorDepartamentos.getSelectedIndex() == 2) {
+                condicion1 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo1 + "' AND condicion='Usada' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+                condicion2 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo2 + "' AND (condicion='Usada' OR condicion='Nueva') ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+                consultaCompleja = true;
+            } else if (cboFiltrarPorCasas.getSelectedIndex() == 1 && cboFiltrarPorDepartamentos.getSelectedIndex() == 1) {
+                condicion1 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo1 + "' AND condicion='Usada' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+                condicion2 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo2 + "' AND condicion='Usada' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+                consultaCompleja = true;
+            }
+
+        }
+
+        try {
+            viviendasDisponibles = d.leerTodasLasViviendasSegunSeleccion(tipo1, tipo2, condicion1, condicion2, tipoPrecio, orden, consultaCompleja);
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        cargarTablaJFrameVendedor();
 
     }//GEN-LAST:event_btnFiltrarViviendasJfVendedorActionPerformed
 
@@ -1648,7 +1696,7 @@ public class App extends javax.swing.JFrame {
 
             JOptionPane.showMessageDialog(this, "Vendedor borrado.", "Borrado", JOptionPane.INFORMATION_MESSAGE);
             log = new Log();
-            log.setDescripcion(sesion.getNombre() + " ha borrado al usuario de run "+u.getRun());
+            log.setDescripcion(sesion.getNombre() + " ha borrado al usuario de run " + u.getRun());
             log.setUsuario(sesion.getRun());
             d.crearLog(log);
         } catch (Exception e) {
@@ -1938,7 +1986,7 @@ public class App extends javax.swing.JFrame {
             Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void salir() throws SQLException {
         //if (0 == JOptionPane.showConfirmDialog(null, "Elija una opción", new Object[]{"opcion 1", "opcion 2", "opcion 3"}, 0)) {
         int op = JOptionPane.showOptionDialog(
@@ -1948,7 +1996,7 @@ public class App extends javax.swing.JFrame {
                 JOptionPane.YES_NO_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null, // null para icono por defecto.
-                new Object[]{"Aceptar","Cerrar Sesión","Cancelar"}, //
+                new Object[]{"Aceptar", "Cerrar Sesión", "Cancelar"}, //
                 "opcion 1");
         if (0 == op) {
             log = new Log();
@@ -1968,6 +2016,7 @@ public class App extends javax.swing.JFrame {
             this.setVisible(true);
         }
     }
+
     public void confirmarRespaldo() throws SQLException {
         //if (0 == JOptionPane.showConfirmDialog(null, "Elija una opción", new Object[]{"opcion 1", "opcion 2", "opcion 3"}, 0)) {
         int op = JOptionPane.showOptionDialog(
@@ -1977,7 +2026,7 @@ public class App extends javax.swing.JFrame {
                 JOptionPane.YES_NO_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null, // null para icono por defecto.
-                new Object[]{"Aceptar","Cancelar"}, //
+                new Object[]{"Aceptar", "Cancelar"}, //
                 "opcion 1");
         if (0 == op) {
             realizarBackup();
@@ -1993,11 +2042,11 @@ public class App extends javax.swing.JFrame {
                 JOptionPane.YES_NO_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null, // null para icono por defecto.
-                new Object[]{"Aceptar","Cancelar"}, //
+                new Object[]{"Aceptar", "Cancelar"}, //
                 "opcion 1");
         if (0 == op) {
             restaurarBackup();
-        } 
+        }
     }
 
     public void cerrar() {
@@ -2071,6 +2120,7 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JButton btnCrearVivienda;
     private javax.swing.JButton btnFiltrarViviendasJfVendedor;
     private javax.swing.ButtonGroup btnGFiltrarPrecio;
+    private javax.swing.ButtonGroup btnGVentaORenta;
     private javax.swing.JButton btnIniciarSesion;
     private javax.swing.JButton btnLog;
     private javax.swing.JButton btnRespaldo;
@@ -2169,12 +2219,15 @@ public class App extends javax.swing.JFrame {
     private com.toedter.calendar.JDateChooser jdTermino1;
     private com.toedter.calendar.JDateChooser jdTermino2;
     private javax.swing.JLabel lblNombreCliente;
-    private javax.swing.JLabel lblPrecio;
+    private javax.swing.JLabel lblOrden;
     private javax.swing.JLabel lblRUN;
     private javax.swing.JLabel lblRunCliente;
     private javax.swing.JLabel lblSueldoCliente;
+    private javax.swing.JLabel lblTipoPrecio;
     private javax.swing.JLabel lblViviendasDisponibles;
     private javax.swing.JLabel lblicono;
+    private javax.swing.JRadioButton rbtDeRenta;
+    private javax.swing.JRadioButton rbtDeVenta;
     private javax.swing.JRadioButton rbtFiltrarAsc;
     private javax.swing.JRadioButton rbtFiltrarDesc;
     private javax.swing.JSpinner spnArriendo;
