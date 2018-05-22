@@ -296,10 +296,15 @@ public class App extends javax.swing.JFrame {
 
     private void cargarCboViviendaStat() {
         cboContrato.removeAllItems();
+        cboTipoVivienda.removeAllItems();
         cboContrato.addItem("Todas");
         cboContrato.addItem("Arrendada");
         cboContrato.addItem("Vendida");
         cboContrato.setSelectedIndex(0);
+        cboTipoVivienda.addItem("Todas");
+        cboTipoVivienda.addItem("Casa");
+        cboTipoVivienda.addItem("Departamentos");
+        cboTipoVivienda.setSelectedIndex(0);
 
     }
 
@@ -449,6 +454,8 @@ public class App extends javax.swing.JFrame {
         jButton4 = new javax.swing.JButton();
         jLabel30 = new javax.swing.JLabel();
         cboContrato = new javax.swing.JComboBox<>();
+        cboTipoVivienda = new javax.swing.JComboBox<>();
+        jLabel35 = new javax.swing.JLabel();
         frmStatVendedores = new javax.swing.JFrame();
         jPanel8 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
@@ -1329,27 +1336,32 @@ public class App extends javax.swing.JFrame {
             }
         });
 
+        jLabel35.setText("Tipo de Vivienda:");
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel29)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel27)
-                    .addComponent(jLabel28)
-                    .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(cboContrato, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel30, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jdTermino1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jdInicio1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(0, 0, Short.MAX_VALUE))
             .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addComponent(jLabel29)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel27)
+                            .addComponent(jLabel28)
+                            .addComponent(cboContrato, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel30, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jdTermino1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jdInicio1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cboTipoVivienda, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jLabel35, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1369,7 +1381,11 @@ public class App extends javax.swing.JFrame {
                 .addComponent(jLabel30)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cboContrato, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel35)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cboTipoVivienda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
                 .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton4))
@@ -2288,10 +2304,22 @@ public class App extends javax.swing.JFrame {
                 filtro += " AND";
             }
             if (cboContrato.getSelectedIndex() != 1) {
-                filtro += " es_disponible = 'Arrendada'";
+                filtro += " es_disponible = 'Vendida'";
                 existe = true;
             } else {
-                filtro += " es_disponible = 'Vendida'";
+                filtro += " es_disponible = 'Arrendada'";
+                existe = true;
+            }
+        }
+        if (cboTipoVivienda.getSelectedIndex() > 0) {
+            if (existe) {
+                filtro += " AND";
+            }
+            if (cboTipoVivienda.getSelectedIndex() != 1) {
+                filtro += " tipo = 'Departamento'";
+                existe = true;
+            } else {
+                filtro += " tipo = 'Casa'";
                 existe = true;
             }
         }
@@ -2656,6 +2684,7 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cboFiltrarPorEstado;
     private javax.swing.JComboBox<String> cboOrden;
     private javax.swing.JComboBox<String> cboTipo;
+    private javax.swing.JComboBox<String> cboTipoVivienda;
     private javax.swing.JCheckBox chkFiltrarPorCasas;
     private javax.swing.JCheckBox chkFiltrarPorDepartamentos;
     private javax.swing.JColorChooser clrChoosser;
@@ -2697,6 +2726,7 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel34;
+    private javax.swing.JLabel jLabel35;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
