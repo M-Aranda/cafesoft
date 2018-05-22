@@ -1,13 +1,9 @@
 package model;
 
-import clasesAusar.VistaLog;
-import clasesAusar.VistaStatsVend;
-import clasesAusar.VistaStatsViviendas;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import clasesAusar.VistaVivienda;
 import com.mysql.jdbc.CallableStatement;
 import com.mysql.jdbc.Connection;
 import java.sql.DriverManager;
@@ -31,13 +27,14 @@ public class Data {
     public void cerrarConexionAlternativa() throws SQLException {
         cone.close();
     }
+
     //--------------------------------------------------------------------------OPERACIONES
     public StatsSimple calcularStats() throws SQLException {
         query = "SELECT * FROM estat_default;";
         rs = con.ejecutarSelect(query);
-        
+
         StatsSimple s = new StatsSimple(0, 0, 0);
-                
+
         while (rs.next()) {
             s.setCasas(rs.getInt(1));
             s.setDepartamentos(rs.getInt(2));
@@ -45,13 +42,13 @@ public class Data {
         }
         return s;
     }
-    
+
     public StatsSimple calcularStatsFechas(String fecha1, String fecha2) throws SQLException {
-        query = "CALL estat_por_fechas('"+fecha1+"','"+fecha2+"')";
+        query = "CALL estat_por_fechas('" + fecha1 + "','" + fecha2 + "')";
         rs = con.ejecutarSelect(query);
-        
+
         StatsSimple s = new StatsSimple(0, 0, 0);
-                
+
         while (rs.next()) {
             s.setCasas(rs.getInt(1));
             s.setDepartamentos(rs.getInt(2));
@@ -119,7 +116,6 @@ public class Data {
             coincidenciasDeRut = res.getInt(1);
         }
         res.close();
-
 
         return coincidenciasDeRut;
 
@@ -220,21 +216,21 @@ public class Data {
         return v;
     }
 
-    public int buscarCoincidenciasDeRutCli(String runCliABuscar) throws SQLException{
-        query="SELECT COUNT(*) FROM cliente WHERE run='"+runCliABuscar+"'";
+    public int buscarCoincidenciasDeRutCli(String runCliABuscar) throws SQLException {
+        query = "SELECT COUNT(*) FROM cliente WHERE run='" + runCliABuscar + "'";
         rs = con.ejecutarSelect(query);
-        
-        int coinc=0;
-        
-        while(rs.next()){
-            coinc=rs.getInt(1);
+
+        int coinc = 0;
+
+        while (rs.next()) {
+            coinc = rs.getInt(1);
         }
-        
+
         return coinc;
     }
-    
+
     public List<VistaVivienda> leerTodasLasViviendasDisponibles(String filtro) throws SQLException {
-        query = "SELECT * FROM vista_viviendas_disponibles "+filtro;
+        query = "SELECT * FROM vista_viviendas_disponibles " + filtro;
 
         List<VistaVivienda> viviendas = new ArrayList<>();
 
@@ -260,8 +256,9 @@ public class Data {
 
         return viviendas;
     }
+
     public List<VistaStatsViviendas> leerStatViviendasFiltrada(String filtro) throws SQLException {
-        query = "SELECT  * FROM vista_estadisticas_viviendas"+filtro;
+        query = "SELECT  * FROM vista_estadisticas_viviendas" + filtro;
 
         List<VistaStatsViviendas> viviendas = new ArrayList<>();
 
@@ -289,8 +286,9 @@ public class Data {
 
         return viviendas;
     }
+
     public List<VistaStatsVend> leerStatVendedores(String datos) throws SQLException {
-        query = "CALL vendedores_por_fechas("+datos+")";
+        query = "CALL vendedores_por_fechas(" + datos + ")";
 
         List<VistaStatsVend> vendedores = new ArrayList<>();
 
@@ -560,7 +558,7 @@ public class Data {
     }
 
     public void borrarUsuario(Usuario u) throws SQLException {
-        query = "CALL borrarUsuario('"+u.getRun()+"');";
+        query = "CALL borrarUsuario('" + u.getRun() + "');";
 
         con.ejecutar(query);
         con.close();
@@ -612,7 +610,6 @@ public class Data {
 
             viviendas.add(v);
         }
-        
 
         if (consultaCompleja) {
             rs = con.ejecutarSelect(querySegunda);
@@ -631,25 +628,21 @@ public class Data {
                 v.setCondicion(rs.getString(9));
 
                 viviendas.add(v);
-                
+
             }
-            
-            
-            
+
             con.close();
 
         }
 
         con.close();
-  
 
         return viviendas;
     }
-    
-    
-    public void llamarProcedimientocrear_contrato(int nRol, String tipoContrato, String runCli, String runVend) throws SQLException{
-        query=("CALL crear_contrato('"+nRol+"','"+tipoContrato+"','"+runCli+"','"+runVend+"')");
-        
+
+    public void llamarProcedimientocrear_contrato(int nRol, String tipoContrato, String runCli, String runVend) throws SQLException {
+        query = ("CALL crear_contrato('" + nRol + "','" + tipoContrato + "','" + runCli + "','" + runVend + "')");
+
         con.ejecutar(query);
     }
 

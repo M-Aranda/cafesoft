@@ -2,7 +2,6 @@ CREATE DATABASE cafesoft; -- DROP DATABASE cafesoft
 
 USE cafesoft;
 
-SELECT * FROM vista_logs;
 
 CREATE TABLE tipo_vivienda(
     id INT AUTO_INCREMENT,

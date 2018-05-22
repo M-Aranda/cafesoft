@@ -3,7 +3,6 @@ package model;
 import java.util.List;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
-import clasesAusar.VistaVivienda;
 
 public class TModelViviendasDisponibles implements TableModel {
 

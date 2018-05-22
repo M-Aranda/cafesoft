@@ -1,6 +1,5 @@
 package model;
 
-import clasesAusar.VistaStatsViviendas;
 import java.util.List;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;

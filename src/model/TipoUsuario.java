@@ -10,6 +10,7 @@ package model;
  * @author Alex971
  */
 public class TipoUsuario {
+
     private int id;
     private String nombre;
 
@@ -41,6 +42,5 @@ public class TipoUsuario {
     public String toString() {
         return "TipoUsuario{" + "id=" + id + ", nombre=" + nombre + '}';
     }
-    
-    
+
 }

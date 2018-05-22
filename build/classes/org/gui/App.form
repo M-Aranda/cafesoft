@@ -156,17 +156,11 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Filtrar por casas"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkFiltrarPorCasasActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JCheckBox" name="chkFiltrarPorDepartamentos">
           <Properties>
             <Property name="text" type="java.lang.String" value="Filtrar por departamentos"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkFiltrarPorDepartamentosActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="lblOrden">
           <Properties>
@@ -849,9 +843,6 @@
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
                   </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtDepaActionPerformed"/>
-                  </Events>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel22">
                   <Properties>
@@ -880,9 +871,6 @@
                   </Properties>
                 </Component>
                 <Component class="com.toedter.calendar.JDateChooser" name="jdHasta">
-                  <Events>
-                    <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jdHastaKeyReleased"/>
-                  </Events>
                 </Component>
                 <Component class="com.toedter.calendar.JDateChooser" name="jdDesde">
                 </Component>
@@ -1423,7 +1411,7 @@
             <Component class="javax.swing.JSpinner" name="jSpinner1">
               <Properties>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
-                  <Color id="Default Cursor"/>
+                  <Color id="Cursor Por defecto"/>
                 </Property>
               </Properties>
             </Component>
@@ -1470,9 +1458,6 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JComboBox" name="cboContrato">
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cboContratoActionPerformed"/>
-              </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
@@ -1677,9 +1662,6 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JComboBox" name="cboOrden">
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cboOrdenActionPerformed"/>
-              </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
@@ -1705,7 +1687,9 @@
                               <Component id="rdCambiarColoresTextoBotones" max="32767" attributes="0"/>
                               <Component id="rdCambiarColoresBotones" max="32767" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="148" max="32767" attributes="0"/>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Component id="jToggleButton1" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="41" max="32767" attributes="0"/>
                           <Component id="btnCancelarColores" min="-2" pref="281" max="-2" attributes="0"/>
                       </Group>
                       <Component id="clrChoosser" max="32767" attributes="0"/>
@@ -1725,14 +1709,19 @@
                           <EmptySpace min="5" pref="5" max="-2" attributes="0"/>
                           <Component id="btnGuardarCambiosBotones" max="32767" attributes="0"/>
                       </Group>
-                      <Group type="102" attributes="0">
+                      <Component id="btnCancelarColores" max="32767" attributes="0"/>
+                      <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
-                          <Component id="rdCambiarColoresBotones" min="-2" pref="33" max="-2" attributes="0"/>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="rdCambiarColoresTextoBotones" min="-2" pref="33" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="jToggleButton1" max="32767" attributes="0"/>
+                              <Group type="102" attributes="0">
+                                  <Component id="rdCambiarColoresBotones" min="-2" pref="33" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="rdCambiarColoresTextoBotones" min="-2" pref="33" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
                           <EmptySpace min="0" pref="12" max="32767" attributes="0"/>
                       </Group>
-                      <Component id="btnCancelarColores" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -1780,6 +1769,14 @@
             <Property name="selected" type="boolean" value="true"/>
             <Property name="text" type="java.lang.String" value="Cambiar Color Botones"/>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JToggleButton" name="jToggleButton1">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Por Defecto"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jToggleButton1ActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -1898,9 +1895,6 @@
   </Layout>
   <SubComponents>
     <Component class="javax.swing.JTextField" name="txtRun">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtRunActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="lblRUN">
       <Properties>

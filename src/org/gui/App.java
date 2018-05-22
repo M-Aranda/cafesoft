@@ -1,9 +1,9 @@
 package org.gui;
 
-import clasesAusar.VistaLog;
-import clasesAusar.VistaStatsVend;
-import clasesAusar.VistaStatsViviendas;
-import clasesAusar.VistaVivienda;
+import model.VistaLog;
+import model.VistaStatsVend;
+import model.VistaStatsViviendas;
+import model.VistaVivienda;
 import com.jtattoo.plaf.luna.LunaLookAndFeel;
 import java.awt.Color;
 import java.awt.event.WindowEvent;
@@ -48,139 +48,6 @@ import model.Vivienda;
  * Vergara
  */
 public class App extends javax.swing.JFrame {
-
-    private void getSimpleStats() {
-        statSimple = new StatsSimple();
-        try {
-            statSimple = d.calcularStats();
-            txtCasas.setText("" + statSimple.getCasas());
-            txtDepa.setText("" + statSimple.getDepartamentos());
-            txtTodos.setText("" + statSimple.getTodas());
-        } catch (SQLException ex) {
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private void getFechaStats() {
-        statSimple = new StatsSimple();
-        try {
-            statSimple = d.calcularStatsFechas(fInicio.format(jdDesde.getDate()), fFinal.format(jdHasta.getDate()));
-            txtCasas.setText("" + statSimple.getCasas());
-            txtDepa.setText("" + statSimple.getDepartamentos());
-            txtTodos.setText("" + statSimple.getTodas());
-        } catch (SQLException ex) {
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private void cargarViviendaStatFiltrada(String filtro) {
-        viviendasStats = new ArrayList<>();
-        try {
-            viviendasStats = d.leerStatViviendasFiltrada(filtro);
-        } catch (SQLException ex) {
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        modelStatViviendas = new TModelNoDisponibles(viviendasStats);
-        tbStatViviendas.setModel(modelStatViviendas);
-    }
-
-    private void cargarVendedoresStatFiltrada(String filtro) {
-        vendedoresStats = new ArrayList<>();
-        try {
-            vendedoresStats = d.leerStatVendedores(filtro);
-        } catch (SQLException ex) {
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        modelStatVendedores = new TModelStatVendedores(vendedoresStats);
-        tbStatVendedores.setModel(modelStatVendedores);
-    }
-
-    //clase hilo creada dentro de app, para modificar componetes
-    private class HiloDePrueba extends Thread {
-
-        @Override
-        public void run() {
-
-            while (true) {
-                Properties p = new Properties();
-
-                File config = new File("config.properties");
-
-                try {
-                    if (config.exists()) {
-                        //si se encuentra, se leen los datos que contiene
-                        FileReader fr = new FileReader(config);
-
-                        p.load(fr);
-
-                        String clrBotones, clrTextBotones;
-                        clrBotones = p.getProperty("clrBotones");
-                        clrTextBotones = p.getProperty("clrTextBotones");
-
-                        String[] spltColorBoton = clrBotones.split(",");
-                        String[] spltColorTextBoton = clrTextBotones.split(",");
-                        fr.close();
-
-                        int rB = Integer.parseInt(spltColorBoton[0]);
-                        int gB = Integer.parseInt(spltColorBoton[1]);
-                        int bB = Integer.parseInt(spltColorBoton[2]);
-
-                        int rT = Integer.parseInt(spltColorTextBoton[0]);
-                        int gT = Integer.parseInt(spltColorTextBoton[1]);
-                        int bT = Integer.parseInt(spltColorTextBoton[2]);
-
-                        Color cb = new Color(rB, gB, bB);
-                        Color ctb = new Color(rT, gT, bT);
-
-                        try {
-                            //COLOR BOTONES
-                            btnGuardarCambiosBotones.setBackground(cb);
-                            btnCancelarColores.setBackground(cb);
-                            btnFiltrarViviendasJfVendedor.setBackground(cb);
-                            btnCrearCliente.setBackground(cb);
-                            btnCancelarCreacionDeCliente.setBackground(cb);
-                            btnArrendarOVender.setBackground(cb);
-
-                            //COLOR TEXTO BOTONES
-                            btnGuardarCambiosBotones.setForeground(ctb);
-                            btnCancelarColores.setForeground(ctb);
-                            btnFiltrarViviendasJfVendedor.setForeground(ctb);
-                            btnCrearCliente.setForeground(ctb);
-                            btnCancelarCreacionDeCliente.setForeground(ctb);
-                            btnArrendarOVender.setForeground(ctb);
-
-                        } catch (Exception e) {
-                        }
-
-                    } else {
-                        //si no, se crea uno con datos por defecto
-                        Properties prop = new Properties();
-
-                        prop.put("clrBotones", "212,208,200");
-                        prop.put("clrTextBotones", "0,0,0");
-
-                        try {
-                            File archivo = new File("config.properties");
-                            FileWriter fw = new FileWriter(archivo);
-                            prop.store(fw, "configuracion Colores");
-                            fw.close();
-                        } catch (IOException ex) {
-                            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-
-                    }
-                } catch (IOException e) {
-                }
-                try {
-                    sleep(1000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-    }
 
     private Data d;
     private TModelViviendasDisponibles modelViviendasDisponibles;
@@ -254,90 +121,6 @@ public class App extends javax.swing.JFrame {
 
         JFrameCrearCliente.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-    }
-
-    private void cargarTablaJFrameVendedor() throws SQLException {
-        viviendasDisponibles = new ArrayList();
-        viviendasDisponibles = d.leerTodasLasViviendasDisponibles("");
-        modelViviendasDisponibles = new TModelViviendasDisponibles(viviendasDisponibles);
-        tblDatosFrameVend.setModel(modelViviendasDisponibles);
-        tblDatosFrameVend.setGridColor(Color.DARK_GRAY);
-
-    }
-
-    private void filtrarTablaJFrameVendedor(String filtro) throws SQLException {
-        viviendasDisponibles = new ArrayList();
-        viviendasDisponibles = d.leerTodasLasViviendasDisponibles(filtro);
-        modelViviendasDisponibles = new TModelViviendasDisponibles(viviendasDisponibles);
-        tblDatosFrameVend.setModel(modelViviendasDisponibles);
-        tblDatosFrameVend.setGridColor(Color.DARK_GRAY);
-
-    }
-
-    private void llenarCbosFrameVendedor() {
-        cboFiltrarPorEstado.removeAllItems();
-
-        cboFiltrarPorEstado.addItem("Nuevas");
-        cboFiltrarPorEstado.addItem("Usadas");
-        cboFiltrarPorEstado.addItem("Ambas");
-        cboFiltrarPorEstado.setSelectedIndex(0);
-    }
-
-    private void cargarCboViviendaAdmin() {
-        cboTipo.removeAllItems();
-        cboDisp.removeAllItems();
-        cboCondicion.removeAllItems();
-
-        cboTipo.addItem("Casa");
-        cboTipo.addItem("Departamento");
-
-        cboDisp.addItem("Arrendada");
-        cboDisp.addItem("Vendida");
-        cboDisp.addItem("Disponible");
-
-        cboCondicion.addItem("Nueva");
-        cboCondicion.addItem("Usada");
-    }
-
-    private void cargarCboViviendaStat() {
-        cboContrato.removeAllItems();
-        cboTipoVivienda.removeAllItems();
-        cboContrato.addItem("Todas");
-        cboContrato.addItem("Arrendada");
-        cboContrato.addItem("Vendida");
-        cboContrato.setSelectedIndex(0);
-        cboTipoVivienda.addItem("Todas");
-        cboTipoVivienda.addItem("Casa");
-        cboTipoVivienda.addItem("Departamentos");
-        cboTipoVivienda.setSelectedIndex(0);
-
-    }
-
-    private void cargarCboVendedorStat() {
-        cboOrden.removeAllItems();
-        cboOrden.addItem("Contratos");
-        cboOrden.addItem("Log-in");
-        cboOrden.setSelectedIndex(0);
-    }
-
-    private void inicializarSeleccionDeFiltroVendedor() {
-        cboFiltrarPorEstado.setEnabled(true);
-        rbtFiltrarDesc.setSelected(true);
-        rbtDeVenta.setSelected(true);
-
-    }
-
-    private void cargarTblLog() throws SQLException {
-        logs = d.leerVistaLogs();
-        modelLog = new TModelLog(logs);
-        tblLog.setModel(modelLog);
-    }
-
-    public void msgErrorRutNoEncontrado() {
-        String titulo = "Error";
-        String msg = "El rut ingresado no se encuentra registrado";
-        int tipoMsg = JOptionPane.ERROR_MESSAGE;
-        JOptionPane.showMessageDialog(null, msg, titulo, tipoMsg);
     }
 
     @SuppressWarnings("unchecked")
@@ -483,6 +266,7 @@ public class App extends javax.swing.JFrame {
         btnCancelarColores = new javax.swing.JButton();
         rdCambiarColoresTextoBotones = new javax.swing.JRadioButton();
         rdCambiarColoresBotones = new javax.swing.JRadioButton();
+        jToggleButton1 = new javax.swing.JToggleButton();
         btnGCambioColores = new javax.swing.ButtonGroup();
         jFSeleccionarClienteContrato = new javax.swing.JFrame();
         lblRunClienteContrato = new javax.swing.JLabel();
@@ -522,18 +306,8 @@ public class App extends javax.swing.JFrame {
         cboFiltrarPorEstado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         chkFiltrarPorCasas.setText("Filtrar por casas");
-        chkFiltrarPorCasas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkFiltrarPorCasasActionPerformed(evt);
-            }
-        });
 
         chkFiltrarPorDepartamentos.setText("Filtrar por departamentos");
-        chkFiltrarPorDepartamentos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkFiltrarPorDepartamentosActionPerformed(evt);
-            }
-        });
 
         lblOrden.setText("Orden");
 
@@ -926,11 +700,6 @@ public class App extends javax.swing.JFrame {
         jLabel21.setText("Cantidad de casas vendidas                     :");
 
         txtDepa.setEditable(false);
-        txtDepa.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtDepaActionPerformed(evt);
-            }
-        });
 
         jLabel22.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel22.setText("Cantidad de departamentos vendidos       :");
@@ -941,12 +710,6 @@ public class App extends javax.swing.JFrame {
         jLabel23.setText("Cantidad de contratos realizados              :");
 
         txtTodos.setEditable(false);
-
-        jdHasta.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                jdHastaKeyReleased(evt);
-            }
-        });
 
         jLabel24.setText("Desde :");
 
@@ -1339,12 +1102,6 @@ public class App extends javax.swing.JFrame {
 
         jLabel30.setText("Tipo de contrato:");
 
-        cboContrato.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cboContratoActionPerformed(evt);
-            }
-        });
-
         jLabel35.setText("Tipo de Vivienda:");
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
@@ -1465,12 +1222,6 @@ public class App extends javax.swing.JFrame {
 
         jLabel34.setText("Tipo de Orden:");
 
-        cboOrden.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cboOrdenActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
@@ -1560,6 +1311,13 @@ public class App extends javax.swing.JFrame {
         rdCambiarColoresBotones.setSelected(true);
         rdCambiarColoresBotones.setText("Cambiar Color Botones");
 
+        jToggleButton1.setText("Por Defecto");
+        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout frmColoresLayout = new javax.swing.GroupLayout(frmColores.getContentPane());
         frmColores.getContentPane().setLayout(frmColoresLayout);
         frmColoresLayout.setHorizontalGroup(
@@ -1573,7 +1331,9 @@ public class App extends javax.swing.JFrame {
                         .addGroup(frmColoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(rdCambiarColoresTextoBotones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(rdCambiarColoresBotones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 148, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jToggleButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
                         .addComponent(btnCancelarColores, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(clrChoosser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -1588,13 +1348,16 @@ public class App extends javax.swing.JFrame {
                     .addGroup(frmColoresLayout.createSequentialGroup()
                         .addGap(5, 5, 5)
                         .addComponent(btnGuardarCambiosBotones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnCancelarColores, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(frmColoresLayout.createSequentialGroup()
                         .addGap(15, 15, 15)
-                        .addComponent(rdCambiarColoresBotones, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(rdCambiarColoresTextoBotones, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 12, Short.MAX_VALUE))
-                    .addComponent(btnCancelarColores, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(frmColoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jToggleButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(frmColoresLayout.createSequentialGroup()
+                                .addComponent(rdCambiarColoresBotones, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(rdCambiarColoresTextoBotones, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 12, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -1637,12 +1400,6 @@ public class App extends javax.swing.JFrame {
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
-            }
-        });
-
-        txtRun.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtRunActionPerformed(evt);
             }
         });
 
@@ -1704,14 +1461,15 @@ public class App extends javax.swing.JFrame {
 
         try {
             indiceDeViviendaAVender = tblDatosFrameVend.getModel().getValueAt(filaSelec, colSelec).toString();
-            jFSeleccionarClienteContrato.setBounds(WIDTH, WIDTH, 400, 400);
-            jFSeleccionarClienteContrato.setLocationRelativeTo(null);
-            jFSeleccionarClienteContrato.setVisible(true);
 
         } catch (Exception e) {
             msgErrorNoSeSeleccionoVivienda();
         }
-
+        if (indiceDeViviendaAVender != null) {
+            jFSeleccionarClienteContrato.setBounds(WIDTH, WIDTH, 400, 400);
+            jFSeleccionarClienteContrato.setLocationRelativeTo(null);
+            jFSeleccionarClienteContrato.setVisible(true);
+        }
 
     }//GEN-LAST:event_jMVenderVivActionPerformed
 
@@ -1724,28 +1482,23 @@ public class App extends javax.swing.JFrame {
 
         try {
             indiceDeViviendaAArrendar = tblDatosFrameVend.getModel().getValueAt(filaSelec, colSelec).toString();
-            jFSeleccionarClienteContrato.setBounds(WIDTH, WIDTH, 400, 400);
-            jFSeleccionarClienteContrato.setLocationRelativeTo(null);
-            jFSeleccionarClienteContrato.setVisible(true);
 
         } catch (Exception e) {
             msgErrorNoSeSeleccionoVivienda();
         }
-
-
+        if (indiceDeViviendaAArrendar != null) {
+            jFSeleccionarClienteContrato.setBounds(WIDTH, WIDTH, 400, 400);
+            jFSeleccionarClienteContrato.setLocationRelativeTo(null);
+            jFSeleccionarClienteContrato.setVisible(true);
+        }
     }//GEN-LAST:event_jMArrendarViviendaActionPerformed
 
-    private void chkFiltrarPorCasasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkFiltrarPorCasasActionPerformed
-
-    }//GEN-LAST:event_chkFiltrarPorCasasActionPerformed
-
-    private void chkFiltrarPorDepartamentosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkFiltrarPorDepartamentosActionPerformed
-
-    }//GEN-LAST:event_chkFiltrarPorDepartamentosActionPerformed
-
     private void itemAdminSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAdminSalirActionPerformed
-        frmAdmin.dispatchEvent(new WindowEvent(frmAdmin, WindowEvent.WINDOW_CLOSING));
-        this.setVisible(true);
+        try {
+            salir();
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_itemAdminSalirActionPerformed
 
     private void btnIniciarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarSesionActionPerformed
@@ -1790,8 +1543,12 @@ public class App extends javax.swing.JFrame {
     }//GEN-LAST:event_btnIniciarSesionActionPerformed
 
     private void jMCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMCerrarSesionActionPerformed
-        JfVendedor.dispatchEvent(new WindowEvent(JfVendedor, WindowEvent.WINDOW_CLOSING));
-        this.setVisible(true);
+        try {
+            //JfVendedor.dispatchEvent(new WindowEvent(JfVendedor, WindowEvent.WINDOW_CLOSING));
+            salir();
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jMCerrarSesionActionPerformed
 
     private void btnCancelarCreacionDeClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarCreacionDeClienteActionPerformed
@@ -2251,10 +2008,6 @@ public class App extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnLogActionPerformed
 
-    private void txtDepaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDepaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtDepaActionPerformed
-
     private void btnVerViviendasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerViviendasActionPerformed
         cargarViviendaStatFiltrada("");
         cargarCboViviendaStat();
@@ -2266,59 +2019,11 @@ public class App extends javax.swing.JFrame {
         frmStatViviendas.setLocationRelativeTo(null);
     }//GEN-LAST:event_btnVerViviendasActionPerformed
 
-    private void txtRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtRunActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtRunActionPerformed
-
-    private void btnGuardarCambiosBotonesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarCambiosBotonesActionPerformed
-        Color color = clrChoosser.getColor();
-
-        int r = color.getRed();
-        int g = color.getGreen();
-        int b = color.getBlue();
-
-        Properties p = new Properties();
-        File config = new File("config.properties");
-        try {
-            FileReader fr = new FileReader(config);
-            p.load(fr);
-        } catch (IOException iOException) {
-        }
-
-        String propBoton = p.getProperty("clrBotones");
-        String propTextBoton = p.getProperty("clrTextBotones");
-
-        if (rdCambiarColoresBotones.isSelected()) {
-            p.setProperty("clrBotones", r + "," + g + "," + b);
-            p.setProperty("clrTextBotones", propTextBoton);
-        } else {
-            p.put("clrBotones", propBoton);
-            p.put("clrTextBotones", r + "," + g + "," + b);
-        }
-
-        try {
-            File archivo = new File("config.properties");
-            FileWriter fw = new FileWriter(archivo);
-            p.store(fw, "configuracion Colores");
-            fw.close();
-        } catch (IOException ex) {
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_btnGuardarCambiosBotonesActionPerformed
-
-    private void btnCancelarColoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarColoresActionPerformed
-        frmColores.setVisible(false);
-    }//GEN-LAST:event_btnCancelarColoresActionPerformed
-
     private void jMVCamApActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMVCamApActionPerformed
         frmColores.setBounds(WIDTH, WIDTH, 920, 620);
         frmColores.setLocationRelativeTo(null);
         frmColores.setVisible(true);
     }//GEN-LAST:event_jMVCamApActionPerformed
-
-    private void jdHastaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jdHastaKeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jdHastaKeyReleased
 
     private void btnEstDefaultActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEstDefaultActionPerformed
         if (jdDesde.getDate() != null && jdHasta.getDate() != null) {
@@ -2342,10 +2047,6 @@ public class App extends javax.swing.JFrame {
         frmStatVendedores.setBounds(WIDTH, WIDTH, 880, 550);
         frmStatVendedores.setLocationRelativeTo(null);
     }//GEN-LAST:event_btnVerVendedoresActionPerformed
-
-    private void cboContratoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboContratoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cboContratoActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         String filtro = new String();
@@ -2394,10 +2095,6 @@ public class App extends javax.swing.JFrame {
         cargarCboViviendaStat();
         cargarViviendaStatFiltrada("");
     }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void cboOrdenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboOrdenActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cboOrdenActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         jdInicio2.setCalendar(null);
@@ -2448,6 +2145,62 @@ public class App extends javax.swing.JFrame {
 
 
     }//GEN-LAST:event_btnArrendarOVenderActionPerformed
+
+    private void btnCancelarColoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarColoresActionPerformed
+        frmColores.setVisible(false);
+    }//GEN-LAST:event_btnCancelarColoresActionPerformed
+
+    private void btnGuardarCambiosBotonesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarCambiosBotonesActionPerformed
+        Color color = clrChoosser.getColor();
+
+        int r = color.getRed();
+        int g = color.getGreen();
+        int b = color.getBlue();
+
+        Properties p = new Properties();
+        File config = new File("config.properties");
+        try {
+            FileReader fr = new FileReader(config);
+            p.load(fr);
+        } catch (IOException iOException) {
+        }
+
+        String propBoton = p.getProperty("clrBotones");
+        String propTextBoton = p.getProperty("clrTextBotones");
+
+        if (rdCambiarColoresBotones.isSelected()) {
+            p.setProperty("clrBotones", r + "," + g + "," + b);
+            p.setProperty("clrTextBotones", propTextBoton);
+        } else {
+            p.put("clrBotones", propBoton);
+            p.put("clrTextBotones", r + "," + g + "," + b);
+        }
+
+        try {
+            File archivo = new File("config.properties");
+            FileWriter fw = new FileWriter(archivo);
+            p.store(fw, "configuracion Colores");
+            fw.close();
+        } catch (IOException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnGuardarCambiosBotonesActionPerformed
+
+    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
+        Properties prop = new Properties();
+
+        prop.put("clrBotones", "212,208,200");
+        prop.put("clrTextBotones", "0,0,0");
+
+        try {
+            File archivo = new File("config.properties");
+            FileWriter fw = new FileWriter(archivo);
+            prop.store(fw, "configuracion Colores");
+            fw.close();
+        } catch (IOException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jToggleButton1ActionPerformed
 
     private void msgTrasaccionExitosa() {
         String titulo = "Aviso";
@@ -2584,14 +2337,14 @@ public class App extends javax.swing.JFrame {
                 JOptionPane.QUESTION_MESSAGE,
                 null, // null para icono por defecto.
                 new Object[]{"Aceptar", "Cerrar Sesión", "Cancelar"}, //
-                "opcion 1");
-        if (0 == op) {
+                null);
+        if (op == 0) {
             log = new Log();
             log.setDescripcion(sesion.getNombre() + " ha salido de CafeSoft");
             log.setUsuario(sesion.getRun());
             d.crearLog(log);
             System.exit(0);
-        } else if (1 == op) {
+        } else if (op == 1) {
             log = new Log();
             log.setDescripcion(sesion.getNombre() + " ha salido de CafeSoft");
             log.setUsuario(sesion.getRun());
@@ -2652,8 +2405,225 @@ public class App extends javax.swing.JFrame {
         }
     }
 
-    //de momento estos 2 metodos son innecesarios
-    //para escribir el objeto
+    private void getSimpleStats() {
+        statSimple = new StatsSimple();
+        try {
+            statSimple = d.calcularStats();
+            txtCasas.setText("" + statSimple.getCasas());
+            txtDepa.setText("" + statSimple.getDepartamentos());
+            txtTodos.setText("" + statSimple.getTodas());
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getFechaStats() {
+        statSimple = new StatsSimple();
+        try {
+            statSimple = d.calcularStatsFechas(fInicio.format(jdDesde.getDate()), fFinal.format(jdHasta.getDate()));
+            txtCasas.setText("" + statSimple.getCasas());
+            txtDepa.setText("" + statSimple.getDepartamentos());
+            txtTodos.setText("" + statSimple.getTodas());
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void cargarViviendaStatFiltrada(String filtro) {
+        viviendasStats = new ArrayList<>();
+        try {
+            viviendasStats = d.leerStatViviendasFiltrada(filtro);
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        modelStatViviendas = new TModelNoDisponibles(viviendasStats);
+        tbStatViviendas.setModel(modelStatViviendas);
+    }
+
+    private void cargarVendedoresStatFiltrada(String filtro) {
+        vendedoresStats = new ArrayList<>();
+        try {
+            vendedoresStats = d.leerStatVendedores(filtro);
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        modelStatVendedores = new TModelStatVendedores(vendedoresStats);
+        tbStatVendedores.setModel(modelStatVendedores);
+    }
+
+    //clase hilo creada dentro de app, para modificar componetes
+    private class HiloDePrueba extends Thread {
+
+        @Override
+        public void run() {
+
+            while (true) {
+                Properties p = new Properties();
+
+                File config = new File("config.properties");
+
+                try {
+                    if (config.exists()) {
+                        //si se encuentra, se leen los datos que contiene
+                        FileReader fr = new FileReader(config);
+
+                        p.load(fr);
+
+                        String clrBotones, clrTextBotones;
+                        clrBotones = p.getProperty("clrBotones");
+                        clrTextBotones = p.getProperty("clrTextBotones");
+
+                        String[] spltColorBoton = clrBotones.split(",");
+                        String[] spltColorTextBoton = clrTextBotones.split(",");
+                        fr.close();
+
+                        int rB = Integer.parseInt(spltColorBoton[0]);
+                        int gB = Integer.parseInt(spltColorBoton[1]);
+                        int bB = Integer.parseInt(spltColorBoton[2]);
+
+                        int rT = Integer.parseInt(spltColorTextBoton[0]);
+                        int gT = Integer.parseInt(spltColorTextBoton[1]);
+                        int bT = Integer.parseInt(spltColorTextBoton[2]);
+
+                        Color cb = new Color(rB, gB, bB);
+                        Color ctb = new Color(rT, gT, bT);
+
+                        try {
+                            //COLOR BOTONES
+                            btnGuardarCambiosBotones.setBackground(cb);
+                            btnCancelarColores.setBackground(cb);
+                            btnFiltrarViviendasJfVendedor.setBackground(cb);
+                            btnCrearCliente.setBackground(cb);
+                            btnCancelarCreacionDeCliente.setBackground(cb);
+                            btnArrendarOVender.setBackground(cb);
+
+                            //COLOR TEXTO BOTONES
+                            btnGuardarCambiosBotones.setForeground(ctb);
+                            btnCancelarColores.setForeground(ctb);
+                            btnFiltrarViviendasJfVendedor.setForeground(ctb);
+                            btnCrearCliente.setForeground(ctb);
+                            btnCancelarCreacionDeCliente.setForeground(ctb);
+                            btnArrendarOVender.setForeground(ctb);
+
+                        } catch (Exception e) {
+                        }
+
+                    } else {
+                        //si no, se crea uno con datos por defecto
+                        Properties prop = new Properties();
+
+                        prop.put("clrBotones", "212,208,200");
+                        prop.put("clrTextBotones", "0,0,0");
+
+                        try {
+                            File archivo = new File("config.properties");
+                            FileWriter fw = new FileWriter(archivo);
+                            prop.store(fw, "configuracion Colores");
+                            fw.close();
+                        } catch (IOException ex) {
+                            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                    }
+                } catch (IOException e) {
+                }
+                try {
+                    sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
+
+    private void cargarTablaJFrameVendedor() throws SQLException {
+        viviendasDisponibles = new ArrayList();
+        viviendasDisponibles = d.leerTodasLasViviendasDisponibles("");
+        modelViviendasDisponibles = new TModelViviendasDisponibles(viviendasDisponibles);
+        tblDatosFrameVend.setModel(modelViviendasDisponibles);
+        tblDatosFrameVend.setGridColor(Color.DARK_GRAY);
+
+    }
+
+    private void filtrarTablaJFrameVendedor(String filtro) throws SQLException {
+        viviendasDisponibles = new ArrayList();
+        viviendasDisponibles = d.leerTodasLasViviendasDisponibles(filtro);
+        modelViviendasDisponibles = new TModelViviendasDisponibles(viviendasDisponibles);
+        tblDatosFrameVend.setModel(modelViviendasDisponibles);
+        tblDatosFrameVend.setGridColor(Color.DARK_GRAY);
+
+    }
+
+    private void llenarCbosFrameVendedor() {
+        cboFiltrarPorEstado.removeAllItems();
+
+        cboFiltrarPorEstado.addItem("Nuevas");
+        cboFiltrarPorEstado.addItem("Usadas");
+        cboFiltrarPorEstado.addItem("Ambas");
+        cboFiltrarPorEstado.setSelectedIndex(0);
+    }
+
+    private void cargarCboViviendaAdmin() {
+        cboTipo.removeAllItems();
+        cboDisp.removeAllItems();
+        cboCondicion.removeAllItems();
+
+        cboTipo.addItem("Casa");
+        cboTipo.addItem("Departamento");
+
+        cboDisp.addItem("Arrendada");
+        cboDisp.addItem("Vendida");
+        cboDisp.addItem("Disponible");
+
+        cboCondicion.addItem("Nueva");
+        cboCondicion.addItem("Usada");
+    }
+
+    private void cargarCboViviendaStat() {
+        cboContrato.removeAllItems();
+        cboTipoVivienda.removeAllItems();
+        cboContrato.addItem("Todas");
+        cboContrato.addItem("Arrendada");
+        cboContrato.addItem("Vendida");
+        cboContrato.setSelectedIndex(0);
+        cboTipoVivienda.addItem("Todas");
+        cboTipoVivienda.addItem("Casa");
+        cboTipoVivienda.addItem("Departamentos");
+        cboTipoVivienda.setSelectedIndex(0);
+
+    }
+
+    private void cargarCboVendedorStat() {
+        cboOrden.removeAllItems();
+        cboOrden.addItem("Contratos");
+        cboOrden.addItem("Log-in");
+        cboOrden.setSelectedIndex(0);
+    }
+
+    private void inicializarSeleccionDeFiltroVendedor() {
+        cboFiltrarPorEstado.setEnabled(true);
+        rbtFiltrarDesc.setSelected(true);
+        rbtDeVenta.setSelected(true);
+
+    }
+
+    private void cargarTblLog() throws SQLException {
+        logs = d.leerVistaLogs();
+        modelLog = new TModelLog(logs);
+        tblLog.setModel(modelLog);
+    }
+
+    public void msgErrorRutNoEncontrado() {
+        String titulo = "Error";
+        String msg = "El rut ingresado no se encuentra registrado";
+        int tipoMsg = JOptionPane.ERROR_MESSAGE;
+        JOptionPane.showMessageDialog(null, msg, titulo, tipoMsg);
+    }
+
+//de momento estos 2 metodos son innecesarios
+//para escribir el objeto
 //    public static long writeJavaObject(Connection conn, Object object) throws Exception {
 //        String className = object.getClass().getName();
 //        PreparedStatement pstmt = conn.prepareStatement(WRITE_OBJECT_SQL, Statement.RETURN_GENERATED_KEYS);
@@ -2854,6 +2824,7 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JSpinner jSpinner1;
     private javax.swing.JSpinner jSpinner2;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JToggleButton jToggleButton1;
     private com.toedter.calendar.JDateChooser jdDesde;
     private com.toedter.calendar.JDateChooser jdHasta;
     private com.toedter.calendar.JDateChooser jdInicio1;
