@@ -183,7 +183,7 @@ BEGIN
     END IF;
    
     SET nomCliente=(SELECT nombre FROM cliente WHERE run=runCliente);
-    SET detalle=CONCAT('Se crea contrato de ', nombCont,' de la vivienda ',nRol,' para el/la cliente de run ',runCliente,' conocido/a como ',nomCliente);
+    SET detalle=CONCAT('Se crea contrato de ', nombCont,' de la vivienda de numero de rol ',nRol,' para el/la cliente de run ',runCliente,' conocido/a como ',nomCliente);
 	
     SET disVi=(SELECT id FROM disponibilidad_vivienda WHERE nombre=tipoContrato); 
    

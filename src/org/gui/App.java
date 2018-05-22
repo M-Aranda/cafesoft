@@ -1704,14 +1704,13 @@ public class App extends javax.swing.JFrame {
 
         try {
             indiceDeViviendaAVender = tblDatosFrameVend.getModel().getValueAt(filaSelec, colSelec).toString();
+            jFSeleccionarClienteContrato.setBounds(WIDTH, WIDTH, 400, 400);
+            jFSeleccionarClienteContrato.setLocationRelativeTo(null);
+            jFSeleccionarClienteContrato.setVisible(true);
 
         } catch (Exception e) {
             msgErrorNoSeSeleccionoVivienda();
         }
-
-        jFSeleccionarClienteContrato.setBounds(WIDTH, WIDTH, 400, 400);
-        jFSeleccionarClienteContrato.setLocationRelativeTo(null);
-        jFSeleccionarClienteContrato.setVisible(true);
 
 
     }//GEN-LAST:event_jMVenderVivActionPerformed
@@ -1725,14 +1724,14 @@ public class App extends javax.swing.JFrame {
 
         try {
             indiceDeViviendaAArrendar = tblDatosFrameVend.getModel().getValueAt(filaSelec, colSelec).toString();
+            jFSeleccionarClienteContrato.setBounds(WIDTH, WIDTH, 400, 400);
+            jFSeleccionarClienteContrato.setLocationRelativeTo(null);
+            jFSeleccionarClienteContrato.setVisible(true);
 
         } catch (Exception e) {
             msgErrorNoSeSeleccionoVivienda();
         }
 
-        jFSeleccionarClienteContrato.setBounds(WIDTH, WIDTH, 400, 400);
-        jFSeleccionarClienteContrato.setLocationRelativeTo(null);
-        jFSeleccionarClienteContrato.setVisible(true);
 
     }//GEN-LAST:event_jMArrendarViviendaActionPerformed
 
