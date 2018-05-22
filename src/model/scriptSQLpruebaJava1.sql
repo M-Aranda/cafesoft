@@ -56,7 +56,7 @@ CREATE TABLE usuario(
 
 CREATE TABLE log( -- DROP TABLE log
     id INT AUTO_INCREMENT,
-    descripcion VARCHAR(50),
+    descripcion VARCHAR(250),
     fecha DATETIME,
     usuario_fk VARCHAR(15),
     PRIMARY KEY (id),
@@ -76,7 +76,7 @@ CREATE TABLE contrato(-- DROP TABLE contrato
 );
 
 -- INSERT INTO CONTRATO VALUES(NULL,'99-9','22-2','1311',NOW());
--- INSERT INTO CONTRATO VALUES(NULL,'99-9','22-2','1111',NOW());
+-- INSERT INTO CONTRATO VALUES(NULL,'99-9','22-2','4567',NOW());
 
 -- POR DEFECTO ESTOS INSERT DEBEN IR--
 INSERT INTO tipo_vivienda VALUES (NULL,'Casa');

@@ -16,7 +16,6 @@ public class Data {
     private String query;
     private String querySegunda;
     private ResultSet rs;
-    private List<VistaVivienda> listaViviendas;
     private Connection cone = null;
 
     public Data() throws ClassNotFoundException, SQLException {
@@ -30,6 +29,35 @@ public class Data {
     public void cerrarConexionAlternativa() throws SQLException {
         cone.close();
     }
+    //--------------------------------------------------------------------------OPERACIONES
+    public StatsSimple calcularStats() throws SQLException {
+        query = "SELECT * FROM estat_default;";
+        rs = con.ejecutarSelect(query);
+        
+        StatsSimple s = new StatsSimple(0, 0, 0);
+                
+        while (rs.next()) {
+            s.setCasas(rs.getInt(1));
+            s.setDepartamentos(rs.getInt(2));
+            s.setTodas(rs.getInt(3));
+        }
+        return s;
+    }
+    
+    public StatsSimple calcularStatsFechas(String fecha1, String fecha2) throws SQLException {
+        query = "CALL estat_por_fechas('"+fecha1+"','"+fecha2+"')";
+        rs = con.ejecutarSelect(query);
+        
+        StatsSimple s = new StatsSimple(0, 0, 0);
+                
+        while (rs.next()) {
+            s.setCasas(rs.getInt(1));
+            s.setDepartamentos(rs.getInt(2));
+            s.setTodas(rs.getInt(3));
+        }
+        return s;
+    }
+    //--------------------------------------------------------------------------OPERACIONES
 
     //--------------------------------------------------------------------------BUSCAR-SEARCH
     public int existeUsuario(String run) throws SQLException {
@@ -219,7 +247,7 @@ public class Data {
     }
 
     public List<VistaLog> leerVistaLogs() throws SQLException {
-        query = "SELECT * FROM vista_logs";
+        query = "SELECT * FROM vista_logs ORDER BY vista_logs.fecha DESC";
 
         List<VistaLog> logs = new ArrayList<>();
 

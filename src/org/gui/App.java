@@ -6,7 +6,6 @@ import clasesAusar.VistaVivienda;
 import com.jtattoo.plaf.luna.LunaLookAndFeel;
 import java.awt.Color;
 import java.awt.event.WindowEvent;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -14,15 +13,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import static java.lang.Thread.sleep;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -32,12 +26,14 @@ import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import model.Cliente;
 import model.Data;
 import model.HiloLector;
 import model.Log;
+import model.StatsSimple;
 import model.TModelLog;
 import model.TModelNoDisponibles;
 import model.TModelVivienda;
@@ -51,6 +47,30 @@ import model.Vivienda;
  * Vergara
  */
 public class App extends javax.swing.JFrame {
+
+    private void getSimpleStats() {
+        statSimple = new StatsSimple();
+        try {
+            statSimple = d.calcularStats();
+            txtCasas.setText("" + statSimple.getCasas());
+            txtDepa.setText("" + statSimple.getDepartamentos());
+            txtTodos.setText("" + statSimple.getTodas());
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getFechaStats() {
+        statSimple = new StatsSimple();
+        try {
+            statSimple = d.calcularStatsFechas(fInicio.format(jdDesde.getDate()), fFinal.format(jdHasta.getDate()));
+            txtCasas.setText("" + statSimple.getCasas());
+            txtDepa.setText("" + statSimple.getDepartamentos());
+            txtTodos.setText("" + statSimple.getTodas());
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     //clase hilo creada dentro de app, para modificar componetes
     private class HiloDePrueba extends Thread {
@@ -96,8 +116,7 @@ public class App extends javax.swing.JFrame {
                             btnFiltrarViviendasJfVendedor.setBackground(cb);
                             btnCrearCliente.setBackground(cb);
                             btnCancelarCreacionDeCliente.setBackground(cb);
-                            
-                            
+
                             //COLOR TEXTO BOTONES
                             btnGuardarCambiosBotones.setForeground(ctb);
                             btnCancelarColores.setForeground(ctb);
@@ -133,9 +152,7 @@ public class App extends javax.swing.JFrame {
                     Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-
         }
-
     }
 
     private Data d;
@@ -152,7 +169,9 @@ public class App extends javax.swing.JFrame {
     private JFileChooser fcBackup;
     private FileNameExtensionFilter filtroBakcup;
     private String runUtilizadoParaIngresar;//necesario para un metodo que necesita el run de quien inngreso
-    private DateFormat fInicio, fFinal;// DESTINADO A CALCULAR DATOS POR RANGO DE FECHA
+    private StatsSimple statSimple;
+    private SimpleDateFormat fInicio, fFinal;
+    private SpinnerNumberModel nm;
 
     //query para los inserts
     static final String WRITE_OBJECT_SQL = "INSERT INTO ejem(nombre, valor_objeto) VALUES (?, ?)";// modificar segun sea necesario
@@ -163,7 +182,7 @@ public class App extends javax.swing.JFrame {
     /**
      * Creates new form App
      */
-    public App() {
+    public App() throws SQLException {
 
         try {
             d = new Data();
@@ -172,7 +191,6 @@ public class App extends javax.swing.JFrame {
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "ERROR: " + ex.getMessage());
         }
-
         initComponents();
 
         HiloDePrueba properties = new HiloDePrueba();
@@ -186,23 +204,21 @@ public class App extends javax.swing.JFrame {
         filtroBakcup = new FileNameExtensionFilter("Seleccione un archivo SQL Válido", "sql");
         fcBackup.setFileFilter(filtroBakcup);
 
+        fInicio = new SimpleDateFormat("yyyy-MM-dd");
+        fFinal = new SimpleDateFormat("yyyy-MM-dd");
+
+        nm = new SpinnerNumberModel();
+        nm.setMinimum(0);
+
         JfVendedor.setTitle("Vendedor");
         inicializarSeleccionDeFiltroVendedor();
         viviendasDisponibles = new ArrayList();
-
-        fInicio.getDateInstance();
-        fFinal.getDateInstance();
-
-        try {
-            //  Data d= new Data();
-            logs = d.leerVistaLogs();
-            // se puede descomentar esto para incializar tabla de vendedor, con datos. viviendasDisponibles = d.leerTodasLasViviendasDisponibles();
-        } catch (SQLException ex) {
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        //  Data d= new Data();
+        // se puede descomentar esto para incializar tabla de vendedor, con datos. viviendasDisponibles = d.leerTodasLasViviendasDisponibles();
 
         llenarCbosFrameVendedor();
         cargarTablaJFrameVendedor();
+        getSimpleStats();
 
         cargarTblLog();
 
@@ -267,7 +283,8 @@ public class App extends javax.swing.JFrame {
 
     }
 
-    private void cargarTblLog() {
+    private void cargarTblLog() throws SQLException {
+        logs = d.leerVistaLogs();
         modelLog = new TModelLog(logs);
         tblLog.setModel(modelLog);
     }
@@ -343,17 +360,17 @@ public class App extends javax.swing.JFrame {
         btnVerViviendas = new javax.swing.JButton();
         jLabel20 = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtDepa = new javax.swing.JTextField();
         jLabel22 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        txtCasas = new javax.swing.JTextField();
         jLabel23 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
+        txtTodos = new javax.swing.JTextField();
         jdHasta = new com.toedter.calendar.JDateChooser();
         jdDesde = new com.toedter.calendar.JDateChooser();
         jLabel24 = new javax.swing.JLabel();
         jLabel25 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnEstDefault = new javax.swing.JButton();
         jLabel26 = new javax.swing.JLabel();
         btnVerVendedores = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
@@ -685,10 +702,11 @@ public class App extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(109, 109, 109)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(txtRunVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnBuscarVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnBuscarVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1)
+                        .addComponent(txtRunVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -864,35 +882,56 @@ public class App extends javax.swing.JFrame {
         jLabel21.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel21.setText("Cantidad de casas vendidas                     :");
 
-        jTextField1.setEnabled(false);
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        txtDepa.setEditable(false);
+        txtDepa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                txtDepaActionPerformed(evt);
             }
         });
 
         jLabel22.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel22.setText("Cantidad de departamentos vendidos       :");
 
-        jTextField2.setEnabled(false);
+        txtCasas.setEditable(false);
 
         jLabel23.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel23.setText("Cantidad de contratos realizados              :");
 
-        jTextField3.setEnabled(false);
+        txtTodos.setEditable(false);
+
+        jdHasta.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jdHastaKeyReleased(evt);
+            }
+        });
 
         jLabel24.setText("Desde :");
 
         jLabel25.setText("Hasta :");
 
         jButton2.setText("Por defecto");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
-        jButton3.setText("Filtrar por fecha");
+        btnEstDefault.setText("Filtrar por fecha");
+        btnEstDefault.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEstDefaultActionPerformed(evt);
+            }
+        });
 
         jLabel26.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel26.setText("Tabla de contratos por vendedores");
 
         btnVerVendedores.setText("Ver");
+        btnVerVendedores.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVerVendedoresActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -908,9 +947,9 @@ public class App extends javax.swing.JFrame {
                             .addComponent(jLabel23))
                         .addGap(38, 38, 38)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(txtCasas, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtDepa, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtTodos, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addGroup(jPanel3Layout.createSequentialGroup()
                             .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -919,7 +958,7 @@ public class App extends javax.swing.JFrame {
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(jdDesde, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                            .addComponent(jButton3)
+                            .addComponent(btnEstDefault)
                             .addGap(53, 53, 53)
                             .addComponent(jLabel25)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -941,18 +980,18 @@ public class App extends javax.swing.JFrame {
                 .addGap(43, 43, 43)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel21)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtCasas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel22)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtDepa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(20, 20, 20)
                         .addComponent(jLabel23))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtTodos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(26, 26, 26)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jdDesde, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -963,7 +1002,7 @@ public class App extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jdHasta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton3)
+                        .addComponent(btnEstDefault)
                         .addComponent(jLabel25)))
                 .addGap(27, 27, 27)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -973,7 +1012,7 @@ public class App extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnVerVendedores)
                     .addComponent(jLabel26))
-                .addContainerGap(54, Short.MAX_VALUE))
+                .addContainerGap(81, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Ver Estadísticas", jPanel3);
@@ -1228,6 +1267,8 @@ public class App extends javax.swing.JFrame {
         );
 
         jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Filtrar"));
+
+        jSpinner1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         jLabel27.setText("Fecha Inicio:");
 
@@ -2026,15 +2067,22 @@ public class App extends javax.swing.JFrame {
     }//GEN-LAST:event_JfVendedorWindowClosing
 
     private void btnLogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogActionPerformed
-        cargarTblLog();
+        try {
+            cargarTblLog();
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnLogActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void txtDepaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDepaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_txtDepaActionPerformed
 
     private void btnVerViviendasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerViviendasActionPerformed
-        // TODO add your handling code here:
+        jSpinner1.setModel(nm);
+        frmStatViviendas.setVisible(true);
+        frmStatViviendas.setBounds(WIDTH, WIDTH, 720, 550);
+        frmStatViviendas.setLocationRelativeTo(null);
     }//GEN-LAST:event_btnVerViviendasActionPerformed
 
     private void txtRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtRunActionPerformed
@@ -2086,6 +2134,27 @@ public class App extends javax.swing.JFrame {
         frmColores.setLocationRelativeTo(null);
         frmColores.setVisible(true);
     }//GEN-LAST:event_jMVCamApActionPerformed
+
+    private void jdHastaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jdHastaKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jdHastaKeyReleased
+
+    private void btnEstDefaultActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEstDefaultActionPerformed
+        if (jdDesde.getDate() != null && jdHasta.getDate() != null) {
+            getFechaStats();
+        }
+    }//GEN-LAST:event_btnEstDefaultActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        getSimpleStats();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void btnVerVendedoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerVendedoresActionPerformed
+        jSpinner2.setModel(nm);
+        frmStatVendedores.setVisible(true);
+        frmStatVendedores.setBounds(WIDTH, WIDTH, 920, 620);
+        frmStatVendedores.setLocationRelativeTo(null);
+    }//GEN-LAST:event_btnVerVendedoresActionPerformed
 
     private void msgClienteCreado() {
         String titulo = "Aviso";
@@ -2367,7 +2436,11 @@ public class App extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new App().setVisible(true);
+                try {
+                    new App().setVisible(true);
+                } catch (SQLException ex) {
+                    Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -2384,6 +2457,7 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JButton btnCrearCliente;
     private javax.swing.JButton btnCrearVendedor;
     private javax.swing.JButton btnCrearVivienda;
+    private javax.swing.JButton btnEstDefault;
     private javax.swing.JButton btnFiltrarViviendasJfVendedor;
     private javax.swing.ButtonGroup btnGCambioColores;
     private javax.swing.ButtonGroup btnGFiltrarPrecio;
@@ -2410,7 +2484,6 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JMenuItem itemAdminSalir;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
@@ -2479,9 +2552,6 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
     private com.toedter.calendar.JDateChooser jdDesde;
     private com.toedter.calendar.JDateChooser jdHasta;
     private com.toedter.calendar.JDateChooser jdInicio1;
@@ -2508,6 +2578,8 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JSpinner spnVenta;
     private javax.swing.JTable tblDatosFrameVend;
     private javax.swing.JTable tblLog;
+    private javax.swing.JTextField txtCasas;
+    private javax.swing.JTextField txtDepa;
     private javax.swing.JTextField txtDireccion;
     private javax.swing.JTextField txtNRol;
     private javax.swing.JTextField txtNombreCliente;
@@ -2516,5 +2588,6 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JTextField txtRunCliente;
     private javax.swing.JTextField txtRunVendedor;
     private javax.swing.JTextField txtSueldoCliente;
+    private javax.swing.JTextField txtTodos;
     // End of variables declaration//GEN-END:variables
 }

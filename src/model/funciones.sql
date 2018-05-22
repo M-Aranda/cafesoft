@@ -56,6 +56,7 @@ CREATE VIEW vista_estadisticas_viviendas AS -- DROP view vista_viviendas_disponi
     d.nombre = 'Arrendada' OR d.nombre ='Vendida';
 
 -- SELECT * FROM vista_estadisticas_viviendas;
+SELECT  * FROM vista_estadisticas_viviendas;
 
 
 END $$
@@ -145,7 +146,7 @@ DELIMITER ;
 -- SELECT crear_vivienda (333212,1,3,250000,98000000,3,12,'Aasdddddddddddasasrga #0149',1,'11-1');
 -- SELECT crear_vivienda (123,1,3,250000,98000000,3,12,'Aasdddddddddddasasrga #0149',1,'11-1');
 -- SELECT crear_vivienda (124,1,3,250344,98000000,3,12,'Aasdddddddddddasasrga #0149',1,'11-1');
--- SELECT crear_vivienda (138,2,3,260002,98000000,3,12,'Aasdddddddddddasasrga #0149',1,'11-1');
+-- SELECT crear_vivienda (4567,2,1,260002,98000000,3,12,'jashajdjadja',2,'22-2');
 
 DELIMITER $$
 CREATE PROCEDURE nuevo_log (detalle VARCHAR(200),run_user VARCHAR(200))
@@ -153,6 +154,10 @@ BEGIN
     INSERT INTO log VALUES (NULL,detalle,now(),run_user);
 END $$
 DELIMITER ;
+
+CALL nuevo_log('admin ha restaurado desde backup 2142018 211548.sql','11-1')
+
+
 
 
 
@@ -188,3 +193,23 @@ END //
 DELIMITER ; -- CALL borrarUsuario();
 
 CALL nuevo_log('holaaaah','11-1');
+
+CREATE VIEW estat_default AS -- DROP VIEW estat_default
+SELECT
+(SELECT COUNT(*) FROM vivienda WHERE dis_vivienda != '3' AND tipo_fk = '1'),
+(SELECT COUNT(*) FROM vivienda WHERE dis_vivienda != '3' AND tipo_fk = '2'),
+(SELECT COUNT(*) FROM vivienda WHERE dis_vivienda != '3');
+
+SELECT COUNT(*) FROM contrato c INNER JOIN vivienda v ON v.n_rol = c.vivienda_fk WHERE v.dis_vivienda = '1' OR v.dis_vivienda = '2' AND c.fecha BETWEEN '2018-05-03' AND '2018-05-25'
+
+DELIMITER //
+CREATE PROCEDURE estat_por_fechas (fecha1 DATE,fecha2 DATE)-- DROP PROCEDURE estat_por_fechas
+BEGIN
+	SELECT
+	(SELECT COUNT(*) FROM contrato c INNER JOIN vivienda v ON v.n_rol = c.vivienda_fk WHERE v.dis_vivienda != '3' AND v.tipo_fk = '1' AND c.fecha BETWEEN fecha1 AND fecha2),
+    (SELECT COUNT(*) FROM contrato c INNER JOIN vivienda v ON v.n_rol = c.vivienda_fk WHERE v.dis_vivienda != '3' AND v.tipo_fk = '2' AND c.fecha BETWEEN fecha1 AND fecha2),
+    (SELECT COUNT(*) FROM contrato c INNER JOIN vivienda v ON v.n_rol = c.vivienda_fk WHERE (v.dis_vivienda != '3' OR v.dis_vivienda = '2') AND c.fecha BETWEEN fecha1 AND fecha2);
+END //
+DELIMITER ; -- CALL estat_por_fechas();
+
+CALL estat_por_fechas('2018-05-03','2018-05-25');
