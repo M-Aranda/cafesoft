@@ -72,9 +72,6 @@ public class App extends javax.swing.JFrame {
     private String viviendaPasaAEstar;
 
 
-    /**
-     * Creates new form App
-     */
     public App() throws SQLException {
 
         try {
@@ -1676,7 +1673,7 @@ public class App extends javax.swing.JFrame {
                     filtro += " AND";
 
                 }
-                filtro += " condicion = 'Usado'";
+                filtro += " condicion = 'Usada'";
                 existe = true;
             default:
                 break;
@@ -2297,7 +2294,9 @@ public class App extends javax.swing.JFrame {
             //editar->";C:\Program Files\MySQL\MySQL Server 5.7\bin"(copiar todo entre los parentesis incluido el punto y coma)
             //despues de eso se podrá acceder a mysql desde el CMD del sistema ( asi me funciono a mi )
             //ahí deberían poder ejecutar este comando.
-            Process proceso = Runtime.getRuntime().exec("mysqldump -u root -p cafesoft");//123456 contraseña por defecto, cambiar si hay otra
+            //C:\\apps\\MySQL Workbench 6.3\\mysqldump.exe -> admin con la clave despues de -p
+            //mysqldump -> ejecutando programa como admin
+            Process proceso = Runtime.getRuntime().exec("C:\\apps\\MySQL Workbench 6.3\\mysqldump.exe -u root cafesoft");//123456 contraseña por defecto, cambiar si hay otra
             new HiloLector(proceso.getErrorStream()).start();
 
             InputStream inputStream = proceso.getInputStream();
@@ -2340,7 +2339,7 @@ public class App extends javax.swing.JFrame {
              */
             dir = fcBackup.getSelectedFile();
             if (dir != null && dir.getName().contains(".sql")) {
-                Process proceso = Runtime.getRuntime().exec("mysql -u root -p cafesoft"); //123456 contraseña por defecto, cambiar si hay otra
+                Process proceso = Runtime.getRuntime().exec("C:\\apps\\MySQL Workbench 6.3\\mysql.exe -u root cafesoft"); //123456 contraseña por defecto, cambiar si hay otra
                 OutputStream outputStream = proceso.getOutputStream();
                 FileInputStream fInStream = new FileInputStream(dir);//("backup FECHA HORA.sql"); 
                 //la fecha y hora son las que da el sistema EJ: backup 1942018 17384
