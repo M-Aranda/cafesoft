@@ -306,4 +306,5 @@ BEGIN
         END IF;
 	END IF;
 END //
-DELIMITER ; -- CALL vendedores_por_fechas('2018-05-01','2018-05-23','10','0');
+DELIMITER ;
+ -- CALL vendedores_por_fechas('2018-05-01','2018-05-23','10','0');

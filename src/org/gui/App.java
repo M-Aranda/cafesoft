@@ -71,11 +71,6 @@ public class App extends javax.swing.JFrame {
     private String indiceDeViviendaAVender;
     private String viviendaPasaAEstar;
 
-    //query para los inserts
-    static final String WRITE_OBJECT_SQL = "INSERT INTO ejem(nombre, valor_objeto) VALUES (?, ?)";// modificar segun sea necesario
-
-    //query para los select
-    static final String READ_OBJECT_SQL = "SELECT valor_objeto FROM ejem WHERE id = ?";//modificar segun sea necesario
 
     /**
      * Creates new form App
@@ -93,11 +88,15 @@ public class App extends javax.swing.JFrame {
 
         HiloDePrueba properties = new HiloDePrueba();
         properties.start();
+        
 
         this.setTitle("Inicio de sesión");
         this.setLocationRelativeTo(null);
         this.setResizable(false);
 
+        
+        txtAListaClientes.setEditable(false);
+        cargarListaClientes();
         fcBackup = new JFileChooser();
         filtroBakcup = new FileNameExtensionFilter("Seleccione un archivo SQL Válido", "sql");
         fcBackup.setFileFilter(filtroBakcup);
@@ -142,6 +141,9 @@ public class App extends javax.swing.JFrame {
         lblTipoPrecio = new javax.swing.JLabel();
         rbtDeVenta = new javax.swing.JRadioButton();
         rbtDeRenta = new javax.swing.JRadioButton();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        txtAListaClientes = new javax.swing.JTextArea();
+        lblListaClientes = new javax.swing.JLabel();
         jMBarra = new javax.swing.JMenuBar();
         jMArchivo = new javax.swing.JMenu();
         jMCrearCli = new javax.swing.JMenuItem();
@@ -329,6 +331,12 @@ public class App extends javax.swing.JFrame {
         btnGVentaORenta.add(rbtDeRenta);
         rbtDeRenta.setText("De renta (mensual)");
 
+        txtAListaClientes.setColumns(20);
+        txtAListaClientes.setRows(5);
+        jScrollPane5.setViewportView(txtAListaClientes);
+
+        lblListaClientes.setText("Lista de clientes");
+
         jMArchivo.setText("Archivo");
 
         jMCrearCli.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
@@ -398,7 +406,11 @@ public class App extends javax.swing.JFrame {
                 .addComponent(btnFiltrarViviendasJfVendedor)
                 .addGap(149, 149, 149))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JfVendedorLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(24, 24, 24)
+                .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblListaClientes))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(JfVendedorLayout.createSequentialGroup()
                         .addComponent(lblTipoPrecio)
@@ -426,23 +438,30 @@ public class App extends javax.swing.JFrame {
         JfVendedorLayout.setVerticalGroup(
             JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JfVendedorLayout.createSequentialGroup()
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
-                .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(chkFiltrarPorCasas)
-                    .addComponent(cboFiltrarPorEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(chkFiltrarPorDepartamentos)
-                .addGap(2, 2, 2)
-                .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblTipoPrecio)
-                    .addComponent(rbtDeVenta)
-                    .addComponent(rbtDeRenta))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rbtFiltrarDesc)
-                    .addComponent(rbtFiltrarAsc)
-                    .addComponent(lblOrden))
+                .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(JfVendedorLayout.createSequentialGroup()
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(28, 28, 28)
+                        .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(chkFiltrarPorCasas)
+                            .addComponent(cboFiltrarPorEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(chkFiltrarPorDepartamentos)
+                        .addGap(2, 2, 2)
+                        .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblTipoPrecio)
+                            .addComponent(rbtDeVenta)
+                            .addComponent(rbtDeRenta))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(rbtFiltrarDesc)
+                            .addComponent(rbtFiltrarAsc)
+                            .addComponent(lblOrden)))
+                    .addGroup(JfVendedorLayout.createSequentialGroup()
+                        .addGap(28, 28, 28)
+                        .addComponent(lblListaClientes)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(btnFiltrarViviendasJfVendedor)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
@@ -1453,6 +1472,18 @@ public class App extends javax.swing.JFrame {
         JFrameCrearCliente.setVisible(true);
     }//GEN-LAST:event_jMCrearCliActionPerformed
 
+    private void cargarListaClientes() throws SQLException{
+        ArrayList<Cliente> listCli=new ArrayList();
+        listCli=d.obtenerListaDeClientes();
+        
+        
+        for (Cliente c : listCli) {
+            txtAListaClientes.append(c.toString() + "\n");
+            
+        }
+        
+    }
+    
     private void jMVenderVivActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMVenderVivActionPerformed
         int colSelec = 0;
         int filaSelec = tblDatosFrameVend.getSelectedRow();
@@ -1559,44 +1590,52 @@ public class App extends javax.swing.JFrame {
     private void btnCrearClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearClienteActionPerformed
 
         try {
+            
             try {
-                d.usarConexionAlternativa();
-            } catch (SQLException ex) {
-                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-            String runClienteARegistrar = txtRunCliente.getText();
-            String nombreClienteARegistrar = txtNombreCliente.getText();
-            String sueldoClienteARegistrar = txtSueldoCliente.getText();
-            Cliente c = new Cliente(runClienteARegistrar, nombreClienteARegistrar, Integer.parseInt(sueldoClienteARegistrar));
-
-            int rutClienteExiste;
-            try {
-                rutClienteExiste = d.usarFuncionCrear_cliente(c, runUtilizadoParaIngresar);
-                if (rutClienteExiste == 1) {
-                    msgErrorRunDeClienteYaExiste();
-                    txtRunCliente.setText("");
-                } else if (rutClienteExiste == 0) {
-                    msgClienteCreado();
-
-                    txtNombreCliente.setText("");
-                    txtRunCliente.setText("");
-                    txtSueldoCliente.setText("");
+                try {
+                    d.usarConexionAlternativa();
+                } catch (SQLException ex) {
+                    Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
-            } catch (SQLException ex) {
-                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+                
+                String runClienteARegistrar = txtRunCliente.getText();
+                String nombreClienteARegistrar = txtNombreCliente.getText();
+                String sueldoClienteARegistrar = txtSueldoCliente.getText();
+                Cliente c = new Cliente(runClienteARegistrar, nombreClienteARegistrar, Integer.parseInt(sueldoClienteARegistrar));
+                
+                int rutClienteExiste;
+                try {
+                    rutClienteExiste = d.usarFuncionCrear_cliente(c, runUtilizadoParaIngresar);
+                    if (rutClienteExiste == 1) {
+                        msgErrorRunDeClienteYaExiste();
+                        txtRunCliente.setText("");
+                    } else if (rutClienteExiste == 0) {
+                        msgClienteCreado();
+                        
+                        txtNombreCliente.setText("");
+                        txtRunCliente.setText("");
+                        txtSueldoCliente.setText("");
+                    }
+                    
+                } catch (SQLException ex) {
+                    Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                try {
+                    d.cerrarConexionAlternativa();
+                } catch (SQLException ex) {
+                    Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+            } catch (NumberFormatException e) {
+                msgErrorIngresoSueldo();
+                txtSueldoCliente.setText("");
             }
-
-            try {
-                d.cerrarConexionAlternativa();
-            } catch (SQLException ex) {
-                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-        } catch (NumberFormatException e) {
-            msgErrorIngresoSueldo();
-            txtSueldoCliente.setText("");
+            cargarListaClientes();
+            
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
         }
 
 
@@ -2622,54 +2661,6 @@ public class App extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null, msg, titulo, tipoMsg);
     }
 
-//de momento estos 2 metodos son innecesarios
-//para escribir el objeto
-//    public static long writeJavaObject(Connection conn, Object object) throws Exception {
-//        String className = object.getClass().getName();
-//        PreparedStatement pstmt = conn.prepareStatement(WRITE_OBJECT_SQL, Statement.RETURN_GENERATED_KEYS);
-//
-//        // fijar parametros de ingreso
-//        pstmt.setString(1, className);
-//        pstmt.setObject(2, object);
-//        pstmt.executeUpdate();
-//
-//        // obtener la clave generada para el id
-//        ResultSet rs = pstmt.getGeneratedKeys();
-//        int id = -1;
-//        if (rs.next()) {
-//            id = rs.getInt(1);
-//        }
-//
-//        rs.close();
-//        pstmt.close();
-//
-//        return id;
-//    }
-//
-//    
-//    
-//    //para leer el objeto
-//    public static Object readJavaObject(Connection conn, long id) throws Exception {
-//        PreparedStatement pstmt = conn.prepareStatement(READ_OBJECT_SQL);
-//        pstmt.setLong(1, id);
-//        ResultSet rs = pstmt.executeQuery();
-//        rs.next();
-//        Object object = rs.getObject(1);
-//        String className = object.getClass().getName();
-//
-//        byte[] buf = rs.getBytes(1);
-//        ObjectInputStream objectIn = null;
-//        if (buf != null) {
-//            objectIn = new ObjectInputStream(new ByteArrayInputStream(buf));
-//        }
-//
-//        Object deSerializedObject = objectIn.readObject();
-//
-//        rs.close();
-//        pstmt.close();
-//
-//        return deSerializedObject;
-//    }
     /**
      * @param args the command line arguments
      */
@@ -2819,6 +2810,7 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSpinner jSpinner1;
@@ -2831,6 +2823,7 @@ public class App extends javax.swing.JFrame {
     private com.toedter.calendar.JDateChooser jdInicio2;
     private com.toedter.calendar.JDateChooser jdTermino1;
     private com.toedter.calendar.JDateChooser jdTermino2;
+    private javax.swing.JLabel lblListaClientes;
     private javax.swing.JLabel lblNombreCliente;
     private javax.swing.JLabel lblOrden;
     private javax.swing.JLabel lblRUN;
@@ -2854,6 +2847,7 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JTable tbStatViviendas;
     private javax.swing.JTable tblDatosFrameVend;
     private javax.swing.JTable tblLog;
+    private javax.swing.JTextArea txtAListaClientes;
     private javax.swing.JTextField txtCasas;
     private javax.swing.JTextField txtDepa;
     private javax.swing.JTextField txtDireccion;

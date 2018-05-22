@@ -646,4 +646,26 @@ public class Data {
         con.ejecutar(query);
     }
 
+    public ArrayList<Cliente> obtenerListaDeClientes() throws SQLException {
+        ArrayList<Cliente> listaClientes = new ArrayList();
+
+        query = ("SELECT * FROM cliente");
+
+        rs = con.ejecutarSelect(query);
+
+        while (rs.next()) {
+            Cliente cli= new Cliente();
+
+            cli.setRun(rs.getString(1));
+            cli.setNombre(rs.getString(2));
+            cli.setSueldo(rs.getInt(3));
+            
+          
+
+            listaClientes.add(cli);
+        }
+
+        return listaClientes;
+    }
+
 }
