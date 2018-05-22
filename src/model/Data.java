@@ -220,6 +220,19 @@ public class Data {
         return v;
     }
 
+    public int buscarCoincidenciasDeRutCli(String runCliABuscar) throws SQLException{
+        query="SELECT COUNT(*) FROM cliente WHERE run='"+runCliABuscar+"'";
+        rs = con.ejecutarSelect(query);
+        
+        int coinc=0;
+        
+        while(rs.next()){
+            coinc=rs.getInt(1);
+        }
+        
+        return coinc;
+    }
+    
     public List<VistaVivienda> leerTodasLasViviendasDisponibles(String filtro) throws SQLException {
         query = "SELECT * FROM vista_viviendas_disponibles "+filtro;
 
@@ -631,6 +644,13 @@ public class Data {
   
 
         return viviendas;
+    }
+    
+    
+    public void llamarProcedimientocrear_contrato(int nRol, String tipoContrato, String runCli, String runVend) throws SQLException{
+        query=("CALL crear_contrato('"+nRol+"','"+tipoContrato+"','"+runCli+"','"+runVend+"')");
+        
+        con.ejecutar(query);
     }
 
 }

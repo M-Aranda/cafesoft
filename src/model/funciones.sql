@@ -114,6 +114,7 @@ BEGIN
 END $$
 DELIMITER ;
 
+
 -- SELECT crear_cliente ('33-3','Marcelo Aranda',250000,'22-2');
 
 -- DROP FUNCTION crear_vivienda
@@ -162,24 +163,39 @@ CALL nuevo_log('admin ha restaurado desde backup 2142018 211548.sql','11-1')
 
 
 DELIMITER $$
-CREATE PROCEDURE crear_o_vender_vivienda (nRol INT, tipoContrato VARCHAR (50), runCliente VARCHAR(50), runVendedor VARCHAR (50))
-BEGIN   
-	DECLARE detalle VARCHAR(200);
+CREATE PROCEDURE crear_contrato (nRol INT, tipoContrato VARCHAR (50), runCliente VARCHAR(50), runVendedor VARCHAR (50))
+BEGIN  
+    DECLARE detalle VARCHAR(200);
     DECLARE nomCliente VARCHAR (200);
+	DECLARE disVi INT;
+	DECLARE nombCont VARCHAR (50);
     
+    IF(tipoContrato='Vendida') THEN
+    
+    SET nombCont=('venta');
+    
+    END IF;
+    
+    IF(tipoContrato='Arrendada') THEN
+    
+    SET nombCont=('arriendo');
+    
+    END IF;
+   
     SET nomCliente=(SELECT nombre FROM cliente WHERE run=runCliente);
-    SET detalle=CONCAT('Se celebra un contrato tipo ', tipoContrato,' de la vivienda de nº de rol: ',nRol,'para el cliente de run',runCliente,' conocido/a como ',nomCliente,' por el/la vendedor/a ',runVendedor);
-    
-    
-	INSERT INTO contrato VALUES(NULL, runCliente, runVendedor, nRol, NOW());
-    INSERT INTO log VALUES (NULL,detalle,NOW(),runVendedor);
-    
-    
+    SET detalle=CONCAT('Se crea contrato de ', nombCont,' de la vivienda ',nRol,' para el/la cliente de run ',runCliente,' conocido/a como ',nomCliente);
+	
+    SET disVi=(SELECT id FROM disponibilidad_vivienda WHERE nombre=tipoContrato); 
+   
+   
+   
+	UPDATE vivienda SET dis_vivienda=disVi WHERE n_rol=nRol;
+    INSERT INTO contrato VALUES(NULL, runCliente, runVendedor, nRol, NOW());
+    INSERT INTO log VALUES (NULL,detalle,NOW(),runVendedor);    
+   
 END $$
 DELIMITER ;
-
-
--- CALL crear_o_vender_vivienda();
+-- DROP PROCEDURE crear_contrato;
 
 DELIMITER //
 CREATE PROCEDURE borrarUsuario (runDelete VARCHAR(15))

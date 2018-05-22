@@ -141,6 +141,7 @@ public class App extends javax.swing.JFrame {
                             btnFiltrarViviendasJfVendedor.setBackground(cb);
                             btnCrearCliente.setBackground(cb);
                             btnCancelarCreacionDeCliente.setBackground(cb);
+                            btnArrendarOVender.setBackground(cb);
 
                             //COLOR TEXTO BOTONES
                             btnGuardarCambiosBotones.setForeground(ctb);
@@ -148,6 +149,7 @@ public class App extends javax.swing.JFrame {
                             btnFiltrarViviendasJfVendedor.setForeground(ctb);
                             btnCrearCliente.setForeground(ctb);
                             btnCancelarCreacionDeCliente.setForeground(ctb);
+                            btnArrendarOVender.setForeground(ctb);
 
                         } catch (Exception e) {
                         }
@@ -198,6 +200,9 @@ public class App extends javax.swing.JFrame {
     private StatsSimple statSimple;
     private SimpleDateFormat fInicio, fFinal;
     private SpinnerNumberModel nm;
+    private String indiceDeViviendaAArrendar;
+    private String indiceDeViviendaAVender;
+    private String viviendaPasaAEstar;
 
     //query para los inserts
     static final String WRITE_OBJECT_SQL = "INSERT INTO ejem(nombre, valor_objeto) VALUES (?, ?)";// modificar segun sea necesario
@@ -479,6 +484,10 @@ public class App extends javax.swing.JFrame {
         rdCambiarColoresTextoBotones = new javax.swing.JRadioButton();
         rdCambiarColoresBotones = new javax.swing.JRadioButton();
         btnGCambioColores = new javax.swing.ButtonGroup();
+        jFSeleccionarClienteContrato = new javax.swing.JFrame();
+        lblRunClienteContrato = new javax.swing.JLabel();
+        txtRunCliContrato = new javax.swing.JTextField();
+        btnArrendarOVender = new javax.swing.JButton();
         txtRun = new javax.swing.JTextField();
         lblRUN = new javax.swing.JLabel();
         btnIniciarSesion = new javax.swing.JButton();
@@ -1589,6 +1598,41 @@ public class App extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        lblRunClienteContrato.setText("Run cliente");
+
+        btnArrendarOVender.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/if_xeyes_9544.png"))); // NOI18N
+        btnArrendarOVender.setText("Arrendar/Vender");
+        btnArrendarOVender.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnArrendarOVenderActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jFSeleccionarClienteContratoLayout = new javax.swing.GroupLayout(jFSeleccionarClienteContrato.getContentPane());
+        jFSeleccionarClienteContrato.getContentPane().setLayout(jFSeleccionarClienteContratoLayout);
+        jFSeleccionarClienteContratoLayout.setHorizontalGroup(
+            jFSeleccionarClienteContratoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jFSeleccionarClienteContratoLayout.createSequentialGroup()
+                .addGap(128, 128, 128)
+                .addComponent(lblRunClienteContrato)
+                .addGap(18, 18, 18)
+                .addGroup(jFSeleccionarClienteContratoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnArrendarOVender, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtRunCliContrato))
+                .addContainerGap(68, Short.MAX_VALUE))
+        );
+        jFSeleccionarClienteContratoLayout.setVerticalGroup(
+            jFSeleccionarClienteContratoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jFSeleccionarClienteContratoLayout.createSequentialGroup()
+                .addGap(72, 72, 72)
+                .addGroup(jFSeleccionarClienteContratoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblRunClienteContrato)
+                    .addComponent(txtRunCliContrato, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnArrendarOVender)
+                .addContainerGap(172, Short.MAX_VALUE))
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -1656,12 +1700,18 @@ public class App extends javax.swing.JFrame {
         int colSelec = 0;
         int filaSelec = tblDatosFrameVend.getSelectedRow();
 
+        viviendaPasaAEstar = "Vendida";
+
         try {
-            String indiceDeViviendaAVender = tblDatosFrameVend.getModel().getValueAt(filaSelec, colSelec).toString();
+            indiceDeViviendaAVender = tblDatosFrameVend.getModel().getValueAt(filaSelec, colSelec).toString();
 
         } catch (Exception e) {
             msgErrorNoSeSeleccionoVivienda();
         }
+
+        jFSeleccionarClienteContrato.setBounds(WIDTH, WIDTH, 400, 400);
+        jFSeleccionarClienteContrato.setLocationRelativeTo(null);
+        jFSeleccionarClienteContrato.setVisible(true);
 
 
     }//GEN-LAST:event_jMVenderVivActionPerformed
@@ -1670,13 +1720,19 @@ public class App extends javax.swing.JFrame {
 
         int colSelec = 0;
         int filaSelec = tblDatosFrameVend.getSelectedRow();
+
+        viviendaPasaAEstar = "Arrendada";
+
         try {
-            String indiceDeViviendaAArrendar = tblDatosFrameVend.getModel().getValueAt(filaSelec, colSelec).toString();
+            indiceDeViviendaAArrendar = tblDatosFrameVend.getModel().getValueAt(filaSelec, colSelec).toString();
 
         } catch (Exception e) {
             msgErrorNoSeSeleccionoVivienda();
         }
 
+        jFSeleccionarClienteContrato.setBounds(WIDTH, WIDTH, 400, 400);
+        jFSeleccionarClienteContrato.setLocationRelativeTo(null);
+        jFSeleccionarClienteContrato.setVisible(true);
 
     }//GEN-LAST:event_jMArrendarViviendaActionPerformed
 
@@ -2365,6 +2421,43 @@ public class App extends javax.swing.JFrame {
         cargarVendedoresStatFiltrada(filtro);
     }//GEN-LAST:event_jButton5ActionPerformed
 
+    private void btnArrendarOVenderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnArrendarOVenderActionPerformed
+        int nRol = 0;
+        String runCliCon = txtRunCliContrato.getText();
+        txtRunCliContrato.setText("");
+        if (viviendaPasaAEstar.equals("Vendida")) {
+            nRol = Integer.parseInt(indiceDeViviendaAVender);
+        } else if (viviendaPasaAEstar.equals("Arrendada")) {
+            nRol = Integer.parseInt(indiceDeViviendaAArrendar);
+        }
+
+        try {
+            if (d.buscarCoincidenciasDeRutCli(runCliCon) == 0) {
+                msgErrorRutNoEncontrado();
+            } else if (d.buscarCoincidenciasDeRutCli(runCliCon) == 1) {
+                try {
+                    d.llamarProcedimientocrear_contrato(nRol, viviendaPasaAEstar, runCliCon, runUtilizadoParaIngresar);
+                    msgTrasaccionExitosa();
+                    cargarTablaJFrameVendedor();
+                } catch (SQLException ex) {
+                    Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
+    }//GEN-LAST:event_btnArrendarOVenderActionPerformed
+
+    private void msgTrasaccionExitosa() {
+        String titulo = "Aviso";
+        String msg = "Transaccion exitosa";
+        int tipoMsg = JOptionPane.INFORMATION_MESSAGE;
+        JOptionPane.showMessageDialog(null, msg, titulo, tipoMsg);
+
+    }
+
     private void msgClienteCreado() {
         String titulo = "Aviso";
         String msg = "Cliente registrado con exito";
@@ -2657,6 +2750,7 @@ public class App extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFrame JFrameCrearCliente;
     private javax.swing.JFrame JfVendedor;
+    private javax.swing.JButton btnArrendarOVender;
     private javax.swing.JButton btnBorrarVendedor;
     private javax.swing.JButton btnBorrarVivienda;
     private javax.swing.JButton btnBuscarVendedor;
@@ -2698,6 +2792,7 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
+    private javax.swing.JFrame jFSeleccionarClienteContrato;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -2770,6 +2865,7 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JLabel lblOrden;
     private javax.swing.JLabel lblRUN;
     private javax.swing.JLabel lblRunCliente;
+    private javax.swing.JLabel lblRunClienteContrato;
     private javax.swing.JLabel lblSueldoCliente;
     private javax.swing.JLabel lblTipoPrecio;
     private javax.swing.JLabel lblViviendasDisponibles;
@@ -2795,6 +2891,7 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JTextField txtNombreCliente;
     private javax.swing.JTextField txtNombreVendedor;
     private javax.swing.JTextField txtRun;
+    private javax.swing.JTextField txtRunCliContrato;
     private javax.swing.JTextField txtRunCliente;
     private javax.swing.JTextField txtRunVendedor;
     private javax.swing.JTextField txtSueldoCliente;
