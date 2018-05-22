@@ -1497,6 +1497,7 @@ public class App extends javax.swing.JFrame {
             msgErrorNoSeSeleccionoVivienda();
         }
         if (indiceDeViviendaAVender != null) {
+            btnArrendarOVender.setText("Vender");
             jFSeleccionarClienteContrato.setBounds(WIDTH, WIDTH, 400, 400);
             jFSeleccionarClienteContrato.setLocationRelativeTo(null);
             jFSeleccionarClienteContrato.setVisible(true);
@@ -1518,6 +1519,7 @@ public class App extends javax.swing.JFrame {
             msgErrorNoSeSeleccionoVivienda();
         }
         if (indiceDeViviendaAArrendar != null) {
+            btnArrendarOVender.setText("Arrendar");
             jFSeleccionarClienteContrato.setBounds(WIDTH, WIDTH, 400, 400);
             jFSeleccionarClienteContrato.setLocationRelativeTo(null);
             jFSeleccionarClienteContrato.setVisible(true);
