@@ -20,7 +20,7 @@ public class TModelNoDisponibles implements TableModel {
 
     @Override
     public int getColumnCount() {
-        return 10;
+        return 11;
     }
 
     @Override
@@ -46,6 +46,8 @@ public class TModelNoDisponibles implements TableModel {
                 return "RUN Cliente";
             case 9:
                 return "RUN Vendedor";
+            case 10:
+                return "Fecha";
             default:
                 return null;
         }
@@ -73,6 +75,8 @@ public class TModelNoDisponibles implements TableModel {
             case 8:
                 return String.class;
             case 9:
+                return String.class;
+            case 10:
                 return String.class;
             default:
                 return null;
@@ -109,6 +113,8 @@ public class TModelNoDisponibles implements TableModel {
                 return v.getRunCliente();
             case 9:
                 return v.getRunVendedor();
+            case 10:
+                return v.getFecha();
             default:
                 return null;
         }

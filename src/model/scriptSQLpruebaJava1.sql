@@ -73,7 +73,7 @@ CREATE TABLE contrato(-- DROP TABLE contrato
     FOREIGN KEY(cliente_fk) REFERENCES cliente(run),
     FOREIGN KEY(usuario_fk) REFERENCES usuario(run),
     FOREIGN KEY(vivienda_fk) REFERENCES vivienda(n_rol)
-);
+);-- SELECT * FROM contrato
 
 -- INSERT INTO CONTRATO VALUES(NULL,'99-9','22-2','1311',NOW());
 -- INSERT INTO CONTRATO VALUES(NULL,'99-9','22-2','4567',NOW());

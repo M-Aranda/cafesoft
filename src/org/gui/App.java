@@ -1,6 +1,7 @@
 package org.gui;
 
 import clasesAusar.VistaLog;
+import clasesAusar.VistaStatsVend;
 import clasesAusar.VistaStatsViviendas;
 import clasesAusar.VistaVivienda;
 import com.jtattoo.plaf.luna.LunaLookAndFeel;
@@ -36,7 +37,7 @@ import model.Log;
 import model.StatsSimple;
 import model.TModelLog;
 import model.TModelNoDisponibles;
-import model.TModelVivienda;
+import model.TModelStatVendedores;
 import model.TModelViviendasDisponibles;
 import model.Usuario;
 import model.Vivienda;
@@ -70,6 +71,30 @@ public class App extends javax.swing.JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void cargarViviendaStatFiltrada(String filtro) {
+        viviendasStats = new ArrayList<>();
+        try {
+            viviendasStats = d.leerStatViviendasFiltrada(filtro);
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        modelStatViviendas = new TModelNoDisponibles(viviendasStats);
+        tbStatViviendas.setModel(modelStatViviendas);
+    }
+
+    private void cargarVendedoresStatFiltrada(String filtro) {
+        vendedoresStats = new ArrayList<>();
+        try {
+            vendedoresStats = d.leerStatVendedores(filtro);
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        modelStatVendedores = new TModelStatVendedores(vendedoresStats);
+        tbStatVendedores.setModel(modelStatVendedores);
     }
 
     //clase hilo creada dentro de app, para modificar componetes
@@ -156,11 +181,12 @@ public class App extends javax.swing.JFrame {
     }
 
     private Data d;
-    private TModelVivienda modelVivienda;
     private TModelViviendasDisponibles modelViviendasDisponibles;
     private TModelNoDisponibles modelStatViviendas;
+    private TModelStatVendedores modelStatVendedores;
     private TModelLog modelLog;
     private Log log;
+    private List<VistaStatsVend> vendedoresStats;
     private List<VistaVivienda> viviendasDisponibles;
     private List<VistaStatsViviendas> viviendasStats;
     private List<VistaLog> logs;
@@ -212,7 +238,6 @@ public class App extends javax.swing.JFrame {
 
         JfVendedor.setTitle("Vendedor");
         inicializarSeleccionDeFiltroVendedor();
-        viviendasDisponibles = new ArrayList();
         //  Data d= new Data();
         // se puede descomentar esto para incializar tabla de vendedor, con datos. viviendasDisponibles = d.leerTodasLasViviendasDisponibles();
 
@@ -226,8 +251,18 @@ public class App extends javax.swing.JFrame {
 
     }
 
-    private void cargarTablaJFrameVendedor() {
+    private void cargarTablaJFrameVendedor() throws SQLException {
+        viviendasDisponibles = new ArrayList();
+        viviendasDisponibles = d.leerTodasLasViviendasDisponibles("");
+        modelViviendasDisponibles = new TModelViviendasDisponibles(viviendasDisponibles);
+        tblDatosFrameVend.setModel(modelViviendasDisponibles);
+        tblDatosFrameVend.setGridColor(Color.DARK_GRAY);
 
+    }
+
+    private void filtrarTablaJFrameVendedor(String filtro) throws SQLException {
+        viviendasDisponibles = new ArrayList();
+        viviendasDisponibles = d.leerTodasLasViviendasDisponibles(filtro);
         modelViviendasDisponibles = new TModelViviendasDisponibles(viviendasDisponibles);
         tblDatosFrameVend.setModel(modelViviendasDisponibles);
         tblDatosFrameVend.setGridColor(Color.DARK_GRAY);
@@ -235,27 +270,12 @@ public class App extends javax.swing.JFrame {
     }
 
     private void llenarCbosFrameVendedor() {
-        cboFiltrarPorCasas.removeAllItems();
-        cboFiltrarPorDepartamentos.removeAllItems();
+        cboFiltrarPorEstado.removeAllItems();
 
-        ArrayList<String> estadosCasas = new ArrayList();
-        ArrayList<String> estadosDepartamentos = new ArrayList();
-
-        estadosCasas.add("Nuevas");
-        estadosCasas.add("Usadas");
-        estadosCasas.add("Ambas");
-
-        estadosDepartamentos.add("Nuevos");
-        estadosDepartamentos.add("Usados");
-        estadosDepartamentos.add("Ambos");
-
-        for (String e : estadosCasas) {
-            cboFiltrarPorCasas.addItem(e);
-        }
-
-        for (String e : estadosDepartamentos) {
-            cboFiltrarPorDepartamentos.addItem(e);
-        }
+        cboFiltrarPorEstado.addItem("Nuevas");
+        cboFiltrarPorEstado.addItem("Usadas");
+        cboFiltrarPorEstado.addItem("Ambas");
+        cboFiltrarPorEstado.setSelectedIndex(0);
     }
 
     private void cargarCboViviendaAdmin() {
@@ -274,10 +294,24 @@ public class App extends javax.swing.JFrame {
         cboCondicion.addItem("Usada");
     }
 
-    private void inicializarSeleccionDeFiltroVendedor() {
-        cboFiltrarPorCasas.setEnabled(false);
-        cboFiltrarPorDepartamentos.setEnabled(false);
+    private void cargarCboViviendaStat() {
+        cboContrato.removeAllItems();
+        cboContrato.addItem("Todas");
+        cboContrato.addItem("Arrendada");
+        cboContrato.addItem("Vendida");
+        cboContrato.setSelectedIndex(0);
 
+    }
+
+    private void cargarCboVendedorStat() {
+        cboOrden.removeAllItems();
+        cboOrden.addItem("Contratos");
+        cboOrden.addItem("Log-in");
+        cboOrden.setSelectedIndex(0);
+    }
+
+    private void inicializarSeleccionDeFiltroVendedor() {
+        cboFiltrarPorEstado.setEnabled(true);
         rbtFiltrarDesc.setSelected(true);
         rbtDeVenta.setSelected(true);
 
@@ -305,8 +339,7 @@ public class App extends javax.swing.JFrame {
         tblDatosFrameVend = new javax.swing.JTable();
         rbtFiltrarAsc = new javax.swing.JRadioButton();
         rbtFiltrarDesc = new javax.swing.JRadioButton();
-        cboFiltrarPorCasas = new javax.swing.JComboBox<>();
-        cboFiltrarPorDepartamentos = new javax.swing.JComboBox<>();
+        cboFiltrarPorEstado = new javax.swing.JComboBox<>();
         chkFiltrarPorCasas = new javax.swing.JCheckBox();
         chkFiltrarPorDepartamentos = new javax.swing.JCheckBox();
         lblOrden = new javax.swing.JLabel();
@@ -404,7 +437,7 @@ public class App extends javax.swing.JFrame {
         frmStatViviendas = new javax.swing.JFrame();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tbStatViviendas = new javax.swing.JTable();
         jPanel7 = new javax.swing.JPanel();
         jdInicio1 = new com.toedter.calendar.JDateChooser();
         jdTermino1 = new com.toedter.calendar.JDateChooser();
@@ -415,11 +448,11 @@ public class App extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jLabel30 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        cboContrato = new javax.swing.JComboBox<>();
         frmStatVendedores = new javax.swing.JFrame();
         jPanel8 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        tbStatVendedores = new javax.swing.JTable();
         jPanel9 = new javax.swing.JPanel();
         jdInicio2 = new com.toedter.calendar.JDateChooser();
         jdTermino2 = new com.toedter.calendar.JDateChooser();
@@ -430,7 +463,7 @@ public class App extends javax.swing.JFrame {
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jLabel34 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        cboOrden = new javax.swing.JComboBox<>();
         btnGVentaORenta = new javax.swing.ButtonGroup();
         frmColores = new javax.swing.JFrame();
         clrChoosser = new javax.swing.JColorChooser();
@@ -470,9 +503,7 @@ public class App extends javax.swing.JFrame {
         btnGFiltrarPrecio.add(rbtFiltrarDesc);
         rbtFiltrarDesc.setText("Filtrar descendente");
 
-        cboFiltrarPorCasas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        cboFiltrarPorDepartamentos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboFiltrarPorEstado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         chkFiltrarPorCasas.setText("Filtrar por casas");
         chkFiltrarPorCasas.addActionListener(new java.awt.event.ActionListener() {
@@ -592,9 +623,7 @@ public class App extends javax.swing.JFrame {
                                 .addComponent(chkFiltrarPorDepartamentos)
                                 .addComponent(chkFiltrarPorCasas))
                             .addGap(18, 18, 18)
-                            .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(cboFiltrarPorCasas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(cboFiltrarPorDepartamentos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(cboFiltrarPorEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(66, 66, 66))
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JfVendedorLayout.createSequentialGroup()
                             .addComponent(lblOrden)
@@ -611,11 +640,9 @@ public class App extends javax.swing.JFrame {
                 .addGap(28, 28, 28)
                 .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(chkFiltrarPorCasas)
-                    .addComponent(cboFiltrarPorCasas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cboFiltrarPorEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(chkFiltrarPorDepartamentos)
-                    .addComponent(cboFiltrarPorDepartamentos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(chkFiltrarPorDepartamentos)
                 .addGap(2, 2, 2)
                 .addGroup(JfVendedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblTipoPrecio)
@@ -963,15 +990,17 @@ public class App extends javax.swing.JFrame {
                             .addComponent(jLabel25)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(jdHasta, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(jPanel3Layout.createSequentialGroup()
-                            .addComponent(jLabel26)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnVerVendedores, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                            .addComponent(jLabel20)
-                            .addGap(52, 52, 52)
-                            .addComponent(btnVerViviendas))))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel20)
+                                .addGap(52, 52, 52))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel26)
+                                .addGap(83, 83, 83)))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnVerVendedores, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnVerViviendas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(129, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -1253,13 +1282,13 @@ public class App extends javax.swing.JFrame {
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(""), "Listado de viviendas arrendadas/vendidas"));
 
-        jScrollPane3.setViewportView(jTable1);
+        jScrollPane3.setViewportView(tbStatViviendas);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 529, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 672, Short.MAX_VALUE)
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1274,41 +1303,53 @@ public class App extends javax.swing.JFrame {
 
         jLabel28.setText("Fecha Termino:");
 
-        jLabel29.setText("Top :");
+        jLabel29.setText("Ctdad :");
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/if_filter_64280.png"))); // NOI18N
         jButton1.setText("Filtrar tabla");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/if_restore_2460287.png"))); // NOI18N
         jButton4.setText("Restaurar tabla");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jLabel30.setText("Tipo de contrato:");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboContrato.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboContratoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel7Layout.createSequentialGroup()
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton4)
+                .addContainerGap()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addComponent(jLabel29)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jdTermino1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jdInicio1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel27)
-                            .addComponent(jLabel28)
-                            .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel30, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                        .addComponent(jLabel29)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel27)
+                    .addComponent(jLabel28)
+                    .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(cboContrato, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel30, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jdTermino1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jdInicio1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1327,7 +1368,7 @@ public class App extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel30)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cboContrato, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
                 .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1342,8 +1383,8 @@ public class App extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         frmStatViviendasLayout.setVerticalGroup(
             frmStatViviendasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1357,13 +1398,16 @@ public class App extends javax.swing.JFrame {
 
         jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(""), "Listado de estadisticas vendedores"));
 
-        jScrollPane4.setViewportView(jTable2);
+        jScrollPane4.setViewportView(tbStatVendedores);
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 529, Short.MAX_VALUE)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1380,37 +1424,48 @@ public class App extends javax.swing.JFrame {
 
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/if_filter_64280.png"))); // NOI18N
         jButton5.setText("Filtrar tabla");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/if_restore_2460287.png"))); // NOI18N
         jButton6.setText("Restaurar tabla");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
-        jLabel34.setText("Tipo de contrato:");
+        jLabel34.setText("Tipo de Orden:");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboOrden.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboOrdenActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jButton6)
             .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton6)
                     .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel9Layout.createSequentialGroup()
-                                .addComponent(jLabel33)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jSpinner2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jdTermino2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jdInicio2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel31)
-                            .addComponent(jLabel32)
-                            .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jComboBox2, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel34, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
-                .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(jLabel33)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jSpinner2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jdTermino2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jdInicio2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel31)
+                    .addComponent(jLabel32)
+                    .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(cboOrden, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel34, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1429,8 +1484,8 @@ public class App extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel34)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                .addComponent(cboOrden, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
                 .addComponent(jButton5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton6))
@@ -1443,9 +1498,9 @@ public class App extends javax.swing.JFrame {
             .addGroup(frmStatVendedoresLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         frmStatVendedoresLayout.setVerticalGroup(
             frmStatVendedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1611,22 +1666,9 @@ public class App extends javax.swing.JFrame {
 
     private void chkFiltrarPorCasasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkFiltrarPorCasasActionPerformed
 
-        if (chkFiltrarPorCasas.isSelected()) {
-            cboFiltrarPorCasas.setEnabled(true);
-        } else if (!chkFiltrarPorCasas.isSelected()) {
-            cboFiltrarPorCasas.setEnabled(false);
-        }
-
     }//GEN-LAST:event_chkFiltrarPorCasasActionPerformed
 
     private void chkFiltrarPorDepartamentosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkFiltrarPorDepartamentosActionPerformed
-
-        if (chkFiltrarPorDepartamentos.isSelected()) {
-            cboFiltrarPorDepartamentos.setEnabled(true);
-        } else if (!chkFiltrarPorDepartamentos.isSelected()) {
-            cboFiltrarPorDepartamentos.setEnabled(false);
-        }
-
 
     }//GEN-LAST:event_chkFiltrarPorDepartamentosActionPerformed
 
@@ -1733,103 +1775,167 @@ public class App extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCrearClienteActionPerformed
 
     private void btnFiltrarViviendasJfVendedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiltrarViviendasJfVendedorActionPerformed
-        String tipo1 = "";
-        String tipo2 = "";
-        String condicion1 = "";
-        String condicion2 = "";
-        String tipoPrecio = "";
-        String orden = "";
-        boolean consultaCompleja = false;
+        String filtro = new String();
+        boolean precio = false;
+        boolean existe = false;
 
-        //evalua si se Filtra ascendentemente or descendentemente
-        if (rbtFiltrarAsc.isSelected()) {
+        if (chkFiltrarPorCasas.isSelected()) {
+            if (!chkFiltrarPorDepartamentos.isSelected()) {
+                filtro += " tipo = 'Casa'";
+                existe = true;
+            }
+
+        }
+
+        if (chkFiltrarPorDepartamentos.isSelected()) {
+            if (!chkFiltrarPorCasas.isSelected()) {
+                filtro += " tipo = 'Departamento'";
+                existe = true;
+            }
+
+        }
+        switch (cboFiltrarPorEstado.getSelectedIndex()) {
+            case 0:
+                if (existe) {
+                    filtro += " AND";
+                }
+                filtro += " condicion = 'Nueva'";
+                existe = true;
+                break;
+            case 1:
+                if (existe) {
+                    filtro += " AND";
+
+                }
+                filtro += " condicion = 'Usado'";
+                existe = true;
+            default:
+                break;
+        }
+        if (rbtDeRenta.isSelected()) {
+            precio = true;
+        }
+
+        if (rbtFiltrarDesc.isSelected()) {
+            if (precio) {
+                filtro += " ORDER BY precio_arriendo DESC";
+            } else {
+                filtro += " ORDER BY precio_venta DESC";
+            }
+        } else {
+            if (precio) {
+                filtro += " ORDER BY precio_arriendo ASC";
+            } else {
+                filtro += " ORDER BY precio_venta ASC";
+            }
+        }
+        if (existe) {
+            filtro = "WHERE " + filtro;
+        }
+
+        try {
+            /* SIENDO LAS 5:25 AM DEL DIA EN QUE SE ENTREGA ESTO NO FUINCIONA XD ASI QUE LO HARE A MI ESTILO
+            String tipo1 = "";
+            String tipo2 = "";
+            String condicion1 = "";
+            String condicion2 = "";
+            String tipoPrecio = "";
+            String orden = "";
+            boolean consultaCompleja = false;
+            
+            //evalua si se Filtra ascendentemente or descendentemente
+            if (rbtFiltrarAsc.isSelected()) {
             orden = "ASC";
-        } else if (rbtFiltrarDesc.isSelected()) {
+            } else if (rbtFiltrarDesc.isSelected()) {
             orden = "DESC";
-        }
-
-        //evalua si se filtra por precio de venta o precio de arriendo
-        if (rbtDeVenta.isSelected()) {
+            }
+            
+            //evalua si se filtra por precio de venta o precio de arriendo
+            if (rbtDeVenta.isSelected()) {
             tipoPrecio = "precio_venta";
-        } else if (rbtDeRenta.isSelected()) {
+            } else if (rbtDeRenta.isSelected()) {
             tipoPrecio = "precio_arriendo";
-        }
-
-        //evalua si se filtran casas o departamentos (3 if grandes, cada uno con sus respectivas posibilidades de filtrado)
-        if (chkFiltrarPorCasas.isSelected() && !chkFiltrarPorDepartamentos.isSelected()) {
+            }
+            
+            //evalua si se filtran casas o departamentos (3 if grandes, cada uno con sus respectivas posibilidades de filtrado)
+            if (chkFiltrarPorCasas.isSelected() && !chkFiltrarPorDepartamentos.isSelected()) {
             tipo1 = "Casa";
             tipo2 = "Casa";
 
             if (cboFiltrarPorCasas.getSelectedIndex() == 0) {
-                condicion1 = "Nueva";
-                condicion2 = "Nueva";
+            condicion1 = "Nueva";
+            condicion2 = "Nueva";
             } else if (cboFiltrarPorCasas.getSelectedIndex() == 1) {
-                condicion1 = "Usada";
-                condicion2 = "Usada";
+            condicion1 = "Usada";
+            condicion2 = "Usada";
             } else if (cboFiltrarPorCasas.getSelectedIndex() == 2) {
-                condicion1 = "Usada";
-                condicion2 = "Nueva";
+            condicion1 = "Usada";
+            condicion2 = "Nueva";
             }
-
-        } else if (!chkFiltrarPorCasas.isSelected() && chkFiltrarPorDepartamentos.isSelected()) {
+            
+            } else if (!chkFiltrarPorCasas.isSelected() && chkFiltrarPorDepartamentos.isSelected()) {
             tipo1 = "Departamento";
             tipo2 = "Departamento";
 
             if (cboFiltrarPorDepartamentos.getSelectedIndex() == 0) {
-                condicion1 = "Nueva";
-                condicion2 = "Nueva";
+            condicion1 = "Nueva";
+            condicion2 = "Nueva";
             } else if (cboFiltrarPorDepartamentos.getSelectedIndex() == 1) {
-                condicion1 = "Usada";
-                condicion2 = "Usada";
+            condicion1 = "Usada";
+            condicion2 = "Usada";
             } else if (cboFiltrarPorDepartamentos.getSelectedIndex() == 2) {
-                condicion1 = "Usada";
-                condicion2 = "Nueva";
+            condicion1 = "Usada";
+            condicion2 = "Nueva";
             }
-        } else if (chkFiltrarPorCasas.isSelected() && chkFiltrarPorDepartamentos.isSelected()) {
+            } else if (chkFiltrarPorCasas.isSelected() && chkFiltrarPorDepartamentos.isSelected()) {
             tipo1 = "Casa";
             tipo2 = "Departamento";
 
             if (cboFiltrarPorCasas.getSelectedIndex() == 2 && cboFiltrarPorDepartamentos.getSelectedIndex() == 2) {
-                condicion1 = "Usada";
-                condicion2 = "Nueva";
+            condicion1 = "Usada";
+            condicion2 = "Nueva";
             } else if (cboFiltrarPorCasas.getSelectedIndex() == 0 && cboFiltrarPorDepartamentos.getSelectedIndex() == 1) {
-                condicion1 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo1 + "' AND condicion='Nueva' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
-                condicion2 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo2 + "' AND condicion='Usada' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
-                consultaCompleja = true;
+            condicion1 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo1 + "' AND condicion='Nueva' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+            condicion2 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo2 + "' AND condicion='Usada' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+            consultaCompleja = true;
             } else if (cboFiltrarPorCasas.getSelectedIndex() == 1 && cboFiltrarPorDepartamentos.getSelectedIndex() == 0) {
-                condicion1 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo1 + "' AND condicion='Usada' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
-                condicion2 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo2 + "' AND condicion='Nueva' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
-                consultaCompleja = true;
+            condicion1 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo1 + "' AND condicion='Usada' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+            condicion2 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo2 + "' AND condicion='Nueva' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+            consultaCompleja = true;
             } else if (cboFiltrarPorCasas.getSelectedIndex() == 2 && cboFiltrarPorDepartamentos.getSelectedIndex() == 1) {
-                condicion1 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo1 + "' AND (condicion='Nueva' OR condicion='Usada') ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
-                condicion2 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo2 + "' AND condicion='Usada' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
-                consultaCompleja = true;
+            condicion1 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo1 + "' AND (condicion='Nueva' OR condicion='Usada') ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+            condicion2 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo2 + "' AND condicion='Usada' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+            consultaCompleja = true;
             } else if (cboFiltrarPorCasas.getSelectedIndex() == 2 && cboFiltrarPorDepartamentos.getSelectedIndex() == 0) {
-                condicion1 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo1 + "' AND (condicion='Nueva' OR condicion='Usada') ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
-                condicion2 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo2 + "' AND condicion='Nueva' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
-                consultaCompleja = true;
+            condicion1 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo1 + "' AND (condicion='Nueva' OR condicion='Usada') ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+            condicion2 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo2 + "' AND condicion='Nueva' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+            consultaCompleja = true;
             } else if (cboFiltrarPorCasas.getSelectedIndex() == 0 && cboFiltrarPorDepartamentos.getSelectedIndex() == 2) {
-                condicion1 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo1 + "' AND condicion='Nueva' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
-                condicion2 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo2 + "' AND (condicion='Usada' or condicion='Nueva') ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
-                consultaCompleja = true;
+            condicion1 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo1 + "' AND condicion='Nueva' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+            condicion2 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo2 + "' AND (condicion='Usada' or condicion='Nueva') ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+            consultaCompleja = true;
             } else if (cboFiltrarPorCasas.getSelectedIndex() == 1 && cboFiltrarPorDepartamentos.getSelectedIndex() == 2) {
-                condicion1 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo1 + "' AND condicion='Usada' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
-                condicion2 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo2 + "' AND (condicion='Usada' OR condicion='Nueva') ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
-                consultaCompleja = true;
+            condicion1 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo1 + "' AND condicion='Usada' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+            condicion2 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo2 + "' AND (condicion='Usada' OR condicion='Nueva') ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+            consultaCompleja = true;
             } else if (cboFiltrarPorCasas.getSelectedIndex() == 1 && cboFiltrarPorDepartamentos.getSelectedIndex() == 1) {
-                condicion1 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo1 + "' AND condicion='Usada' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
-                condicion2 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo2 + "' AND condicion='Usada' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
-                consultaCompleja = true;
+            condicion1 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo1 + "' AND condicion='Usada' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+            condicion2 = "SELECT * FROM vista_viviendas_disponibles WHERE tipo='" + tipo2 + "' AND condicion='Usada' ORDER BY '" + tipoPrecio + "' '" + orden + "' ";
+            consultaCompleja = true;
             }
-
-        }
-
-        try {
+            
+            }
+            
+            try {
             viviendasDisponibles = d.leerTodasLasViviendasSegunSeleccion(tipo1, tipo2, condicion1, condicion2, tipoPrecio, orden, consultaCompleja);
+            } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+            }
+             */
+            filtrarTablaJFrameVendedor(filtro);
         } catch (SQLException ex) {
             Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
         }
-        cargarTablaJFrameVendedor();
 
     }//GEN-LAST:event_btnFiltrarViviendasJfVendedorActionPerformed
 
@@ -2079,9 +2185,13 @@ public class App extends javax.swing.JFrame {
     }//GEN-LAST:event_txtDepaActionPerformed
 
     private void btnVerViviendasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerViviendasActionPerformed
+        cargarViviendaStatFiltrada("");
+        cargarCboViviendaStat();
         jSpinner1.setModel(nm);
+        jdInicio1.setCalendar(null);
+        jdTermino1.setCalendar(null);
         frmStatViviendas.setVisible(true);
-        frmStatViviendas.setBounds(WIDTH, WIDTH, 720, 550);
+        frmStatViviendas.setBounds(WIDTH, WIDTH, 880, 550);
         frmStatViviendas.setLocationRelativeTo(null);
     }//GEN-LAST:event_btnVerViviendasActionPerformed
 
@@ -2147,14 +2257,85 @@ public class App extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         getSimpleStats();
+        jdDesde.setCalendar(null);
+        jdHasta.setCalendar(null);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void btnVerVendedoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerVendedoresActionPerformed
         jSpinner2.setModel(nm);
+        jdInicio2.setCalendar(null);
+        jdTermino2.setCalendar(null);
+        cargarCboVendedorStat();
+        cargarVendedoresStatFiltrada("'1995-05-01','2028-05-23','0','0'");
         frmStatVendedores.setVisible(true);
-        frmStatVendedores.setBounds(WIDTH, WIDTH, 920, 620);
+        frmStatVendedores.setBounds(WIDTH, WIDTH, 880, 550);
         frmStatVendedores.setLocationRelativeTo(null);
     }//GEN-LAST:event_btnVerVendedoresActionPerformed
+
+    private void cboContratoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboContratoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cboContratoActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        String filtro = new String();
+        boolean existe = false;
+        if (jdInicio1.getDate() != null && jdTermino1.getDate() != null) {
+            filtro += " fecha BETWEEN '" + fInicio.format(jdInicio1.getDate()) + "' AND '" + fFinal.format(jdTermino1.getDate()) + "'";
+            existe = true;
+        }
+        if (cboContrato.getSelectedIndex() > 0) {
+            if (existe) {
+                filtro += " AND";
+            }
+            if (cboContrato.getSelectedIndex() != 1) {
+                filtro += " es_disponible = 'Arrendada'";
+                existe = true;
+            } else {
+                filtro += " es_disponible = 'Vendida'";
+                existe = true;
+            }
+        }
+        if (existe) {
+            filtro = " WHERE" + filtro;
+        }
+        if ((int) (jSpinner1.getValue()) != 0) {
+            filtro += " LIMIT " + ((int) (jSpinner1.getValue())) + "";
+        }
+        cargarViviendaStatFiltrada(filtro);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        jdInicio1.setCalendar(null);
+        jdTermino1.setCalendar(null);
+        jSpinner1.setValue(0);
+        cargarCboViviendaStat();
+        cargarViviendaStatFiltrada("");
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void cboOrdenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboOrdenActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cboOrdenActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        jdInicio2.setCalendar(null);
+        jdTermino2.setCalendar(null);
+        jSpinner2.setValue(0);
+        cargarCboVendedorStat();
+        cargarVendedoresStatFiltrada("'1995-05-01','2028-05-23','0','0'");
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        String filtro = new String();
+
+        if (jdInicio2.getDate() != null && jdTermino2.getDate() != null) {
+            filtro += "'" + fInicio.format(jdInicio2.getDate()) + "','" + fFinal.format(jdTermino2.getDate()) + "',";
+        } else {
+            filtro += "'1995-05-01','2028-05-23',";
+        }
+        filtro += "'" + ((int) jSpinner2.getValue()) + "',";
+        filtro += "'" + cboOrden.getSelectedIndex() + "'";
+        cargarVendedoresStatFiltrada(filtro);
+    }//GEN-LAST:event_jButton5ActionPerformed
 
     private void msgClienteCreado() {
         String titulo = "Aviso";
@@ -2470,9 +2651,10 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JButton btnVerVendedores;
     private javax.swing.JButton btnVerViviendas;
     private javax.swing.JComboBox<String> cboCondicion;
+    private javax.swing.JComboBox<String> cboContrato;
     private javax.swing.JComboBox<String> cboDisp;
-    private javax.swing.JComboBox<String> cboFiltrarPorCasas;
-    private javax.swing.JComboBox<String> cboFiltrarPorDepartamentos;
+    private javax.swing.JComboBox<String> cboFiltrarPorEstado;
+    private javax.swing.JComboBox<String> cboOrden;
     private javax.swing.JComboBox<String> cboTipo;
     private javax.swing.JCheckBox chkFiltrarPorCasas;
     private javax.swing.JCheckBox chkFiltrarPorDepartamentos;
@@ -2487,8 +2669,6 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -2550,8 +2730,6 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JSpinner jSpinner1;
     private javax.swing.JSpinner jSpinner2;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
     private com.toedter.calendar.JDateChooser jdDesde;
     private com.toedter.calendar.JDateChooser jdHasta;
     private com.toedter.calendar.JDateChooser jdInicio1;
@@ -2576,6 +2754,8 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JSpinner spnBanios;
     private javax.swing.JSpinner spnPiezas;
     private javax.swing.JSpinner spnVenta;
+    private javax.swing.JTable tbStatVendedores;
+    private javax.swing.JTable tbStatViviendas;
     private javax.swing.JTable tblDatosFrameVend;
     private javax.swing.JTable tblLog;
     private javax.swing.JTextField txtCasas;

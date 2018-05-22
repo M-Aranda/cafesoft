@@ -10,21 +10,25 @@ package clasesAusar;
  * @author Alex971
  */
 public class VistaStatsViviendas extends VistaVivienda {
+
     private String runCliente;
     private String runVendedor;
+    private String fecha;
 
-    public VistaStatsViviendas(String runCliente, String runVendedor) {
-        this.runCliente = runCliente;
-        this.runVendedor = runVendedor;
+    public VistaStatsViviendas() {
     }
 
-    public VistaStatsViviendas(String runCliente, String runVendedor, int nDeRol, String tipo, String disponibilidad, int precioDeArriendo, int precioDeVenta, int cantBanios, int cantPiezas, String direccion, String condicion) {
+    public VistaStatsViviendas(String runCliente, String runVendedor, String fecha) {
+        this.runCliente = runCliente;
+        this.runVendedor = runVendedor;
+        this.fecha = fecha;
+    }
+
+    public VistaStatsViviendas(String runCliente, String runVendedor, String fecha, int nDeRol, String tipo, String disponibilidad, int precioDeArriendo, int precioDeVenta, int cantBanios, int cantPiezas, String direccion, String condicion) {
         super(nDeRol, tipo, disponibilidad, precioDeArriendo, precioDeVenta, cantBanios, cantPiezas, direccion, condicion);
         this.runCliente = runCliente;
         this.runVendedor = runVendedor;
-    }
-
-    public VistaStatsViviendas() {
+        this.fecha = fecha;
     }
 
     public String getRunCliente() {
@@ -43,10 +47,16 @@ public class VistaStatsViviendas extends VistaVivienda {
         this.runVendedor = runVendedor;
     }
 
+    public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
+
     @Override
     public String toString() {
-        return "VistaStatsViviendas{" + "runCliente=" + runCliente + ", runVendedor=" + runVendedor + '}';
+        return "VistaStatsViviendas{" + "runCliente=" + runCliente + ", runVendedor=" + runVendedor + ", fecha=" + fecha + '}';
     }
-    
-    
 }

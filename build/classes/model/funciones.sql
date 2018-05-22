@@ -35,7 +35,7 @@ CREATE VIEW vista_viviendas_disponibles AS -- DROP view vista_viviendas_disponib
  -- SELECT * FROM vista_viviendas_disponibles  WHERE (tipo='Casa' OR tipo='Departamento') AND (condicion='Nueva' OR condicion='Usada') ORDER BY precio_venta DESC;
 
 
-CREATE VIEW vista_estadisticas_viviendas AS -- DROP view vista_viviendas_disponibles
+CREATE VIEW vista_estadisticas_viviendas AS -- DROP view vista_estadisticas_viviendas
 	SELECT 
     v.n_rol,
     t.nombre AS 'tipo',
@@ -46,7 +46,8 @@ CREATE VIEW vista_estadisticas_viviendas AS -- DROP view vista_viviendas_disponi
     v.cant_piezas,
     v.direccion,
     c.cliente_fk,
-    c.usuario_fk
+    c.usuario_fk,
+    c.fecha
     FROM
     vivienda v
     INNER JOIN tipo_vivienda t ON t.id = v.tipo_fk
@@ -56,8 +57,6 @@ CREATE VIEW vista_estadisticas_viviendas AS -- DROP view vista_viviendas_disponi
     d.nombre = 'Arrendada' OR d.nombre ='Vendida';
 
 -- SELECT * FROM vista_estadisticas_viviendas;
-SELECT  * FROM vista_estadisticas_viviendas;
-
 
 END $$
 DELIMITER ;
@@ -148,6 +147,7 @@ DELIMITER ;
 -- SELECT crear_vivienda (124,1,3,250344,98000000,3,12,'Aasdddddddddddasasrga #0149',1,'11-1');
 -- SELECT crear_vivienda (4567,2,1,260002,98000000,3,12,'jashajdjadja',2,'22-2');
 
+
 DELIMITER $$
 CREATE PROCEDURE nuevo_log (detalle VARCHAR(200),run_user VARCHAR(200))
 BEGIN   
@@ -212,4 +212,88 @@ BEGIN
 END //
 DELIMITER ; -- CALL estat_por_fechas();
 
-CALL estat_por_fechas('2018-05-03','2018-05-25');
+
+    
+DELIMITER // -- NO PREGUNTE... SOLO QUIERALO, HACE LO QUE DEBE XD (SON SOLO 3 IF ANIDADOS)
+CREATE PROCEDURE vendedores_por_fechas (fecha1 DATE,fecha2 DATE,top INT,filtro INT)-- DROP PROCEDURE vendedores_por_fechas
+BEGIN    
+    IF(fecha1 = '1995-05-01') THEN
+		IF(top = 0) THEN
+			IF(filtro = 0) THEN
+					SELECT 
+					u.run,
+					u.nombre,
+					(SELECT COUNT(*) FROM contrato  WHERE usuario_fk = u.run AND fecha) AS 'contratos',
+					(SELECT COUNT(*) FROM log WHERE usuario_fk = u.run AND descripcion LIKE '%Ha iniciado sesion%') AS 'login'
+					FROM
+					usuario u WHERE u.tipo_fk = 2 ORDER BY contratos DESC;
+				ELSE
+                SELECT 
+					u.run,
+					u.nombre,
+					(SELECT COUNT(*) FROM contrato  WHERE usuario_fk = u.run AND fecha) AS 'contratos',
+					(SELECT COUNT(*) FROM log WHERE usuario_fk = u.run AND descripcion LIKE '%Ha iniciado sesion%') AS 'login'
+					FROM
+					usuario u WHERE u.tipo_fk = 2 ORDER BY login DESC;
+				END IF;
+		ELSE
+        IF(filtro = 0) THEN
+					SELECT 
+					u.run,
+					u.nombre,
+					(SELECT COUNT(*) FROM contrato  WHERE usuario_fk = u.run AND fecha) AS 'contratos',
+					(SELECT COUNT(*) FROM log WHERE usuario_fk = u.run AND descripcion LIKE '%Ha iniciado sesion%') AS 'login'
+					FROM
+					usuario u WHERE u.tipo_fk = 2 ORDER BY login DESC LIMIT top;
+				ELSE
+                SELECT 
+					u.run,
+					u.nombre,
+					(SELECT COUNT(*) FROM contrato  WHERE usuario_fk = u.run AND fecha) AS 'contratos',
+					(SELECT COUNT(*) FROM log WHERE usuario_fk = u.run AND descripcion LIKE '%Ha iniciado sesion%') AS 'login'
+					FROM
+					usuario u WHERE u.tipo_fk = 2 ORDER BY contratos DESC LIMIT top;
+				END IF;
+				
+        END IF;
+    ELSE
+		IF(top = 0) THEN
+			IF(filtro = 0) THEN
+					SELECT 
+					u.run,
+					u.nombre,
+					(SELECT COUNT(*) FROM contrato  WHERE usuario_fk = u.run AND fecha BETWEEN fecha1 AND fecha2) AS 'contratos',
+					(SELECT COUNT(*) FROM log WHERE usuario_fk = u.run AND descripcion LIKE '%Ha iniciado sesion%' AND fecha BETWEEN fecha1 AND fecha2) AS 'login'
+					FROM
+					usuario u WHERE u.tipo_fk = 2 ORDER BY contratos DESC;
+				ELSE
+					SELECT 
+					u.run,
+					u.nombre,
+					(SELECT COUNT(*) FROM contrato  WHERE usuario_fk = u.run AND fecha BETWEEN fecha1 AND fecha2) AS 'contratos',
+					(SELECT COUNT(*) FROM log WHERE usuario_fk = u.run AND descripcion LIKE '%Ha iniciado sesion%' AND fecha BETWEEN fecha1 AND fecha2) AS 'login'
+					FROM
+					usuario u WHERE u.tipo_fk = 2 ORDER BY login DESC;
+                END IF;
+		ELSE
+			IF(filtro = 0) THEN
+					SELECT 
+					u.run,
+					u.nombre,
+					(SELECT COUNT(*) FROM contrato  WHERE usuario_fk = u.run AND fecha BETWEEN fecha1 AND fecha2) AS 'contratos',
+					(SELECT COUNT(*) FROM log WHERE usuario_fk = u.run AND descripcion LIKE '%Ha iniciado sesion%' AND fecha BETWEEN fecha1 AND fecha2) AS 'login'
+					FROM
+					usuario u WHERE u.tipo_fk = 2 ORDER BY login DESC LIMIT top;
+				ELSE
+					SELECT 
+					u.run,
+					u.nombre,
+					(SELECT COUNT(*) FROM contrato  WHERE usuario_fk = u.run AND fecha BETWEEN fecha1 AND fecha2) AS 'contratos',
+					(SELECT COUNT(*) FROM log WHERE usuario_fk = u.run AND descripcion LIKE '%Ha iniciado sesion%' AND fecha BETWEEN fecha1 AND fecha2) AS 'login'
+					FROM
+					usuario u WHERE u.tipo_fk = 2 ORDER BY contratos DESC LIMIT top;
+                END IF;
+        END IF;
+	END IF;
+END //
+DELIMITER ; -- CALL vendedores_por_fechas('2018-05-01','2018-05-23','10','0');

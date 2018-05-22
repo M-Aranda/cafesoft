@@ -1,6 +1,8 @@
 package model;
 
 import clasesAusar.VistaLog;
+import clasesAusar.VistaStatsVend;
+import clasesAusar.VistaStatsViviendas;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -218,8 +220,8 @@ public class Data {
         return v;
     }
 
-    public List<VistaVivienda> leerTodasLasViviendasDisponibles() throws SQLException {
-        query = "SELECT * FROM vista_viviendas_disponibles";
+    public List<VistaVivienda> leerTodasLasViviendasDisponibles(String filtro) throws SQLException {
+        query = "SELECT * FROM vista_viviendas_disponibles "+filtro;
 
         List<VistaVivienda> viviendas = new ArrayList<>();
 
@@ -244,6 +246,57 @@ public class Data {
         con.close();
 
         return viviendas;
+    }
+    public List<VistaStatsViviendas> leerStatViviendasFiltrada(String filtro) throws SQLException {
+        query = "SELECT  * FROM vista_estadisticas_viviendas"+filtro;
+
+        List<VistaStatsViviendas> viviendas = new ArrayList<>();
+
+        rs = con.ejecutarSelect(query);
+
+        while (rs.next()) {
+            VistaStatsViviendas v = new VistaStatsViviendas();
+
+            v.setnDeRol(rs.getInt(1));
+            v.setTipo(rs.getString(2));
+            v.setDisponibilidad(rs.getString(3));
+            v.setPrecioDeArriendo(rs.getInt(4));
+            v.setPrecioDeVenta(rs.getInt(5));
+            v.setCantBanios(rs.getInt(6));
+            v.setCantPiezas(rs.getInt(7));
+            v.setDireccion(rs.getString(8));
+            v.setRunCliente(rs.getString(9));
+            v.setRunVendedor(rs.getString(10));
+            v.setFecha(rs.getString(11));
+
+            viviendas.add(v);
+        }
+
+        con.close();
+
+        return viviendas;
+    }
+    public List<VistaStatsVend> leerStatVendedores(String datos) throws SQLException {
+        query = "CALL vendedores_por_fechas("+datos+")";
+
+        List<VistaStatsVend> vendedores = new ArrayList<>();
+
+        rs = con.ejecutarSelect(query);
+
+        while (rs.next()) {
+            VistaStatsVend v = new VistaStatsVend();
+
+            v.setRun(rs.getString(1));
+            v.setNombre(rs.getString(2));
+            v.setContratos(rs.getInt(3));
+            v.setLogin(rs.getInt(4));
+
+            vendedores.add(v);
+        }
+
+        con.close();
+
+        return vendedores;
     }
 
     public List<VistaLog> leerVistaLogs() throws SQLException {
